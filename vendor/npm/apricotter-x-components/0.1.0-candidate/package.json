@@ -1,0 +1,30 @@
+{
+  "name": "@apricotter/x-components",
+  "version": "0.1.0",
+  "description": "A registry of x-* markup tags, expanded server-side, and the ontology it is checked against.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Apricotter/x-components.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "NOTICE",
+    "component.ttl",
+    "wai-aria.ttl",
+    "component-attributes.generated.mjs",
+    "expand.mjs"
+  ],
+  "exports": {
+    ".": "./expand.mjs",
+    "./component.ttl": "./component.ttl",
+    "./wai-aria.ttl": "./wai-aria.ttl",
+    "./component-attributes": "./component-attributes.generated.mjs"
+  },
+  "engines": {
+    "node": ">=22.14.0"
+  }
+}

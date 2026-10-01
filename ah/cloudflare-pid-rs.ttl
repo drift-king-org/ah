@@ -1,0 +1,543 @@
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix dcat:    <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
+@prefix sd:      <https://w3id.org/okn/o/sd#> .
+@prefix vann:    <http://purl.org/vocab/vann/> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix earl:    <http://www.w3.org/ns/earl#> .
+@prefix sosa:    <http://www.w3.org/ns/sosa/> .
+@prefix p-plan:  <http://purl.org/net/p-plan#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix oa:      <http://www.w3.org/ns/oa#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+
+# A part of ah.ttl, imported by it. ah.ttl is the root: its namespace,
+# its imports and its agents. The checks run on all the parts together.
+<https://drift-king.org/ah/cloudflare-pid-rs.ttl>
+    a owl:Ontology , prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    dcterms:title "cloudflare-pid-rs: pid1, the Worker, the image, and what the Worker observes" .
+
+# The smallest thing that proves the platform: a PID 1 for Cloudflare
+# Containers. No dcterms:source yet — this repo has no remote to point at
+# until a remote is chosen. Its own requirements (tool pins, build/deploy
+# steps) are added as they are proven, not in advance.
+<https://drift-king.org/ah/cloudflare-pid-rs>
+    a prov:SoftwareAgent ;
+    dcterms:requires <https://drift-king.org/not-ah/rustc> ,
+        <https://drift-king.org/not-ah/cargo-zigbuild> ,
+        <https://drift-king.org/not-ah/zig> ,
+        <https://drift-king.org/not-ah/crane> ,
+        <https://drift-king.org/not-ah/wrangler> ,
+        <https://drift-king.org/not-ah/crate/nix> ,
+        <https://drift-king.org/not-ah/crate/libc> ,
+        <https://drift-king.org/not-ah/npm/cloudflare-containers> ,
+        <https://drift-king.org/ah/cloudflare-pid-rs/deploy> .
+
+# ---------------------------------------------------------------------------
+# pid1's own words. main.rs may hold a string only if it is named here, or is
+# an address, the way the-generator's code is held to the model. A label here
+# is the string exactly as pid1 compiles it in, a std::fmt format string where
+# it has holes; code-strings-named.rq holds main.rs to it.
+# ---------------------------------------------------------------------------
+<https://drift-king.org/ah/cloudflare-pid-rs/message/started>
+    a owl:NamedIndividual ;
+    rdfs:label "pid1: started pid={}" ;
+    dcterms:conformsTo <https://doc.rust-lang.org/std/fmt/> .
+
+<https://drift-king.org/ah/cloudflare-pid-rs/message/sigterm>
+    a owl:NamedIndividual ;
+    rdfs:label "pid1: SIGTERM received, exiting" .
+
+<https://drift-king.org/ah/cloudflare-pid-rs/message/install-handler>
+    a owl:NamedIndividual ;
+    rdfs:label "pid1: failed to install {signal:?} handler: {e}" ;
+    dcterms:conformsTo <https://doc.rust-lang.org/std/fmt/> .
+
+<https://drift-king.org/ah/cloudflare-pid-rs/message/block-signals>
+    a owl:NamedIndividual ;
+    rdfs:label "pid1: failed to block signals" .
+
+<https://drift-king.org/ah/cloudflare-pid-rs/message/clock>
+    a owl:NamedIndividual ;
+    rdfs:label "pid1: clock before epoch" .
+
+<https://drift-king.org/ah/cloudflare-pid-rs/message/bind>
+    a owl:NamedIndividual ;
+    rdfs:label "pid1: failed to bind :8080" .
+
+<https://drift-king.org/ah/cloudflare-pid-rs/response/pid>
+    a owl:NamedIndividual ;
+    rdfs:label "pid" ;
+    rdfs:comment "Response field: std::process::id()." .
+
+<https://drift-king.org/ah/cloudflare-pid-rs/response/started>
+    a owl:NamedIndividual ;
+    rdfs:label "started" ;
+    rdfs:comment "Response field: unix seconds at boot." .
+
+<https://drift-king.org/ah/cloudflare-pid-rs/response/location>
+    a owl:NamedIndividual ;
+    rdfs:label "location" ;
+    rdfs:comment "Response field: CLOUDFLARE_LOCATION, or \"\" if unset." .
+
+<https://drift-king.org/ah/cloudflare-pid-rs/response/durable_object>
+    a owl:NamedIndividual ;
+    rdfs:label "durable_object" ;
+    rdfs:comment "Response field: CLOUDFLARE_DURABLE_OBJECT_ID, or \"\" if unset." .
+
+# Cloudflare's own words, not ours: named here, defined there.
+<https://drift-king.org/ah/cloudflare-pid-rs/env/location>
+    a owl:NamedIndividual ;
+    rdfs:label "CLOUDFLARE_LOCATION" ;
+    rdfs:isDefinedBy <https://developers.cloudflare.com/containers/platform-details/environment-variables/> ;
+    rdfs:comment "A name of a location the container is placed in." .
+
+<https://drift-king.org/ah/cloudflare-pid-rs/env/durable-object-id>
+    a owl:NamedIndividual ;
+    rdfs:label "CLOUDFLARE_DURABLE_OBJECT_ID" ;
+    rdfs:isDefinedBy <https://developers.cloudflare.com/containers/platform-details/environment-variables/> ;
+    rdfs:comment "The ID of the Durable Object instance the container is bound to." .
+
+<https://drift-king.org/ah/cloudflare-pid-rs/listen-address>
+    a owl:NamedIndividual ;
+    rdfs:label "0.0.0.0:8080" ;
+    rdfs:comment "What the listener thread binds: every interface, the port the Worker's defaultPort routes to." .
+
+<https://drift-king.org/ah/cloudflare-pid-rs/content-type>
+    a owl:NamedIndividual ;
+    rdfs:label "application/json" ;
+    rdfs:isDefinedBy <https://www.rfc-editor.org/rfc/rfc8259> ;
+    rdfs:comment "The media type of the status response body." .
+
+<https://drift-king.org/ah/cloudflare-pid-rs/response/body>
+    a owl:NamedIndividual ;
+    rdfs:label "{{\"pid\": {}, \"started\": \"{}\", \"location\": \"{}\", \"durable_object\": \"{}\"}}" ;
+    dcterms:conformsTo <https://doc.rust-lang.org/std/fmt/> ;
+    rdfs:comment "The status body: pid, started, location and durable_object, as a std::fmt format string." .
+
+<https://drift-king.org/ah/cloudflare-pid-rs/response/head>
+    a owl:NamedIndividual ;
+    rdfs:label "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: {}\r\n\r\n{}" ;
+    dcterms:conformsTo <https://doc.rust-lang.org/std/fmt/> ;
+    rdfs:isDefinedBy <https://www.rfc-editor.org/rfc/rfc9112> ;
+    rdfs:comment "The whole HTTP/1.1 response around the body: status line, Content-Type, Content-Length." .
+
+<https://drift-king.org/ah/cloudflare-pid-rs/write-cargo-config>
+    a sd:SoftwareConfiguration , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    dcterms:title "write the cargo config from its template and the setting USERPROFILE" ;
+    sd:hasExecutionCommand "node cloudflare-pid-rs/pid1/write-cargo-config.mjs" ;
+    dcterms:requires <https://drift-king.org/not-ah/setting/user-profile> , <https://drift-king.org/not-ah/node> .
+<https://drift-king.org/ah/cloudflare-pid-rs/build-pid1>
+    a sd:SoftwareConfiguration , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/ah/cloudflare-pid-rs/write-cargo-config> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/cloudflare-pid-rs/var/pid1-bin> ;
+    dcterms:title "build pid1.bin" ;
+    sd:hasExecutionCommand "cd cloudflare-pid-rs/pid1 && cargo zigbuild --release --locked --target x86_64-unknown-linux-musl && cp target/x86_64-unknown-linux-musl/release/pid1 ../pid1.bin" ;
+    dcterms:requires <https://drift-king.org/not-ah/rustc> ,
+        <https://drift-king.org/not-ah/cargo-zigbuild> ,
+        <https://drift-king.org/not-ah/zig> .
+
+<https://drift-king.org/ah/cloudflare-pid-rs/var/pid1-bin>
+    a p-plan:Variable ; rdfs:label "pid1.bin" .
+<https://drift-king.org/cloudflare-pid-rs/pid1.bin>
+    a p-plan:Entity ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/cloudflare-pid-rs/var/pid1-bin> .
+
+<https://drift-king.org/ah/cloudflare-pid-rs/make-layer>
+    a sd:SoftwareConfiguration , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/ah/cloudflare-pid-rs/build-pid1> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/cloudflare-pid-rs/var/pid1-layer-tar> ;
+    dcterms:title "make pid1-layer.tar" ;
+    sd:hasExecutionCommand "cd cloudflare-pid-rs && python make-layer.py pid1.bin pid1-layer.tar" .
+
+<https://drift-king.org/ah/cloudflare-pid-rs/var/pid1-layer-tar>
+    a p-plan:Variable ; rdfs:label "pid1-layer.tar" .
+<https://drift-king.org/cloudflare-pid-rs/pid1-layer.tar>
+    a p-plan:Entity ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/cloudflare-pid-rs/var/pid1-layer-tar> .
+
+<https://drift-king.org/ah/cloudflare-pid-rs/publish-intent>
+    a <https://drift-king.org/ah/the-builder/CopyStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/cloudflare-pid-rs/var/intent-copy> ;
+    dcterms:title "publish the signed letter of intent, byte-exact" .
+
+<https://drift-king.org/ah/cloudflare-pid-rs/var/intent-copy> a p-plan:Variable ; rdfs:label "intent/letter-of-intent.md, published" .
+
+<https://drift-king.org/cloudflare-pid-rs/worker/public/intent/letter-of-intent.md>
+    a prov:Entity , p-plan:Entity , earl:TestSubject ;
+    dcterms:isPartOf <https://drift-king.org/ah/cloudflare-pid-rs> ;
+    dcterms:conformsTo <https://www.iana.org/assignments/media-types/text/markdown> ;
+    dcterms:identifier "sha256:0c5ede6bce924501a740c2a130c0db8e04f3ff9235994598e798d66cf3cb94a0" ;
+    prov:wasDerivedFrom <https://drift-king.org/intent/letter-of-intent.md> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/cloudflare-pid-rs/var/intent-copy> ;
+    rdfs:comment "Copied byte-exact, sha256-checked by the step that makes it; the step exits 1 on any mismatch. file-provenance.rq (reviewer) sees it as generated, via correspondsToVariable." .
+
+<https://drift-king.org/cloudflare-pid-rs/worker/public/_headers>
+    dcterms:isPartOf <https://drift-king.org/ah/cloudflare-pid-rs> ;
+    rdfs:comment "Cloudflare Workers Static Assets reads _headers the same way Pages does (asserted from general knowledge, not yet dug into this repo). /intent/letter-of-intent.md: served as text with Cache-Control no-transform, so nothing between the Worker and the reader can alter the signed bytes." .
+
+<https://drift-king.org/ah/cloudflare-pid-rs/deploy>
+    a sd:SoftwareConfiguration , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/crane/mutate-pid1> ,
+        <https://drift-king.org/ah/cloudflare-pid-rs/ffmpeg-webp> ,
+        <https://drift-king.org/ah/cloudflare-pid-rs/ffmpeg-favicons> ,
+        <https://drift-king.org/ah/cloudflare-pid-rs/publish-intent> ,
+        # A ship step: waits for every check (the chain's last real-step).
+        <https://drift-king.org/not-ah/the-linter/terms-defined-in-vocab/real-step> ;
+    dcterms:title "deploy the Worker" ;
+    sd:hasExecutionCommand "cd cloudflare-pid-rs/worker && sed \"s/CLOUDFLARE_ACCOUNT_ID/${CLOUDFLARE_ACCOUNT_ID:?}/\" wrangler.template.jsonc > wrangler.jsonc && npx --yes wrangler@4.145.0 deploy" ;
+    dcterms:requires <https://drift-king.org/not-ah/setting/cloudflare-account-id> ;
+    dcterms:requires <https://drift-king.org/not-ah/wrangler> .
+
+# ---------------------------------------------------------------------------
+# cloudflare-pid-rs's files. A file is named when its address, the namespace
+# plus its path from the repo root, is the subject of something. Each is part
+# of cloudflare-pid-rs and says what format it is written in.
+# ---------------------------------------------------------------------------
+<https://drift-king.org/cloudflare-pid-rs/pid1/src/main.rs> dcterms:isPartOf <https://drift-king.org/ah/cloudflare-pid-rs> ;
+    dcterms:conformsTo <https://doc.rust-lang.org/reference/> .
+<https://drift-king.org/cloudflare-pid-rs/pid1/Cargo.toml> dcterms:isPartOf <https://drift-king.org/ah/cloudflare-pid-rs> ;
+    dcterms:conformsTo <https://doc.rust-lang.org/cargo/reference/manifest.html> .
+<https://drift-king.org/cloudflare-pid-rs/pid1/Cargo.lock> dcterms:isPartOf <https://drift-king.org/ah/cloudflare-pid-rs> ;
+    rdfs:comment "Written by cargo, never by hand; committed so builds are --locked." .
+<https://drift-king.org/cloudflare-pid-rs/pid1/rust-toolchain.toml> dcterms:isPartOf <https://drift-king.org/ah/cloudflare-pid-rs> ;
+    dcterms:conformsTo <https://rust-lang.github.io/rustup/overrides.html#the-toolchain-file> .
+<https://drift-king.org/cloudflare-pid-rs/pid1/.cargo/config.toml> dcterms:isPartOf <https://drift-king.org/ah/cloudflare-pid-rs> ;
+    dcterms:conformsTo <https://doc.rust-lang.org/cargo/reference/config.html> ;
+    prov:wasDerivedFrom <https://drift-king.org/cloudflare-pid-rs/pid1/.cargo/config.template.toml> ;
+    rdfs:comment "Written by the step that precedes the build, from the template and the setting USERPROFILE, never by hand and never committed: it holds the paths of the machine that builds." .
+<https://drift-king.org/cloudflare-pid-rs/pid1/.cargo/config.template.toml> dcterms:isPartOf <https://drift-king.org/ah/cloudflare-pid-rs> ;
+    dcterms:conformsTo <https://doc.rust-lang.org/cargo/reference/config.html> ;
+    rdfs:comment "The cargo config with the places of a machine written as the names CHECKOUT and USERPROFILE. The only part of it that is committed." .
+<https://drift-king.org/cloudflare-pid-rs/pid1/write-cargo-config.mjs> dcterms:isPartOf <https://drift-king.org/ah/cloudflare-pid-rs> ;
+    rdfs:comment "Fills the template from the folder it runs in and the setting USERPROFILE." .
+<https://drift-king.org/cloudflare-pid-rs/make-layer.py> dcterms:isPartOf <https://drift-king.org/ah/cloudflare-pid-rs> ;
+    rdfs:comment "Writes pid1-layer.tar: one entry, pid1, mode 0755, uid and gid 0, mtime 0." .
+<https://drift-king.org/cloudflare-pid-rs/worker/src/index.js> dcterms:isPartOf <https://drift-king.org/ah/cloudflare-pid-rs> .
+<https://drift-king.org/cloudflare-pid-rs/worker/wrangler.template.jsonc> dcterms:isPartOf <https://drift-king.org/ah/cloudflare-pid-rs> ;
+    dcterms:conformsTo <https://developers.cloudflare.com/workers/wrangler/configuration/> ;
+    rdfs:comment "The Worker's configuration, with the account written as the name of its setting. The deploy writes wrangler.jsonc from it, with the setting's value, just before wrangler reads it, and never commits it." .
+<https://drift-king.org/cloudflare-pid-rs/worker/wrangler.jsonc> dcterms:isPartOf <https://drift-king.org/ah/cloudflare-pid-rs> ;
+    prov:wasDerivedFrom <https://drift-king.org/cloudflare-pid-rs/worker/wrangler.template.jsonc> ;
+    rdfs:comment "Written by the deploy, never by hand and never committed: it holds the account's value." .
+<https://drift-king.org/cloudflare-pid-rs/worker/package.json> dcterms:isPartOf <https://drift-king.org/ah/cloudflare-pid-rs> ;
+    dcterms:conformsTo <https://docs.npmjs.com/cli/v11/configuring-npm/package-json> .
+<https://drift-king.org/cloudflare-pid-rs/worker/package-lock.json> dcterms:isPartOf <https://drift-king.org/ah/cloudflare-pid-rs> ;
+    rdfs:comment "Written by npm, never by hand." .
+
+<https://drift-king.org/ah/cloudflare-pid-rs/ffmpeg-webp>
+    a sd:SoftwareConfiguration , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/cloudflare-pid-rs/var/webp> ;
+    dcterms:title "convert the source image to webp" ;
+    sd:hasExecutionCommand "ffmpeg -y -i Gemini_Generated_Image_75wd8p75wd8p75wd.jpg -quality 85 cloudflare-pid-rs/worker/public/drift-king.webp" ;
+    dcterms:requires <https://drift-king.org/not-ah/ffmpeg> .
+
+<https://drift-king.org/ah/cloudflare-pid-rs/var/webp>
+    a p-plan:Variable ; rdfs:label "drift-king.webp" .
+
+<https://drift-king.org/cloudflare-pid-rs/worker/public/drift-king.webp>
+    a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/cloudflare-pid-rs> ;
+    dcterms:conformsTo <https://www.iana.org/assignments/media-types/image/webp> ;
+    prov:wasDerivedFrom <https://drift-king.org/Gemini_Generated_Image_75wd8p75wd8p75wd.jpg> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/cloudflare-pid-rs/var/webp> ;
+    rdfs:comment "Converted with ffmpeg from the original JPEG (3.2 MB -> 663 KB); served by the Workers Assets binding, not by pid1. prov:wasGeneratedBy pointing at a step is gone (M3): the step-output relationship is now hasOutputVar/correspondsToVariable." .
+
+<https://drift-king.org/ah/cloudflare-pid-rs/ffmpeg-favicons>
+    a sd:SoftwareConfiguration , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/cloudflare-pid-rs/var/favicon-ico> ,
+        <https://drift-king.org/ah/cloudflare-pid-rs/var/apple-touch-icon> ,
+        <https://drift-king.org/ah/cloudflare-pid-rs/var/icon-192> ,
+        <https://drift-king.org/ah/cloudflare-pid-rs/var/icon-512> ;
+    dcterms:title "make the favicons from the mascot" ;
+    sd:hasExecutionCommand "ffmpeg -y -i Drift_King_Icon.png -filter_complex \"pad=1910:1910:(ow-iw)/2:(oh-ih)/2:color=0x00000000,split=4[a][b][c][d];[a]scale=32:32:flags=lanczos[ico];[b]scale=180:180:flags=lanczos[apple];[c]scale=192:192:flags=lanczos[i192];[d]scale=512:512:flags=lanczos[i512]\" -map \"[ico]\" -frames:v 1 cloudflare-pid-rs/worker/public/favicon.ico -map \"[apple]\" -frames:v 1 cloudflare-pid-rs/worker/public/apple-touch-icon.png -map \"[i192]\" -frames:v 1 cloudflare-pid-rs/worker/public/icon-192.png -map \"[i512]\" -frames:v 1 cloudflare-pid-rs/worker/public/icon-512.png" ;
+    dcterms:requires <https://drift-king.org/not-ah/ffmpeg> .
+
+<https://drift-king.org/ah/cloudflare-pid-rs/var/favicon-ico> a p-plan:Variable ; rdfs:label "favicon.ico" .
+<https://drift-king.org/ah/cloudflare-pid-rs/var/apple-touch-icon> a p-plan:Variable ; rdfs:label "apple-touch-icon.png" .
+<https://drift-king.org/ah/cloudflare-pid-rs/var/icon-192> a p-plan:Variable ; rdfs:label "icon-192.png" .
+<https://drift-king.org/ah/cloudflare-pid-rs/var/icon-512> a p-plan:Variable ; rdfs:label "icon-512.png" .
+
+<https://drift-king.org/cloudflare-pid-rs/worker/public/favicon.ico>
+    a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/cloudflare-pid-rs> ;
+    dcterms:conformsTo <https://www.iana.org/assignments/media-types/image/vnd.microsoft.icon> ;
+    prov:wasDerivedFrom <https://drift-king.org/Drift_King_Icon.png> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/cloudflare-pid-rs/var/favicon-ico> ;
+    rdfs:comment "32x32 icon for browser tabs, transparent (32 bits/pixel)." .
+
+<https://drift-king.org/cloudflare-pid-rs/worker/public/apple-touch-icon.png>
+    a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/cloudflare-pid-rs> ;
+    dcterms:conformsTo <https://www.iana.org/assignments/media-types/image/png> ;
+    prov:wasDerivedFrom <https://drift-king.org/Drift_King_Icon.png> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/cloudflare-pid-rs/var/apple-touch-icon> ;
+    rdfs:comment "180x180 icon for iOS home screens." .
+
+<https://drift-king.org/cloudflare-pid-rs/worker/public/icon-192.png>
+    a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/cloudflare-pid-rs> ;
+    dcterms:conformsTo <https://www.iana.org/assignments/media-types/image/png> ;
+    prov:wasDerivedFrom <https://drift-king.org/Drift_King_Icon.png> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/cloudflare-pid-rs/var/icon-192> ;
+    rdfs:comment "192x192 icon named by the manifest." .
+
+<https://drift-king.org/cloudflare-pid-rs/worker/public/icon-512.png>
+    a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/cloudflare-pid-rs> ;
+    dcterms:conformsTo <https://www.iana.org/assignments/media-types/image/png> ;
+    prov:wasDerivedFrom <https://drift-king.org/Drift_King_Icon.png> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/cloudflare-pid-rs/var/icon-512> ;
+    rdfs:comment "512x512 icon named by the manifest." .
+
+<https://drift-king.org/cloudflare-pid-rs/worker/public/manifest.webmanifest>
+    dcterms:isPartOf <https://drift-king.org/ah/cloudflare-pid-rs> ;
+    dcterms:conformsTo <https://www.w3.org/TR/appmanifest/> ;
+    rdfs:comment "Web app manifest naming icon-192.png and icon-512.png. Written by hand." .
+
+<https://drift-king.org/cloudflare-pid-rs/proof/M1-versions.txt> dcterms:isPartOf <https://drift-king.org/ah/cloudflare-pid-rs> ;
+    rdfs:comment "Evidence: the raw version output of every pinned tool." .
+<https://drift-king.org/cloudflare-pid-rs/proof/M2-sha256.txt> dcterms:isPartOf <https://drift-king.org/ah/cloudflare-pid-rs> ;
+    rdfs:comment "Evidence: pid1.bin's sha256 as certutil printed it." .
+<https://drift-king.org/cloudflare-pid-rs/proof/M4-response.json> dcterms:isPartOf <https://drift-king.org/ah/cloudflare-pid-rs> ;
+    rdfs:comment "Evidence: the live response reporting pid 1." .
+
+# ---------------------------------------------------------------------------
+# What was built, by identity. Each build output's address is its path; its
+# identifier is its hash. Hashes never change, so these never do either: a
+# rebuild that hashes differently is a different thing and gets its own node.
+# ---------------------------------------------------------------------------
+<https://drift-king.org/cloudflare-pid-rs/pid1.bin>
+    a prov:Entity , earl:TestSubject ;
+    dcterms:isPartOf <https://drift-king.org/ah/cloudflare-pid-rs> ;
+    dcterms:identifier "sha256:8163ce1cdb728a12c5b3bcaf40a0d5251ba40a8439aa55870b2956b57c2b8d08" ;
+    prov:wasDerivedFrom <https://drift-king.org/cloudflare-pid-rs/pid1/src/main.rs> ;
+    rdfs:comment "Static x86-64 ELF, stripped, 434592 bytes. Built with rustc 1.98.1 (commit 48a229cea, the only /rustc/ path embedded in it)." .
+
+<https://drift-king.org/cloudflare-pid-rs/pid1-layer.tar>
+    a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/cloudflare-pid-rs> ;
+    dcterms:identifier "sha256:369911a5bddca5da201f177341982a64f05c601e95cdb50c6eff971378b1597c" ;
+    prov:wasDerivedFrom <https://drift-king.org/cloudflare-pid-rs/pid1.bin> , <https://drift-king.org/cloudflare-pid-rs/make-layer.py> .
+
+# The image: a stable name, never a digest (M3, iri-names-not-values). Each
+# push is a version under it, the digest kept as data (dcterms:identifier),
+# not spelled into the IRI. The tag that also points at it moves; neither
+# this name nor a version's own name ever does.
+<https://drift-king.org/ah/cloudflare-pid-rs/image>
+    dcterms:isPartOf <https://drift-king.org/ah/cloudflare-pid-rs> ;
+    dcterms:hasVersion <https://drift-king.org/ah/cloudflare-pid-rs/image/v1> ,
+        <https://drift-king.org/ah/cloudflare-pid-rs/image/v2> ;
+    rdfs:comment "What the Worker runs and what a golden would sign." .
+
+# v1: the first push, with a broken entrypoint. Kept on the record, not
+# deleted: nothing references it, and deleting by tag would have hit the live
+# image.
+<https://drift-king.org/ah/cloudflare-pid-rs/image/v1>
+    a prov:Entity ;
+    dcterms:isVersionOf <https://drift-king.org/ah/cloudflare-pid-rs/image> ;
+    dcterms:identifier "sha256:ba0e3474040a45b263ceac576327c3e52332f6c5b78b80722496b599676f1e2c" ;
+    prov:wasDerivedFrom <https://drift-king.org/cloudflare-pid-rs/pid1-layer.tar> ;
+    dcterms:isReplacedBy <https://drift-king.org/ah/cloudflare-pid-rs/image/v2> ;
+    rdfs:comment "Entrypoint rewritten by Git Bash path conversion before crane saw it. Untagged, unreferenced, left in place." .
+
+# v2: the current push.
+<https://drift-king.org/ah/cloudflare-pid-rs/image/v2>
+    a prov:Entity , p-plan:Entity , earl:TestSubject ;
+    dcterms:isVersionOf <https://drift-king.org/ah/cloudflare-pid-rs/image> ;
+    dcterms:identifier "sha256:2c0a8cae7dea4943d408233e6c9d19b8781a1da71fc4ae9b6e97d60e64978459" ;
+    prov:wasDerivedFrom <https://drift-king.org/cloudflare-pid-rs/pid1-layer.tar> ;
+    p-plan:correspondsToVariable <https://drift-king.org/not-ah/crane/var/image> ;
+    rdfs:comment "linux/amd64, entrypoint /pid1, exposes 8080. In registry.cloudflare.com. prov:wasGeneratedBy pointing at mutate-pid1 (a step) is gone (M3): hasOutputVar/correspondsToVariable instead." .
+
+# ---------------------------------------------------------------------------
+# What was proven, and when. Each is a test ah defines and a result that was
+# seen. Results are facts about a moment: they are added, never edited.
+# ---------------------------------------------------------------------------
+<https://drift-king.org/ah/cloudflare-pid-rs/test/static-elf>
+    a earl:TestCase ;
+    dcterms:title "pid1.bin is a static x86-64 ELF with no host paths in it" .
+<https://drift-king.org/ah/cloudflare-pid-rs/test/sigterm-exit>
+    a earl:TestCase ;
+    dcterms:title "as PID 1 of its own namespace, SIGTERM makes it print its line and exit 0" .
+<https://drift-king.org/ah/cloudflare-pid-rs/test/pid-one-on-cloudflare>
+    a earl:TestCase ;
+    dcterms:title "on Cloudflare Containers it reports pid 1" .
+
+[ a earl:Assertion ;
+  earl:subject <https://drift-king.org/cloudflare-pid-rs/pid1.bin> ;
+  earl:test <https://drift-king.org/ah/cloudflare-pid-rs/test/static-elf> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ;
+                dcterms:date "2026-09-27"^^xsd:date ] ] .
+
+[ a earl:Assertion ;
+  earl:subject <https://drift-king.org/cloudflare-pid-rs/pid1.bin> ;
+  earl:test <https://drift-king.org/ah/cloudflare-pid-rs/test/sigterm-exit> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ;
+                dcterms:date "2026-09-27"^^xsd:date ] ] .
+
+[ a earl:Assertion ;
+  earl:subject <https://drift-king.org/ah/cloudflare-pid-rs/image/v2> ;
+  earl:test <https://drift-king.org/ah/cloudflare-pid-rs/test/pid-one-on-cloudflare> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ;
+                dcterms:date "2026-09-27T17:40:37Z"^^xsd:dateTime ;
+                rdfs:comment "Location cmh01." ] ] .
+
+<https://drift-king.org/ah/cloudflare-pid-rs/test/sigterm-on-cloudflare>
+    a earl:TestCase ;
+    dcterms:title "on Cloudflare, when the runtime signals a stop, it exits on its own with code 0 within seconds" ;
+    rdfs:comment "Passes on exitCode 0 with reason exit. reason runtime_signal means the runtime ended it, which is a failure." .
+
+[ a earl:Assertion ;
+  earl:subject <https://drift-king.org/ah/cloudflare-pid-rs/image/v2> ;
+  earl:test <https://drift-king.org/ah/cloudflare-pid-rs/test/sigterm-on-cloudflare> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ;
+                dcterms:date "2026-09-27T18:02:08Z"^^xsd:dateTime ;
+                rdfs:comment "Stop signalled 18:02:08.789Z; onStop reported exitCode 0, reason exit, at 18:02:08.878Z: 89 ms." ] ] .
+
+<https://drift-king.org/cloudflare-pid-rs/proof/M5-logs.txt> dcterms:isPartOf <https://drift-king.org/ah/cloudflare-pid-rs> ;
+    rdfs:comment "Evidence: the stop signal and the onStop exit line, from the Durable Object logs." .
+
+<https://drift-king.org/cloudflare-pid-rs/proof/M6-onstop.txt> dcterms:isPartOf <https://drift-king.org/ah/cloudflare-pid-rs> ;
+    rdfs:comment "Evidence: pid1 stopped: exitCode=0 reason=exit, 89 ms after the stop signal." .
+
+# Where cloudflare-pid-rs answers. workers.dev is off (workers_dev: false in
+# wrangler.jsonc); this custom domain is the only public address. An endpoint
+# is a dcat:DataService: dcat:accessURL on the agent itself would retype the
+# agent as a dcat:Distribution (domain-retypes caught exactly that).
+<https://drift-king.org/ah/cloudflare-pid-rs/endpoint>
+    a dcat:DataService ;
+    dcterms:isPartOf <https://drift-king.org/ah/cloudflare-pid-rs> ;
+    dcat:endpointURL <https://pid1.drift-king.org/> .
+
+
+<https://drift-king.org/cloudflare-pid-rs/proof/M8-routing.txt> dcterms:isPartOf <https://drift-king.org/ah/cloudflare-pid-rs> ;
+    rdfs:comment "Evidence: the routing fix deployed and verified live with three curls, after being caught undeployed." .
+
+<https://drift-king.org/cloudflare-pid-rs/proof/M9-sosa-favicons.txt> dcterms:isPartOf <https://drift-king.org/ah/cloudflare-pid-rs> ;
+    rdfs:comment "Evidence: onStop's sosa:Observation and the favicons, deployed and verified live." .
+
+# ---------------------------------------------------------------------------
+# The observer. The Worker sees things happen to the container and says so as
+# sosa:Observations; it never judges them. Judging is the kernel's: a
+# verdict is an earl:Assertion made against a test this model defines.
+# ---------------------------------------------------------------------------
+<https://drift-king.org/ah/cloudflare-pid-rs/worker>
+    a sosa:Sensor ;
+    dcterms:isPartOf <https://drift-king.org/ah/cloudflare-pid-rs> ;
+    sosa:observes <https://drift-king.org/ah/cloudflare-pid-rs/property/exit> .
+
+<https://drift-king.org/ah/cloudflare-pid-rs/property/exit>
+    a sosa:ObservableProperty ;
+    rdfs:label "how the container process ended" ;
+    rdfs:comment "Reported by the Container class's onStop hook: an exit code and a reason." .
+
+<https://drift-king.org/ah/cloudflare-pid-rs/exitCode>
+    a owl:DatatypeProperty ;
+    rdfs:label "exitCode" ;
+    rdfs:range xsd:integer ;
+    rdfs:comment "The container process's exit code, as onStop receives it." .
+
+<https://drift-king.org/ah/cloudflare-pid-rs/reason>
+    a owl:DatatypeProperty ;
+    rdfs:label "reason" ;
+    rdfs:range xsd:string ;
+    rdfs:comment "exit when the process ended on its own; runtime_signal when the runtime ended it." .
+
+# pid1 reads a request until the blank line that ends its header section.
+<https://drift-king.org/ah/cloudflare-pid-rs/pid1/header-end>
+    a owl:NamedIndividual ;
+    rdfs:label "\r\n\r\n" ;
+    rdfs:isDefinedBy <https://www.rfc-editor.org/rfc/rfc9112#section-2.1> ;
+    rdfs:comment "The end of an HTTP/1.1 request's header section: the last field line's CRLF, then the empty line's." .
+
+
+# The Worker's own words. index.js may hold a string only if it is named here,
+# or is an address; its observation is JSON-LD written in full IRIs, so it
+# needs no @context and no compact names.
+
+<https://drift-king.org/ah/cloudflare-pid-rs/worker/sleep-after>
+    a owl:NamedIndividual ;
+    rdfs:label "5m" ;
+    rdfs:isDefinedBy <https://developers.cloudflare.com/containers/> ;
+    rdfs:comment "Container.sleepAfter: how long the container stays up with no requests." .
+
+<https://drift-king.org/ah/cloudflare-pid-rs/worker/instance>
+    a owl:NamedIndividual ;
+    rdfs:label "one" ;
+    rdfs:isDefinedBy <https://developers.cloudflare.com/durable-objects/api/namespace/> ;
+    rdfs:comment "The name of the one Pid1 Durable Object, and so the one container, every request goes to." .
+
+<https://drift-king.org/ah/cloudflare-pid-rs/worker/json-ld/type>
+    a owl:NamedIndividual ;
+    rdfs:label "@type" ;
+    rdfs:isDefinedBy <https://www.w3.org/TR/json-ld11/#keywords> .
+
+<https://drift-king.org/ah/cloudflare-pid-rs/worker/json-ld/id>
+    a owl:NamedIndividual ;
+    rdfs:label "@id" ;
+    rdfs:isDefinedBy <https://www.w3.org/TR/json-ld11/#keywords> .
+
+<https://drift-king.org/ah/cloudflare-pid-rs/worker/accept>
+    a owl:NamedIndividual ;
+    rdfs:label "Accept" ;
+    rdfs:isDefinedBy <https://www.rfc-editor.org/rfc/rfc9110#field.accept> ;
+    rdfs:comment "The request header read to decide between the page and the bare status." .
+
+<https://drift-king.org/ah/cloudflare-pid-rs/worker/page-media-type>
+    a owl:NamedIndividual ;
+    rdfs:label "text/html" ;
+    rdfs:isDefinedBy <https://www.iana.org/assignments/media-types/text/html> ;
+    rdfs:comment "What an Accept header must include to get the page." .
+
+<https://drift-king.org/ah/cloudflare-pid-rs/worker/page-method>
+    a owl:NamedIndividual ;
+    rdfs:label "GET" ;
+    rdfs:isDefinedBy <https://www.rfc-editor.org/rfc/rfc9110#GET> ;
+    rdfs:comment "The one request method that gets the page." .
+
+<https://drift-king.org/ah/cloudflare-pid-rs/worker/page-path>
+    a owl:NamedIndividual ;
+    rdfs:label "/" ;
+    rdfs:isDefinedBy <https://www.rfc-editor.org/rfc/rfc3986#section-3.3> ;
+    rdfs:comment "The one path that gets the page; every other path goes to pid1." .
+
+<https://drift-king.org/ah/cloudflare-pid-rs/worker/no-accept>
+    a owl:NamedIndividual ;
+    rdfs:label "" ;
+    rdfs:comment "What a request with no Accept header reads as: nothing, so it never includes text/html and never gets the page." .
+
+
+<https://drift-king.org/ah/cloudflare-pid-rs/worker/content-type>
+    a owl:NamedIndividual ;
+    rdfs:label "content-type" ;
+    rdfs:isDefinedBy <https://www.rfc-editor.org/rfc/rfc9110#field.content-type> .
+
+<https://drift-king.org/ah/cloudflare-pid-rs/worker/page-content-type>
+    a owl:NamedIndividual ;
+    rdfs:label "text/html; charset=utf-8" ;
+    rdfs:isDefinedBy <https://www.iana.org/assignments/media-types/text/html> ;
+    rdfs:comment "The page's media type, with its charset." .
+
+<https://drift-king.org/ah/cloudflare-pid-rs/worker/page>
+    a owl:NamedIndividual ;
+    rdfs:label "<!doctype html>\n<html>\n<head>\n<meta charset=\"utf-8\">\n<title>Drift King</title>\n<link rel=\"icon\" href=\"/favicon.ico\" sizes=\"32x32\">\n<link rel=\"apple-touch-icon\" href=\"/apple-touch-icon.png\">\n<link rel=\"manifest\" href=\"/manifest.webmanifest\">\n</head>\n<body style=\"margin:0;background:#0b0b0b;color:#eee;font-family:sans-serif;text-align:center;padding:2rem;\">\n<img src=\"/drift-king.webp\" alt=\"Drift King\" style=\"max-width:100%;height:auto;\">\n<pre style=\"text-align:left;display:inline-block;background:#111;padding:1rem;border-radius:8px;\">${JSON.stringify(status, null, 2)}</pre>\n</body>\n</html>" ;
+    dcterms:conformsTo <https://tc39.es/ecma262/#sec-template-literals> ;
+    rdfs:comment "The status page, as index.js's page() writes it: a template literal whose one hole is the status JSON." .
+
+# The Worker's deploy and every registry step are ship steps: a plain run
+# pushes nothing and deploys nothing.
+<https://drift-king.org/ah/cloudflare-pid-rs/deploy> a <https://drift-king.org/ah/the-builder/ShipStep> .
+<https://drift-king.org/not-ah/crane/login> a <https://drift-king.org/ah/the-builder/ShipStep> .
+<https://drift-king.org/not-ah/crane/append-pid1> a <https://drift-king.org/ah/the-builder/ShipStep> .
+<https://drift-king.org/not-ah/crane/mutate-pid1> a <https://drift-king.org/ah/the-builder/ShipStep> .
+<https://drift-king.org/not-ah/crane/logout> a <https://drift-king.org/ah/the-builder/ShipStep> .

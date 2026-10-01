@@ -1,0 +1,75 @@
+# Where each address of ours goes when it is not itself a file on
+# drift-king.org: a 303 See Other to the published copy of the file that
+# defines it, as W3C's "Cool URIs for the Semantic Web" says an address that
+# names a thing should. rdfs:isDefinedBy is recorded by the-builder from each
+# file read alone. Each published folder is a dcat:Distribution whose
+# dcat:accessURL is the host it is served from, so a copy on another host,
+# such as the private one behind a login, is sent there. When more than one
+# published file defines an address, one on drift-king.org itself is taken
+# first, then the last by name, so the answer never depends on load order.
+# A canary's made-up addresses share its folder under not-ah/canary/, named
+# by the canary's vann:preferredNamespaceUri; the whole folder goes to the
+# published canary.
+# A file in a source folder is sent to the file on GitHub, at the commit the
+# site is built from, and the generic rule above leaves it alone.
+# ?base is bound by the caller.
+PREFIX vann: <http://purl.org/vocab/vann/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX dcat: <http://www.w3.org/ns/dcat#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+
+SELECT ?base ?from ?to WHERE {
+  {
+  {
+    SELECT ?base ?path (MAX(?ranked) AS ?best) WHERE {
+      ?public a dcat:Distribution ; dcat:accessURL ?home .
+      FILTER (str(?home) = str(?base))
+      ?thing rdfs:isDefinedBy ?file .
+      ?copy prov:wasDerivedFrom ?file .
+      ?root a dcat:Distribution ; dcat:accessURL ?host .
+      FILTER (strstarts(str(?root), str(?base)) && strstarts(str(?copy), str(?root)))
+      BIND (concat(IF(?root = ?public, "1", "0"), str(?host), strafter(str(?copy), str(?root))) AS ?ranked)
+      BIND (IF(contains(str(?thing), "#"), strbefore(str(?thing), "#"), str(?thing)) AS ?address)
+      BIND (strafter(?address, str(?base)) AS ?path)
+      FILTER (?path != "")
+      # A file on drift-king.org is served as itself, never redirected.
+      BIND (IRI(concat(str(?public), ?path)) AS ?asFile)
+      BIND (IRI(concat(str(?public), ?path, ".html")) AS ?asPage)
+      FILTER NOT EXISTS { ?asFile prov:wasDerivedFrom ?source }
+      FILTER NOT EXISTS { ?asPage prov:wasDerivedFrom ?template }
+      # A source file is sent to GitHub, below, not to the file that names it.
+      FILTER NOT EXISTS {
+        ?sourceFolder a <https://drift-king.org/ah/SourceFolder> .
+        ?scanned dcterms:isPartOf <https://drift-king.org/not-ah/the-linter/disk-scan> ;
+          dcterms:identifier ?scannedPath .
+        FILTER (?scannedPath = ?path && STRSTARTS(?scannedPath, STRAFTER(STR(?sourceFolder), STR(?base))))
+      }
+    }
+    GROUP BY ?base ?path
+  }
+  BIND (concat("/", ?path) AS ?from)
+  BIND (substr(?best, 2) AS ?to)
+  } UNION {
+    ?canary vann:preferredNamespaceUri ?folder .
+    FILTER (strstarts(str(?folder), concat(str(?base), "not-ah/canary/")))
+    ?copy prov:wasDerivedFrom ?canary .
+    ?root a dcat:Distribution ; dcat:accessURL ?host .
+    FILTER (strstarts(str(?root), str(?base)) && strstarts(str(?copy), str(?root)))
+    BIND (concat("/", strafter(str(?folder), str(?base)), "*") AS ?from)
+    BIND (concat(str(?host), strafter(str(?copy), str(?root))) AS ?to)
+  } UNION {
+    ?sourceFolder a <https://drift-king.org/ah/SourceFolder> .
+    ?scanned dcterms:isPartOf <https://drift-king.org/not-ah/the-linter/disk-scan> ;
+      dcterms:identifier ?sourcePath .
+    FILTER (STRSTARTS(?sourcePath, STRAFTER(STR(?sourceFolder), STR(?base))))
+    <https://drift-king.org/ah/the-builder/build> dcterms:identifier ?commit .
+    <https://drift-king.org/not-ah/repository> dcterms:source ?repository .
+    BIND (concat("/", ?sourcePath) AS ?from)
+    BIND (concat(str(?repository), "/blob/", ?commit, "/", ?sourcePath) AS ?to)
+  }
+}
+# Every rule with a splat comes after every rule without one. Cloudflare
+# counts each line from the first splat on as a dynamic rule, and stops
+# reading the file at 100 of them.
+ORDER BY ASC(IF(strends(?from, "*"), 1, 0)) ?from

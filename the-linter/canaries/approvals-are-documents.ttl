@@ -1,0 +1,28 @@
+# Canary for approvals-are-documents.rq: four fake disk-scan observations.
+# None is a real file. Self-contained: the-builder binds ?base itself, so
+# every address below is the real namespace plus the path, in this store only.
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+# Must be found: in approvals/, and nothing names it.
+<https://drift-king.org/not-ah/canary/approvals-are-documents/unnamed>
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter/disk-scan> ;
+    dcterms:identifier "approvals/canary-unnamed.txt" .
+
+# Must be found: in approvals/, named, but as plain text, not CommonMark.
+<https://drift-king.org/not-ah/canary/approvals-are-documents/plain>
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter/disk-scan> ;
+    dcterms:identifier "approvals/canary-plain.txt" .
+<https://drift-king.org/approvals/canary-plain.txt>
+    dcterms:conformsTo <https://www.iana.org/assignments/media-types/text/plain> .
+
+# Must stay clean: in approvals/, named as CommonMark.
+<https://drift-king.org/not-ah/canary/approvals-are-documents/document>
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter/disk-scan> ;
+    dcterms:identifier "approvals/canary-document.md" .
+<https://drift-king.org/approvals/canary-document.md>
+    dcterms:conformsTo <https://spec.commonmark.org/> .
+
+# Must stay clean: not in approvals/, so not this check's business.
+<https://drift-king.org/not-ah/canary/approvals-are-documents/elsewhere>
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter/disk-scan> ;
+    dcterms:identifier "not-approvals/canary-elsewhere.txt" .

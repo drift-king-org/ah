@@ -1,0 +1,18 @@
+# drift-king has no Python-AST recording built yet (no code here uses the
+# py:Attribute/py:Name shape for real), so this canary supplies both halves
+# itself: the vocabulary declaration the check looks up "py" against, and
+# one attribute access with a typo'd term (Constnat) that it must catch.
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix vann: <http://purl.org/vocab/vann/> .
+@prefix py: <https://drift-king.org/python/3.13/ast#> .
+
+<https://drift-king.org/python/3.13/ast#>
+    vann:preferredNamespacePrefix "py" ;
+    vann:preferredNamespaceUri "https://drift-king.org/python/3.13/ast#" .
+
+<https://drift-king.org/not-ah/canary/namespace-terms-defined/use>
+    a py:Attribute ;
+    py:Attribute.attr "Constnat" ;
+    py:Attribute.value [ a py:Name ; py:Name.id "PY" ] ;
+    py:expr.lineno 1 ;
+    dcterms:isPartOf <https://drift-king.org/the-linter/canaries/namespace-terms-defined.ttl> .

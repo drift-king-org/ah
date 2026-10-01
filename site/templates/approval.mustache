@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>{{title}}, for approval</title>
+<style>
+body{font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.5;color:#111;margin:0;padding:0}
+h1{font-size:18px;margin:0 0 12px}
+h2{font-size:15px;margin:18px 0 8px}
+p{margin:0 0 10px}
+a{color:#111}
+.doc{border-left:3px solid #999;padding:4px 0 4px 14px;margin:0 0 16px}
+.ref{margin:0 0 12px}
+.ref b{display:block}
+.mono{font-family:"Courier New",monospace;font-size:12px;word-break:break-all;overflow-wrap:anywhere}
+.sign{margin-top:32px}
+.sign p{margin:0 0 34px}
+.anchor{color:#ffffff;font-size:10px}
+</style>
+</head>
+<body>
+<h1>{{title}}, for approval</h1>
+<p>Drift King Compliance presents this for approval. Its full text follows.</p>
+<div class="doc">
+{{#paragraphs}}<p>{{text}}{{#link}}<br><a class="mono" href="{{link}}">{{link}}</a>{{/link}}</p>
+{{/paragraphs}}</div>
+<h2>The files</h2>
+<p>Each sha256 is the fingerprint of the file's exact bytes. If one character changes, the fingerprint changes and this approval no longer covers it.</p>
+{{#rows}}<div class="ref"><b>{{label}}</b>
+{{^access}}<a class="mono" href="{{url}}">{{url}}</a><br>
+<span class="mono">sha256 {{sha256}}</span>{{/access}}{{access}}</div>
+{{/rows}}<div class="sign">
+<p>Signed, Drift King Compliance: <span class="anchor">/sig1/</span></p>
+<p>Date: <span class="anchor">/date1/</span></p>
+<p>Approved: <span class="anchor">/sig2/</span></p>
+<p>Date: <span class="anchor">/date2/</span></p>
+</div>
+</body>
+</html>

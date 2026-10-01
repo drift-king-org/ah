@@ -1,0 +1,17 @@
+target/
+node_modules/
+.wrangler/
+.tools/
+site/public/
+.claude/*.lock
+cloudflare-pid-rs/worker/wrangler.jsonc
+site/expander/node_modules/
+site/expander/x-components/
+site/expander/markup/
+site/expander/settings.json
+site/expander/design/
+site/served.tsv
+cloudflare-pid-rs/pid1/.cargo/config.toml
+directives/
+site/source.tsv
+*.stackdump

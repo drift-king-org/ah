@@ -1,0 +1,114 @@
+# How a human approval is signed, version 2. The steps and what each one does
+# live here, and nowhere else: skills/docusign-approval/SKILL.md only says to
+# walk the current plan. If a step's description here and anything written
+# elsewhere disagree, this file wins. Version 1 (plans/docusign-approval.ttl)
+# stays as signed; ah/signings.ttl says this version replaces it.
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
+@prefix p-plan:  <http://purl.org/net/p-plan#> .
+@prefix dk:      <https://drift-king.org/ah/docusign-approval/v2/> .
+
+<https://drift-king.org/plans/docusign-approval-v2.ttl>
+    a owl:Ontology , prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    dcterms:title "the DocuSign approval plan, version 2" ;
+    prov:wasRevisionOf <https://drift-king.org/plans/docusign-approval.ttl> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> .
+
+dk:plan
+    a p-plan:Plan ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    dcterms:title "get a human approval signed in DocuSign and recorded" ;
+    dcterms:description "If a human is in the loop, they sign in DocuSign. An answer in chat is never an approval. The human signs only what they can observe themselves: a rule, what they saw, and what closes it. Never a count or a list of results, which drift the moment code changes; point at the check that proves it instead (its query and canaries, pinned by sha256). Never edit a signed file: a change is a new file and a new envelope. Packets are additive: a new one lists only files new or changed since the last signed packet. No personal name ever goes in the model or a document. Sender and first signer: ah/agent/compliance. Second signer: ah/agent/lead-architect for Drift King's own work; for a client's work, the client's approver, an agent under ah/agent/client/ identified only by its DocuSign user." .
+
+# Variables: what one step hands the next.
+dk:var-page       a p-plan:Variable ; dcterms:title "the document and its approval page" .
+dk:var-sha256s    a p-plan:Variable ; dcterms:title "the sha256 of every document in the envelope" .
+dk:var-ok         a p-plan:Variable ; dcterms:title "the lead architect's OK on the page text" .
+dk:var-hosted     a p-plan:Variable ; dcterms:title "each document published at https://drift-king.org/<path>, bytes verified" .
+dk:var-envelope   a p-plan:Variable ; dcterms:title "the sent envelope's ID" .
+dk:var-signed     a p-plan:Variable ; dcterms:title "the completed envelope" .
+dk:var-completion a p-plan:Variable ; dcterms:title "completedDateTime and the read-back custom fields" .
+dk:var-signing    a p-plan:Variable ; dcterms:title "the prov:Activity recorded in ah/signings.ttl" .
+
+dk:write-page
+    a p-plan:Step ;
+    p-plan:isStepOfPlan dk:plan ;
+    p-plan:hasOutputVar dk:var-page ;
+    dcterms:title "write the document and its approval page" ;
+    dcterms:description "Write two files. First, the document itself: intent/<name>.md for a letter of intent, approvals/<name>.md for everything else (a gap, its closing, a packet, a plan). It takes the letter's own form: a '# <subject>: <kind>' title, where the subject is Drift King or the client's product; short plain paragraphs in our voice that describe themselves (the rule, quoted from the signed intent; what was observed; what closes it); a 'What we do not do:' line; and last 'Signed: Drift King Compliance'. Compliance writes and presents every document and signs it as itself. The second signer is never in a document: no name, no role, no 'I approve'. Their only mark is the signature they make in DocuSign, in the boxes on the approval page. No signature boxes in the document itself, so its bytes never change. Second, the approval page. Never write it by hand: in ah/signings.ttl, model a render step with site/templates/approval.mustache, the approval-files query and the document as its inputs, and output site/public/<folder>/<name>-approval.html; model a render step for the document's own page too, and make the site deploy wait for both. Give the document an rdfs:label and a dcterms:references for every file it names; each of those needs a published copy with its sha256, which the copy step checks on every build. The template shows the document's full text, then each file with its link and full sha256, then the four markers in white: Compliance at /sig1/ /date1/, the second signer at /sig2/ /date2/. Every quote of an intent links to that letter with a text fragment (#:~:text=) so the sentence is highlighted. Never shorten a hash, never leave a hash without its link, and never mark anything optional to read." .
+
+dk:hash
+    a p-plan:Step ;
+    p-plan:isStepOfPlan dk:plan ;
+    p-plan:isPrecededBy dk:write-page ;
+    p-plan:hasInputVar dk:var-page ;
+    p-plan:hasOutputVar dk:var-sha256s ;
+    dcterms:title "hash every document" ;
+    dcterms:description "sha256 each document that goes in the envelope, from the bytes the build renders or publishes." .
+
+dk:human-reads
+    a p-plan:Step ;
+    p-plan:isStepOfPlan dk:plan ;
+    p-plan:isPrecededBy dk:hash ;
+    p-plan:hasInputVar dk:var-page , dk:var-sha256s ;
+    p-plan:hasOutputVar dk:var-ok ;
+    dcterms:title "the lead architect reads the page" ;
+    dcterms:description "Show the lead architect the full document text and the hashes in chat. Wait for an explicit OK on that text. No OK, no send." ;
+    rdfs:comment "Done by the lead architect, not an agent." .
+
+dk:host
+    a p-plan:Step ;
+    p-plan:isStepOfPlan dk:plan ;
+    p-plan:isPrecededBy dk:human-reads ;
+    p-plan:hasInputVar dk:var-ok , dk:var-sha256s ;
+    p-plan:hasOutputVar dk:var-hosted ;
+    dcterms:title "host each document" ;
+    dcterms:description "Publish through drift-king.org. Commit the document and its model, then run the builder: its copy step publishes each document, and every file it names, from the commit to site/public/<path>, checking each sha256; its render steps make the readable page and the approval page. The site deploy waits for those steps and for ready-to-deploy, which runs after every check and lets only signed gaps through. Then fetch each https://drift-king.org/<path> from the lead architect's machine (an HTML page at its address without the extension) and check its sha256 matches the hash step. A mismatch stops the plan here." .
+
+dk:send
+    a p-plan:Step ;
+    p-plan:isStepOfPlan dk:plan ;
+    p-plan:isPrecededBy dk:host ;
+    p-plan:hasInputVar dk:var-hosted , dk:var-sha256s ;
+    p-plan:hasOutputVar dk:var-envelope ;
+    dcterms:title "send the envelope" ;
+    dcterms:description "DocuSign demo account 1e940daa-75c0-4d68-b817-e309b88f5f5c. Sent by ah/agent/compliance (Drift King Compliance, the MCP token). Two signers in routing order: ah/agent/compliance (compliance@drift-king.org, recipientId 1, routingOrder 1, tabs on /sig1/ and /date1/), then the second signer (recipientId 2, routingOrder 2, tabs on /sig2/ and /date2/): ah/agent/lead-architect at lead-architect@drift-king.org for Drift King's own work, or for a client's work the client's approver at the address the lead architect gives, with the client's organisation as the DocuSign name. Two documents by remoteUrl at https://drift-king.org/<path>, fileExtension txt for the document itself and html for the approval page. All tabs are on the approval page only. One text custom field per document, named <document>-sha256. If the second signer is wrong, correct it before it is sent to them, never after they sign." .
+
+dk:human-signs
+    a p-plan:Step ;
+    p-plan:isStepOfPlan dk:plan ;
+    p-plan:isPrecededBy dk:send ;
+    p-plan:hasInputVar dk:var-envelope ;
+    p-plan:hasOutputVar dk:var-signed ;
+    dcterms:title "both sign" ;
+    dcterms:description "Compliance signs first in its own signing session, then the second signer signs. Nothing to do but wait." ;
+    rdfs:comment "Done by the lead architect, not an agent." .
+
+dk:read-back
+    a p-plan:Step ;
+    p-plan:isStepOfPlan dk:plan ;
+    p-plan:isPrecededBy dk:human-signs ;
+    p-plan:hasInputVar dk:var-signed , dk:var-sha256s ;
+    p-plan:hasOutputVar dk:var-completion ;
+    dcterms:title "read the envelope back" ;
+    dcterms:description "getEnvelope with custom fields and recipients. Require status completed, both signers from the send step, and every custom field equal to the hash step. Take completedDateTime and each signer's DocuSign user id. A name DocuSign shows for a signer never goes in the model." .
+
+dk:record
+    a p-plan:Step ;
+    p-plan:isStepOfPlan dk:plan ;
+    p-plan:isPrecededBy dk:read-back ;
+    p-plan:hasInputVar dk:var-completion ;
+    p-plan:hasOutputVar dk:var-signing ;
+    dcterms:title "record the signing in ah/signings.ttl" ;
+    dcterms:description "Add to ah/signings.ttl: a prov:Activity at ah/signing/<name> that prov:used [ prov:specializationOf <the file> ; dcterms:identifier \"sha256:<hex>\" ] for each signed document, prov:wasAssociatedWith ah/agent/compliance and the second signer's agent, prov:endedAtTime completedDateTime as xsd:dateTime, and dcterms:identifier \"docusign-dev:envelope:<id>\". A new client's approver is first added as a prov:Organization under ah/agent/client/, with its DocuSign user id as its dcterms:identifier and no name. If the signed document's dcterms:subject is a gap (an earl:Assertion): when the document accepts the gap, the Activity also prov:used the gap node itself, because known-gap.rq counts a gap only when a signing used it; when the document closes the gap, the gap node itself also says prov:wasInvalidatedBy the Activity and prov:invalidatedAtTime completedDateTime, so whoever reads the gap reads that it is closed. Also rdfs:seeAlso the envelope at https://apps-d.docusign.com/send/documents/details/<id>. Never before read-back passes." .
+
+dk:log
+    a p-plan:Step ;
+    p-plan:isStepOfPlan dk:plan ;
+    p-plan:isPrecededBy dk:record ;
+    p-plan:hasInputVar dk:var-signing ;
+    dcterms:title "log the envelope" ;
+    dcterms:description "Add a row to the project doc claude/golden-ah-sandbox-log.md: the number, date, envelope ID, what was signed, the hashes, where the documents were published, and the result." .

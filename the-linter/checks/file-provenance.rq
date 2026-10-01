@@ -1,0 +1,67 @@
+# Every file on disk has exactly one provenance, and a written file is
+# approved at the bytes it has now. Four kinds, each read from the model:
+#   generated      the output Variable of some step
+#   fetched        a downloadURL, pinned by the sha256 it had when fetched
+#   human-written  attributed to a prov:Person
+#   agent-written  attributed to a prov:SoftwareAgent
+# A written file is approved when a completed signing used it at its current
+# sha256, directly or as a member of a packet that is itself unchanged since
+# it was signed. Packets are additive: a new packet names only files not
+# already approved at their current sha256; an old packet is never edited.
+# One file is the exception to approval: the root model, the one that
+# declares vann:preferredNamespaceUri (ah.ttl). Signings are recorded in it,
+# so every signing changes its bytes; its approval is the golden, not a
+# packet. Every other file, other ontologies and plans included, is signed
+# like any written file.
+# Reads the disk-scan observations, which carry each file's sha256 now. A
+# scan without sha256s is a finding, so this never passes by seeing nothing.
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX dcat:    <http://www.w3.org/ns/dcat#>
+PREFIX prov:    <http://www.w3.org/ns/prov#>
+PREFIX p-plan:  <http://purl.org/net/p-plan#>
+PREFIX vann:    <http://purl.org/vocab/vann/>
+
+SELECT DISTINCT ?found WHERE {
+  <https://drift-king.org/ah.ttl> vann:preferredNamespaceUri ?base .
+  ?observed dcterms:isPartOf <https://drift-king.org/not-ah/the-linter/disk-scan> ;
+    dcterms:identifier ?path .
+  OPTIONAL { ?now prov:specializationOf ?observed ; dcterms:identifier ?hash . }
+  BIND (IRI(concat(str(?base), ?path)) AS ?file)
+
+  BIND (EXISTS { ?file p-plan:correspondsToVariable ?out . ?step p-plan:hasOutputVar ?out } AS ?generated)
+  BIND (EXISTS { ?file dcat:downloadURL ?url ; dcterms:identifier ?pinned } AS ?fetched)
+  BIND (EXISTS { ?file prov:wasAttributedTo ?person . ?person a prov:Person } AS ?human)
+  BIND (EXISTS { ?file prov:wasAttributedTo ?agent . ?agent a prov:SoftwareAgent } AS ?agentWritten)
+  BIND (IF(?generated, 1, 0) + IF(?fetched, 1, 0) + IF(?human, 1, 0) + IF(?agentWritten, 1, 0) AS ?kinds)
+
+  BIND (EXISTS { ?file dcterms:identifier ?hash } AS ?intact)
+  BIND (EXISTS { ?file vann:preferredNamespaceUri ?namespace } AS ?isRoot)
+  BIND (EXISTS {
+    ?signing a prov:Activity ; prov:endedAtTime ?when ; prov:used ?signed ;
+      prov:wasAssociatedWith ?approver .
+    ?approver a prov:Person .
+    {
+      ?signed prov:specializationOf ?file ; dcterms:identifier ?hash .
+    } UNION {
+      ?signed prov:specializationOf ?packet ; dcterms:identifier ?packetHash .
+      ?packet prov:hadMember ?version .
+      ?version prov:specializationOf ?file ; dcterms:identifier ?hash .
+      ?packetSeen dcterms:isPartOf <https://drift-king.org/not-ah/the-linter/disk-scan> ;
+        dcterms:identifier ?packetPath .
+      ?packetNow prov:specializationOf ?packetSeen ; dcterms:identifier ?packetHash .
+      FILTER (IRI(concat(str(?base), ?packetPath)) = ?packet)
+    }
+  } AS ?approved)
+
+  BIND (
+    IF(!bound(?hash), "was scanned without its sha256",
+    IF(?kinds = 0, "has no provenance",
+    IF(?kinds > 1, "has more than one provenance",
+    IF(?fetched && !?intact, "changed since it was fetched",
+    IF((?human || ?agentWritten) && !?isRoot && !?approved,
+       "is written and not signed at its current sha256",
+    ""))))) AS ?why)
+  FILTER (?why != "")
+  BIND (concat(?path, " ", ?why) AS ?found)
+}
+ORDER BY ?found

@@ -1,0 +1,28 @@
+# The files an approval page lists: the document being approved, then every
+# file it dcterms:references. A file with a published copy on the site comes
+# with that address and the sha256 its copy must have. A file that is not
+# published comes with its dcterms:accessRights instead, saying why and how to
+# get it; a file with neither is not listed. The document is the render step's
+# CommonMark input. ?step and ?base are bound by the caller, so both are
+# projected. Every row becomes one entry under "The files".
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX prov:    <http://www.w3.org/ns/prov#>
+PREFIX p-plan:  <http://purl.org/net/p-plan#>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?step ?base ?order ?label ?url ?sha256 ?access WHERE {
+  ?step p-plan:hasInputVar ?var .
+  ?doc p-plan:correspondsToVariable ?var ; dcterms:conformsTo <https://spec.commonmark.org/> .
+  ?file rdfs:label ?label .
+  FILTER (?file = ?doc || EXISTS { ?doc dcterms:references ?file })
+  BIND (IF(?file = ?doc, 1, 2) AS ?order)
+  BIND (concat(str(?base), "site/public/") AS ?public)
+  OPTIONAL {
+    ?copy prov:wasDerivedFrom ?file ; dcterms:identifier ?id .
+    FILTER (strstarts(str(?copy), ?public))
+  }
+  BIND (concat(str(?base), strafter(str(?copy), ?public)) AS ?url)
+  BIND (strafter(?id, "sha256:") AS ?sha256)
+  OPTIONAL { ?file dcterms:accessRights/rdfs:label ?access }
+  FILTER (bound(?copy) || bound(?access))
+} ORDER BY ?order ?label

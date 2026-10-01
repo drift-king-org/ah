@@ -1,0 +1,57 @@
+# How a push or a tag goes out, when the lead architect OKs one. The steps
+# live here, and nowhere else: .claude/skills/patch-and-verify/SKILL.md only
+# says to walk the current plan.
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
+@prefix p-plan:  <http://purl.org/net/p-plan#> .
+@prefix pt:      <https://drift-king.org/ah/push-and-tag/> .
+
+<https://drift-king.org/plans/push-and-tag.ttl>
+    a owl:Ontology , prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    dcterms:title "the push-and-tag plan" .
+
+pt:plan
+    a p-plan:Plan ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    dcterms:title "push or tag exactly what the directive names" ;
+    dcterms:description "Only when the directive says the lead architect OKs that push or that tag. Push only what it names: one branch or one tag, never --all, never --tags, never --force. Secrets and settings are read by name only; a secret's value is never printed. When the remote is not where the directive says, stop and say what it is." .
+
+pt:var-remote   a p-plan:Variable ; dcterms:title "the remote's commit, equal to the directive's" .
+pt:var-settings a p-plan:Variable ; dcterms:title "the secrets and environments the push needs, by name" .
+pt:var-pushed   a p-plan:Variable ; dcterms:title "git push's own output" .
+
+pt:confirm-remote
+    a p-plan:Step ;
+    p-plan:isStepOfPlan pt:plan ;
+    p-plan:hasOutputVar pt:var-remote ;
+    dcterms:title "confirm the remote" ;
+    dcterms:description "git fetch the remote. The branch the directive names must be at the commit it names, and the tags on the remote must be the ones it expects. Stop if not." .
+
+pt:list-settings
+    a p-plan:Step ;
+    p-plan:isStepOfPlan pt:plan ;
+    p-plan:isPrecededBy pt:confirm-remote ;
+    p-plan:hasInputVar pt:var-remote ;
+    p-plan:hasOutputVar pt:var-settings ;
+    dcterms:title "list what the push needs, by name" ;
+    dcterms:description "Through the GitHub API, list the environments, their rules and reviewers, and the secrets the workflow the push starts will read, by name only. Every one the directive expects must be there. Stop if one is missing." .
+
+pt:push
+    a p-plan:Step ;
+    p-plan:isStepOfPlan pt:plan ;
+    p-plan:isPrecededBy pt:list-settings ;
+    p-plan:hasInputVar pt:var-settings ;
+    p-plan:hasOutputVar pt:var-pushed ;
+    dcterms:title "push what is named" ;
+    dcterms:description "Make the tag if the directive names one: annotated, at the commit id it names, with its message. Push only that tag or that branch." .
+
+pt:report
+    a p-plan:Step ;
+    p-plan:isStepOfPlan pt:plan ;
+    p-plan:isPrecededBy pt:push ;
+    p-plan:hasInputVar pt:var-pushed ;
+    dcterms:title "report" ;
+    dcterms:description "Report git push's output, the remote's commit and tags after it, a tag's object id, and the workflow run it started, with its state." .

@@ -1,0 +1,25 @@
+# A property's rdfs:domain is not a check. It is an inference: use the
+# property on a thing and a reasoner concludes the thing is of the domain's
+# class. On a thing the model already typed as something else, that silently
+# retypes it (dcat:downloadURL on a dcat:Dataset makes the Dataset a
+# dcat:Distribution). This finds every such use before a reasoner does.
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX vann: <http://purl.org/vocab/vann/>
+
+SELECT DISTINCT ?subject ?property ?asserted ?domain WHERE {
+  # Ours only: a foreign vocabulary's own slips are its authors' to fix.
+  ?ontology vann:preferredNamespaceUri ?base .
+  FILTER (STRSTARTS(STR(?subject), STR(?base)))
+  ?subject ?property ?value .
+  ?property rdfs:domain ?domain .
+  FILTER (isIRI(?domain))
+  ?subject rdf:type ?asserted .
+  FILTER (isIRI(?asserted))
+  FILTER (?asserted NOT IN (owl:NamedIndividual, owl:Thing, rdfs:Resource))
+  FILTER NOT EXISTS { ?asserted rdfs:subClassOf* ?domain }
+  # The thing is fine if some other asserted type of it already is the domain.
+  FILTER NOT EXISTS { ?subject rdf:type ?other . ?other rdfs:subClassOf* ?domain }
+}
+ORDER BY ?subject ?property

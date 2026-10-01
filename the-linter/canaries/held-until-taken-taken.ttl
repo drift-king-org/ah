@@ -1,0 +1,16 @@
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix p-plan:  <http://purl.org/net/p-plan#> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
+@prefix sd:      <https://w3id.org/okn/o/sd#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+
+<https://drift-king.org/not-ah/canary/held-until-taken-taken/step> a p-plan:Step ; dcterms:requires <https://drift-king.org/not-ah/canary/held-until-taken-taken/take> ; dcterms:references <https://drift-king.org/not-ah/canary/held-until-taken-taken/version-a> ;
+    dcterms:description "A step that waits for a version to be taken." .
+<https://drift-king.org/not-ah/canary/held-until-taken-taken/take> a p-plan:Step ; p-plan:hasOutputVar <https://drift-king.org/not-ah/canary/held-until-taken-taken/taking-var> .
+<https://drift-king.org/not-ah/canary/held-until-taken-taken/version-a> a sd:SoftwareVersion .
+<https://drift-king.org/not-ah/canary/held-until-taken-taken/version-b> a sd:SoftwareVersion .
+<https://drift-king.org/not-ah/canary/held-until-taken-taken/taking> p-plan:correspondsToVariable <https://drift-king.org/not-ah/canary/held-until-taken-taken/taking-var> ; dcterms:subject <https://drift-king.org/not-ah/canary/held-until-taken-taken/version-a> .
+<https://drift-king.org/not-ah/canary/held-until-taken-taken/signing> a prov:Activity ; prov:used [ prov:specializationOf <https://drift-king.org/not-ah/canary/held-until-taken-taken/taking> ] ;
+    prov:endedAtTime "2026-01-01T00:00:00Z"^^xsd:dateTime ; prov:wasAssociatedWith <https://drift-king.org/not-ah/canary/held-until-taken-taken/person> ;
+    dcterms:identifier "docusign-dev:envelope:canary" .
+<https://drift-king.org/not-ah/canary/held-until-taken-taken/person> a prov:Person .

@@ -1,0 +1,25 @@
+the-linter/checks/named-by-nobody.rq -- a real check, in the repo, named in
+not-ah.ttl. Same shape as ah-workbench's original: whatever runs it injects
+one observation per real file (dcterms:isPartOf the disk-scan marker,
+dcterms:identifier its relative path), fresh, every run -- generalized from
+ah-workbench's root-only scan to a full recursive walk, since that's what
+was actually needed here (the miss was a nested favicon-source jpg at the
+repo root, but the broader gap is anything anywhere).
+
+the-linter/canaries/named-by-nobody.ttl -- two synthetic observations, no
+real files on disk: one address nothing names (must be caught), one
+address (.gitignore) that ah.ttl does name (must stay clean). EARL
+assertion: the canary file as a whole must fail, same convention as
+domain-retypes.ttl.
+
+Verified (rdflib, ad hoc runner -- the-builder doesn't do the scan-and-
+inject step yet; that's B3):
+
+  canary:      1 finding -- canaries/named-by-nobody/stray-file.txt
+               (and NOT the .gitignore one, confirming "stays clean" works)
+  real model:  0 findings, 46 files scanned live via os.walk
+
+domain-retypes reconfirmed clean after these edits: 1/0.
+
+Not done here: wiring this into the-builder itself (B3), and the ast-grep/
+hard-coded-string check (H2+). This is H1 only, as scoped.

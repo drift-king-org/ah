@@ -1,0 +1,11 @@
+# Every isPrecededBy edge among the plan's steps. ?plan is bound by the
+# caller. main.rs turns these edges into an order (Kahn's algorithm, IRI
+# tiebreak); the edges themselves come only from here, never from a
+# hand-walked property in Rust.
+PREFIX p-plan: <http://purl.org/net/p-plan#>
+
+SELECT ?plan ?step ?before WHERE {
+  ?step p-plan:isStepOfPlan ?plan ;
+    p-plan:isPrecededBy ?before .
+}
+ORDER BY ?step ?before

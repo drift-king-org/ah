@@ -1,0 +1,61 @@
+Verification tool: rdflib 7.6.0 (ad hoc, not the-builder itself, which does
+not exist yet as code per B1's scope: model the steps first).
+
+Vocab schemas fetched live for this one-off check (the-builder's own dug
+local copies come in B2/the Imports section, not here). All four required:
+  https://www.w3.org/ns/dcat3.ttl        (+1695 triples)
+  http://purl.org/dc/terms/              (+700 triples)
+  https://w3id.org/okn/o/sd              (+966 triples)
+  http://www.w3.org/ns/prov-o#           (+1139 triples)
+
+Correction from an earlier version of this file: DCTERMS failed to fetch
+on the first run (503) and was skipped with the claim "DCMI deliberately
+asserts no rdfs:domain on its own properties." That claim was wrong and
+unverified. Checked directly: DCTERMS declares exactly 3 rdfs:domain
+triples, all domain dcmitype:Collection, on the accrual properties:
+  dcterms:accrualMethod, dcterms:accrualPeriodicity, dcterms:accrualPolicy
+None of those three properties are used anywhere in this model, so the
+result is unaffected either way -- but the vocabulary had to actually load
+and be checked to know that, not be assumed. (Separately, the ah.ttl/
+not-ah.ttl comment that DCMI types dcterms:requires as plain rdf:Property,
+not owl:ObjectProperty, was checked and is correct as written -- that
+claim is about typing, not domains, and was never wrong.)
+
+Canary (the-linter/canaries/domain-retypes.ttl): 1 finding, as required --
+  subject:   https://drift-king.org/not-ah/canary/domain-retypes/dataset
+  property:  dcat:downloadURL
+  asserted:  dcat:Dataset
+  domain:    dcat:Distribution
+
+Real model (ah.ttl + not-ah.ttl, current): 0 findings.
+
+Named-by-nobody-style audit (broader than ah-workbench's root-only check:
+every real file in the tree, not just the catalog root, cross-checked
+against the model for any statement about its address): 25 files checked,
+0 unnamed. Excludes .git/, node_modules/, target/, .tools/,
+.cargo/registry/ -- build output and fetched dependencies, not sources.
+
+B1 edits:
+- ah.ttl: added ah/cloudflare-pid-rs/{lint,build-pid1,make-layer,deploy},
+  ah/the-builder, ah/the-builder/build. ah now requires ah/the-builder.
+  cloudflare-pid-rs's direct requires on crane/mutate-pid1 replaced with
+  requires on the new deploy step (deploy reaches mutate-pid1 transitively;
+  keeping both was redundant).
+- not-ah.ttl: added not-ah/crane/append-pid1 and not-ah/ffmpeg.
+  not-ah/crane/mutate-pid1 now also requires append-pid1 (in addition to
+  its existing requires on crane itself).
+- build-pid1's command folds in the pid1.bin copy step (cp target/.../pid1
+  ../pid1.bin) that was done by hand as a separate step originally, since
+  the directive's table has no separate node for it and pid1.bin must
+  still exist as a real, named artifact for B4's reproducibility check.
+- Fixed after review: worker/src/index.js only builds the HTML page for
+  GET / with Accept: text/html; every other request passes through to the
+  container untouched (it previously wrapped every request in HTML,
+  including non-GET and non-root requests).
+- Fixed after review: modelled the source JPG, the ffmpeg conversion step
+  (ah/cloudflare-pid-rs/ffmpeg-webp, requires not-ah/ffmpeg), and the webp
+  as a prov:Entity derived from the JPG via that step. Removed a redundant
+  duplicate drift-king.webp that had been left at the repo root (the real
+  one lives at cloudflare-pid-rs/worker/public/). Named the second,
+  unused Gemini JPG as part of ah itself, since it isn't cloudflare-pid-rs's.
+- Fixed after review: named this proof file itself (was unnamed).

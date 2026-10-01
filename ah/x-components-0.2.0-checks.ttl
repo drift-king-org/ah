@@ -1,0 +1,370 @@
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix dcat:    <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix earl:    <http://www.w3.org/ns/earl#> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+
+# A part of ah.ttl, imported by it. The 24 release checks' results on the x-components
+# 0.2.0 candidate, as EARL: one assertion on the candidate and one on each check's
+# own canary, each naming its check. Written by the checker itself
+# (scripts/check_x_components_projection.py --earl, microsites a6734655), from the run
+# on the committed bytes of x-components 6cf506e; nothing here is typed by hand
+# except the nodes at the top.
+<https://drift-king.org/ah/x-components-0.2.0-checks.ttl>
+    a owl:Ontology , prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    dcterms:title "x-components 0.2.0: the release checks' results on the candidate" .
+
+<https://drift-king.org/ah/x-components/0.2.0/candidate> a dcat:Dataset , earl:TestSubject , prov:Entity ;
+    rdfs:label "the files npm will publish from x-components 6cf506e" ;
+    dcterms:source <https://github.com/Apricotter/x-components/commit/6cf506e4bc23ddd825c31cc27aacc1068747f138> ;
+    dcterms:hasPart <https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/LICENSE> ,
+        <https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/NOTICE> ,
+        <https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/README.md> ,
+        <https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/package.json> ,
+        <https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/component.ttl> ,
+        <https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/wai-aria.ttl> ,
+        <https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/component-attributes.generated.mjs> ,
+        <https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/expand.mjs> ,
+        <https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/static.mjs> .
+<https://drift-king.org/ah/x-components/0.2.0/release-checker> a earl:Assertor , prov:SoftwareAgent ;
+    rdfs:label "the x-components release checks" ;
+    rdfs:comment "scripts/check_x_components_projection.py in the microsites repository, at commit a6734655c0a14970a7e3dfb678154d39115a5a27." .
+<https://drift-king.org/ah/x-components/0.2.0/canary> a skos:Concept ;
+    skos:prefLabel "canary" ;
+    rdfs:comment "A copy broken on purpose. A check must find something in it first, or finding nothing in the real thing means nothing." .
+<https://drift-king.org/ah/x-components/0.2.0/release-checks-run>
+    prov:used [ a prov:Entity ; dcterms:identifier "git:commit:a6734655c0a14970a7e3dfb678154d39115a5a27" ;
+        rdfs:comment "The checker's commit, in the microsites repository." ] .
+
+<https://drift-king.org/ah/x-components/0.2.0/release-checks-run> a prov:Activity ;
+    prov:wasAssociatedWith <https://drift-king.org/ah/x-components/0.2.0/release-checker> ;
+    prov:used <https://drift-king.org/ah/x-components/0.2.0/candidate> ;
+    rdfs:comment "The release checks, run on the bytes committed as 6cf506e4bc23ddd825c31cc27aacc1068747f138, projected from a6734655c0a14970a7e3dfb678154d39115a5a27." .
+
+<https://drift-king.org/ah/x-components/0.2.0/check/xc-01> a earl:TestCriterion ; dcterms:title "The repository holds exactly the files the model lists, and the letter as signed" ; dcterms:relation <https://drift-king.org/ah/x-components/0.2.0/canary/xc-01> .
+<https://drift-king.org/ah/x-components/0.2.0/canary/xc-01> a earl:TestSubject ; rdfs:label "The canary of: The repository holds exactly the files the model lists, and the letter as signed" ;
+    dcterms:type <https://drift-king.org/ah/x-components/0.2.0/canary> .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/canary/xc-01> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-01> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ;
+    dcterms:description "a stray file is found; a missing file is found" ] ] .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/candidate> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-01> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ;
+    dcterms:description "the commit holds 11 files, the model lists the same" ] ] .
+
+<https://drift-king.org/ah/x-components/0.2.0/check/xc-02> a earl:TestCriterion ; dcterms:title "Every hash is of committed bytes, never of a checkout" ; dcterms:relation <https://drift-king.org/ah/x-components/0.2.0/canary/xc-02> .
+<https://drift-king.org/ah/x-components/0.2.0/canary/xc-02> a earl:TestSubject ; rdfs:label "The canary of: Every hash is of committed bytes, never of a checkout" ;
+    dcterms:type <https://drift-king.org/ah/x-components/0.2.0/canary> .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/canary/xc-02> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-02> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ;
+    dcterms:description "one changed byte changes a hash" ] ] .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/candidate> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-02> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ;
+    dcterms:description "LICENSE: the committed blob c71d239df917 is the pinned hash; NOTICE: the committed blob 0160e5a552d5 is what a673465 projects; README.md: the committed blob 243cd5658d3f is what a673465 projects; package.json: the committed blob ffe8ad77fee8 is what a673465 projects; component.ttl: the committed blob 4ee45f78781b is what a673465 projects; wai-aria.ttl: the committed blob d68deb932b1e is what a673465 projects; component-attributes.generated.mjs: the committed blob a3e2ae24f09d is what a673465 projects; expand.mjs: the committed blob 2cbb759aa82b is what a673465 projects; .github/workflows/release.yml: the committed blob b6576fcebf50 is what a673465 projects; LETTER-OF-INTENT.md: the committed blob 28ac8e5d0889 is the pinned hash; static.mjs: the committed blob 550974d9b2a5 is what a673465 projects" ] ] .
+
+<https://drift-king.org/ah/x-components/0.2.0/check/xc-03> a earl:TestCriterion ; dcterms:title "The tarball holds its file list and nothing else" ; dcterms:relation <https://drift-king.org/ah/x-components/0.2.0/canary/xc-03> .
+<https://drift-king.org/ah/x-components/0.2.0/canary/xc-03> a earl:TestSubject ; rdfs:label "The canary of: The tarball holds its file list and nothing else" ;
+    dcterms:type <https://drift-king.org/ah/x-components/0.2.0/canary> .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/canary/xc-03> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-03> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ;
+    dcterms:description "a planted stray file is found" ] ] .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/candidate> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-03> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ;
+    dcterms:description "the tarball holds 9 files, exactly the list" ] ] .
+
+<https://drift-king.org/ah/x-components/0.2.0/check/xc-04> a earl:TestCriterion ; dcterms:title "package.json names the package, its license, its repository, its access, its Node version, its exports and its dependencies, each at one exact version" ; dcterms:relation <https://drift-king.org/ah/x-components/0.2.0/canary/xc-04> .
+<https://drift-king.org/ah/x-components/0.2.0/canary/xc-04> a earl:TestSubject ; rdfs:label "The canary of: package.json names the package, its license, its repository, its access, its Node version, its exports and its dependencies, each at one exact version" ;
+    dcterms:type <https://drift-king.org/ah/x-components/0.2.0/canary> .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/canary/xc-04> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-04> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ;
+    dcterms:description "a correct package.json has no problems; the wrong license is found; the wrong repository is found; private access is found; an old Node version is found; no exports is found; an export to a file that is not there is found; an export the model does not name is found; a dependency the model does not name is found; a dependency the model names and package.json lacks is found; a dependency at a range is found; a dependency at the wrong exact version is found; a dev dependency is found" ] ] .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/candidate> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-04> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ;
+    dcterms:description "package.json matches the model and origin" ] ] .
+
+<https://drift-king.org/ah/x-components/0.2.0/check/xc-05> a earl:TestCriterion ; dcterms:title "The release workflow's actions are pinned to commits, and it may write an identity token and read the repository, nothing more" ; dcterms:relation <https://drift-king.org/ah/x-components/0.2.0/canary/xc-05> .
+<https://drift-king.org/ah/x-components/0.2.0/canary/xc-05> a earl:TestSubject ; rdfs:label "The canary of: The release workflow's actions are pinned to commits, and it may write an identity token and read the repository, nothing more" ;
+    dcterms:type <https://drift-king.org/ah/x-components/0.2.0/canary> .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/canary/xc-05> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-05> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ;
+    dcterms:description "a correct workflow has no problems; an action on a floating tag is found; a write permission the model does not allow is found; the wrong environment is found; a direct npm publish, in place of staging, is found; a token in the workflow is found; a workflow that never checks npm can stage is found" ] ] .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/candidate> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-05> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ;
+    dcterms:description "every action is pinned, the permissions and environment are the model's" ] ] .
+
+<https://drift-king.org/ah/x-components/0.2.0/check/xc-06> a earl:TestCriterion ; dcterms:title "The model and the code name the same components" ; dcterms:relation <https://drift-king.org/ah/x-components/0.2.0/canary/xc-06> .
+<https://drift-king.org/ah/x-components/0.2.0/canary/xc-06> a earl:TestSubject ; rdfs:label "The canary of: The model and the code name the same components" ;
+    dcterms:type <https://drift-king.org/ah/x-components/0.2.0/canary> .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/canary/xc-06> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-06> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ;
+    dcterms:description "a tag only the model names is found; a tag only the code registers is found; a real module's tags are read and compared with the model's" ] ] .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/candidate> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-06> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ;
+    dcterms:description "83 components in the model, 83 in the code, the same" ] ] .
+
+<https://drift-king.org/ah/x-components/0.2.0/check/xc-07> a earl:TestCriterion ; dcterms:title "The generated file is exactly what the model generates" ; dcterms:relation <https://drift-king.org/ah/x-components/0.2.0/canary/xc-07> .
+<https://drift-king.org/ah/x-components/0.2.0/canary/xc-07> a earl:TestSubject ; rdfs:label "The canary of: The generated file is exactly what the model generates" ;
+    dcterms:type <https://drift-king.org/ah/x-components/0.2.0/canary> .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/canary/xc-07> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-07> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ;
+    dcterms:description "one changed byte is found, and equal bytes are not" ] ] .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/candidate> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-07> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ;
+    dcterms:description "the run wrote nothing into the repo; component-attributes.generated.mjs is what the model generates; component-reference.md is what the model generates" ] ] .
+
+<https://drift-king.org/ah/x-components/0.2.0/check/xc-08> a earl:TestCriterion ; dcterms:title "The ontology loads by itself" ; dcterms:relation <https://drift-king.org/ah/x-components/0.2.0/canary/xc-08> .
+<https://drift-king.org/ah/x-components/0.2.0/canary/xc-08> a earl:TestSubject ; rdfs:label "The canary of: The ontology loads by itself" ;
+    dcterms:type <https://drift-king.org/ah/x-components/0.2.0/canary> .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/canary/xc-08> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-08> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ;
+    dcterms:description "an import the package does not ship is found; a W3C standard imported by its own name is allowed; an ARIA role that does not resolve is found" ] ] .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/candidate> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-08> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ;
+    dcterms:description "both files parse (1754 and 88 triples); every ARIA role the model names resolves; every ARIA term it uses is defined in the package; 2 imports, each shipped or a W3C standard" ] ] .
+
+<https://drift-king.org/ah/x-components/0.2.0/check/xc-09> a earl:TestCriterion ; dcterms:title "Nothing internal ships, not even in a comment" ; dcterms:relation <https://drift-king.org/ah/x-components/0.2.0/canary/xc-09> .
+<https://drift-king.org/ah/x-components/0.2.0/canary/xc-09> a earl:TestSubject ; rdfs:label "The canary of: Nothing internal ships, not even in a comment" ;
+    dcterms:type <https://drift-king.org/ah/x-components/0.2.0/canary> .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/canary/xc-09> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-09> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ;
+    dcterms:description "23 planted internal references are each found; the ontology's own namespace is not a leak; the word \"striping\" is not a leak; 6 comment cases are told apart" ] ] .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/candidate> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-09> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ;
+    dcterms:description "NOTICE is clean; README.md is clean; package.json is clean; component.ttl is clean; wai-aria.ttl is clean; component-attributes.generated.mjs is clean; expand.mjs is clean; .github/workflows/release.yml is clean; static.mjs is clean" ] ] .
+
+<https://drift-king.org/ah/x-components/0.2.0/check/xc-10> a earl:TestCriterion ; dcterms:title "No site is a default" ; dcterms:relation <https://drift-king.org/ah/x-components/0.2.0/canary/xc-10> .
+<https://drift-king.org/ah/x-components/0.2.0/canary/xc-10> a earl:TestSubject ; rdfs:label "The canary of: No site is a default" ;
+    dcterms:type <https://drift-king.org/ah/x-components/0.2.0/canary> .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/canary/xc-10> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-10> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ;
+    dcterms:description "a brand and a host in output are found; the W3C's own SVG namespace is not a site; a component that falls back to a site's name is found" ] ] .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/candidate> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-10> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ;
+    dcterms:description "all 83 components render with only their required attributes and name no site (1 refuse without a word or a place from the site)" ] ] .
+
+<https://drift-king.org/ah/x-components/0.2.0/check/xc-11> a earl:TestCriterion ; dcterms:title "A link needs the site's domain" ; dcterms:relation <https://drift-king.org/ah/x-components/0.2.0/canary/xc-11> .
+<https://drift-king.org/ah/x-components/0.2.0/canary/xc-11> a earl:TestSubject ; rdfs:label "The canary of: A link needs the site's domain" ;
+    dcterms:type <https://drift-king.org/ah/x-components/0.2.0/canary> .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/canary/xc-11> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-11> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ;
+    dcterms:description "a link component that renders without a domain is found" ] ] .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/candidate> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-11> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ;
+    dcterms:description "every component that takes an href refuses to render an absolute link without a domain" ] ] .
+
+<https://drift-king.org/ah/x-components/0.2.0/check/xc-12> a earl:TestCriterion ; dcterms:title "No known defect ships unless it is a signed gap" ; dcterms:relation <https://drift-king.org/ah/x-components/0.2.0/canary/xc-12> .
+<https://drift-king.org/ah/x-components/0.2.0/canary/xc-12> a earl:TestSubject ; rdfs:label "The canary of: No known defect ships unless it is a signed gap" ;
+    dcterms:type <https://drift-king.org/ah/x-components/0.2.0/canary> .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/canary/xc-12> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-12> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ;
+    dcterms:description "a note that says a defect is still open is found; a module that escapes nothing fails the behavior cases" ] ] .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/candidate> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-12> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ;
+    dcterms:description "NOTICE says no defect is open; README.md says no defect is open; package.json says no defect is open; component.ttl says no defect is open; wai-aria.ttl says no defect is open; component-attributes.generated.mjs says no defect is open; expand.mjs says no defect is open; .github/workflows/release.yml says no defect is open; static.mjs says no defect is open; the escaping cases pass on the shipped expand.mjs (All 262 checks passed.); 0 signed gaps are recorded, and none is needed" ] ] .
+
+<https://drift-king.org/ah/x-components/0.2.0/check/xc-12a> a earl:TestCriterion ; dcterms:title "x-field writes a value once, never encoded twice" ; dcterms:relation <https://drift-king.org/ah/x-components/0.2.0/canary/xc-12a> .
+<https://drift-king.org/ah/x-components/0.2.0/canary/xc-12a> a earl:TestSubject ; rdfs:label "The canary of: x-field writes a value once, never encoded twice" ;
+    dcterms:type <https://drift-king.org/ah/x-components/0.2.0/canary> .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/canary/xc-12a> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-12a> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ;
+    dcterms:description "a field that encodes the value twice is found, in both branches" ] ] .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/candidate> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-12a> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ;
+    dcterms:description "x-field writes a value that arrives encoded once, single line and multiline" ] ] .
+
+<https://drift-king.org/ah/x-components/0.2.0/check/xc-12b> a earl:TestCriterion ; dcterms:title "x-map's width writes a style only when it is a length" ; dcterms:relation <https://drift-king.org/ah/x-components/0.2.0/canary/xc-12b> .
+<https://drift-king.org/ah/x-components/0.2.0/canary/xc-12b> a earl:TestSubject ; rdfs:label "The canary of: x-map's width writes a style only when it is a length" ;
+    dcterms:type <https://drift-king.org/ah/x-components/0.2.0/canary> .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/canary/xc-12b> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-12b> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ;
+    dcterms:description "a width that is only escaped, with no pattern, lets a declaration through and is found" ] ] .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/candidate> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-12b> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ;
+    dcterms:description "a width of 40rem writes the style, and a width that adds a declaration writes none" ] ] .
+
+<https://drift-king.org/ah/x-components/0.2.0/check/xc-13> a earl:TestCriterion ; dcterms:title "Every commit names the commit it was projected from" ; dcterms:relation <https://drift-king.org/ah/x-components/0.2.0/canary/xc-13> .
+<https://drift-king.org/ah/x-components/0.2.0/canary/xc-13> a earl:TestSubject ; rdfs:label "The canary of: Every commit names the commit it was projected from" ;
+    dcterms:type <https://drift-king.org/ah/x-components/0.2.0/canary> .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/canary/xc-13> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-13> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ;
+    dcterms:description "a commit that names its source passes; a commit with no trailer is found; a trailer naming a commit that does not exist is found" ] ] .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/candidate> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-13> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ;
+    dcterms:description "6cf506e names its source; d2a1cc4 names its source; b1a6b38 names its source; 175074c names its source" ] ] .
+
+<https://drift-king.org/ah/x-components/0.2.0/check/xc-14> a earl:TestCriterion ; dcterms:title "The README follows the house copy rules" ; dcterms:relation <https://drift-king.org/ah/x-components/0.2.0/canary/xc-14> .
+<https://drift-king.org/ah/x-components/0.2.0/canary/xc-14> a earl:TestSubject ; rdfs:label "The canary of: The README follows the house copy rules" ;
+    dcterms:type <https://drift-king.org/ah/x-components/0.2.0/canary> .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/canary/xc-14> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-14> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ;
+    dcterms:description "6 sentences that break a rule are each found; code blocks and inline code are not copy" ] ] .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/candidate> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-14> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ;
+    dcterms:description "the README breaks none of the rules a pattern can find" ] ] .
+
+<https://drift-king.org/ah/x-components/0.2.0/check/xc-15> a earl:TestCriterion ; dcterms:title "The classes a component emits are the classes the model names" ; dcterms:relation <https://drift-king.org/ah/x-components/0.2.0/canary/xc-15> .
+<https://drift-king.org/ah/x-components/0.2.0/canary/xc-15> a earl:TestSubject ; rdfs:label "The canary of: The classes a component emits are the classes the model names" ;
+    dcterms:type <https://drift-king.org/ah/x-components/0.2.0/canary> .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/canary/xc-15> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-15> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ;
+    dcterms:description "a class the model does not name, and a class it names that the code never writes, are both found" ] ] .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/candidate> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-15> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ;
+    dcterms:description "83 components emit exactly the classes the model names (279 classes, 141 renders)" ] ] .
+
+<https://drift-king.org/ah/x-components/0.2.0/check/xc-16> a earl:TestCriterion ; dcterms:title "No visible word is a default" ; dcterms:relation <https://drift-king.org/ah/x-components/0.2.0/canary/xc-16> .
+<https://drift-king.org/ah/x-components/0.2.0/canary/xc-16> a earl:TestSubject ; rdfs:label "The canary of: No visible word is a default" ;
+    dcterms:type <https://drift-king.org/ah/x-components/0.2.0/canary> .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/canary/xc-16> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-16> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ;
+    dcterms:description "a component that falls back to a word of its own is found; the sentinel, markup and attribute names are not words; a word in an attribute a reader hears is found" ] ] .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/candidate> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-16> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ;
+    dcterms:description "212 renders say no word the site did not give (9 more refuse without one)" ] ] .
+
+<https://drift-king.org/ah/x-components/0.2.0/check/xc-17> a earl:TestCriterion ; dcterms:title "A tape that rolls has one control, named in words, with its words from the site" ; dcterms:relation <https://drift-king.org/ah/x-components/0.2.0/canary/xc-17> .
+<https://drift-king.org/ah/x-components/0.2.0/canary/xc-17> a earl:TestSubject ; rdfs:label "The canary of: A tape that rolls has one control, named in words, with its words from the site" ;
+    dcterms:type <https://drift-king.org/ah/x-components/0.2.0/canary> .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/canary/xc-17> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-17> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ;
+    dcterms:description "a pair that rolls with no control is found" ] ] .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/candidate> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-17> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ;
+    dcterms:description "a pair that rolls has one checked checkbox inside one label, named in words, with its Pause and Play hidden from screen readers; the pair writes only the classes the model names" ] ] .
+
+<https://drift-king.org/ah/x-components/0.2.0/check/xc-18> a earl:TestCriterion ; dcterms:title "A tape refuses without the words of its control and without its separator" ; dcterms:relation <https://drift-king.org/ah/x-components/0.2.0/canary/xc-18> .
+<https://drift-king.org/ah/x-components/0.2.0/canary/xc-18> a earl:TestSubject ; rdfs:label "The canary of: A tape refuses without the words of its control and without its separator" ;
+    dcterms:type <https://drift-king.org/ah/x-components/0.2.0/canary> .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/canary/xc-18> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-18> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ;
+    dcterms:description "a tape that renders anyway, with none of its words, is found" ] ] .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/candidate> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-18> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ;
+    dcterms:description "a tape refuses without any of the control's words, without a separator, and outside a pair (5 cases); a pair given all its words renders" ] ] .
+
+<https://drift-king.org/ah/x-components/0.2.0/check/xc-19> a earl:TestCriterion ; dcterms:title "The design styles exactly the classes the model names" ; dcterms:relation <https://drift-king.org/ah/x-components/0.2.0/canary/xc-19> .
+<https://drift-king.org/ah/x-components/0.2.0/canary/xc-19> a earl:TestSubject ; rdfs:label "The canary of: The design styles exactly the classes the model names" ;
+    dcterms:type <https://drift-king.org/ah/x-components/0.2.0/canary> .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/canary/xc-19> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-19> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ;
+    dcterms:description "a stylesheet that styles exactly the named classes has no problem; a stylesheet with one class the model does not name is found; a class the model names that the stylesheet does not style is found" ] ] .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/candidate> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-19> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ;
+    dcterms:description "the design styles exactly the 12 classes the model names for the tape, and uses no other" ] ] .
+
+<https://drift-king.org/ah/x-components/0.2.0/check/xc-20> a earl:TestCriterion ; dcterms:title "A tape is read once: its repeats and its separators are hidden from screen readers, and a link in a repeat leaves the tab order" ; dcterms:relation <https://drift-king.org/ah/x-components/0.2.0/canary/xc-20> .
+<https://drift-king.org/ah/x-components/0.2.0/canary/xc-20> a earl:TestSubject ; rdfs:label "The canary of: A tape is read once: its repeats and its separators are hidden from screen readers, and a link in a repeat leaves the tab order" ;
+    dcterms:type <https://drift-king.org/ah/x-components/0.2.0/canary> .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/canary/xc-20> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-20> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ;
+    dcterms:description "a repeat link that leaves the tab order, and a read link that stays in it, have no problem; a repeat link that can be tabbed to is found; a band with one read row and hidden repeats has no problem; a repeat row that is not hidden is found; a separator that is not hidden is found; a repeat row with a phrase missing is found; a read row with a phrase missing is found" ] ] .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/candidate> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-20> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ;
+    dcterms:description "a band that rolls reads each phrase once, in order, and hides its repeats and every separator; a band that does not roll is one row, with no repeat; a link in a band is tabbable once, in the row that is read, and in no repeat" ] ] .
+
+<https://drift-king.org/ah/x-components/0.2.0/check/xc-21> a earl:TestCriterion ; dcterms:title "A tape item's link is written as a link, and refuses without the site's domain" ; dcterms:relation <https://drift-king.org/ah/x-components/0.2.0/canary/xc-21> .
+<https://drift-king.org/ah/x-components/0.2.0/canary/xc-21> a earl:TestSubject ; rdfs:label "The canary of: A tape item's link is written as a link, and refuses without the site's domain" ;
+    dcterms:type <https://drift-king.org/ah/x-components/0.2.0/canary> .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/canary/xc-21> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-21> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ;
+    dcterms:description "an item link that is only escaped is found: it keeps a script scheme, encodes twice, renders with no domain and is never marked" ] ] .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/candidate> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-21> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ;
+    dcterms:description "an item's link is written as a link, refuses without the site's domain, and is marked when it leaves the site" ] ] .
+
+<https://drift-king.org/ah/x-components/0.2.0/check/xc-22> a earl:TestCriterion ; dcterms:title "Static expansion gives the same HTML as the rewriter, and refuses a tag the model does not define" ; dcterms:relation <https://drift-king.org/ah/x-components/0.2.0/canary/xc-22> .
+<https://drift-king.org/ah/x-components/0.2.0/canary/xc-22> a earl:TestSubject ; rdfs:label "The canary of: Static expansion gives the same HTML as the rewriter, and refuses a tag the model does not define" ;
+    dcterms:type <https://drift-king.org/ah/x-components/0.2.0/canary> .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/canary/xc-22> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-22> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ;
+    dcterms:description "a walker that expands a wrapper before its children is found (2 cases differ)" ] ] .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/candidate> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-22> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ;
+    dcterms:description "141 cases expanded by the static entry point equal the rewriter's HTML byte for byte (0 refused by both); a tag that starts with x- and is not a component the model defines is refused; it ran on cheerio 1.2.0, the version the model pins" ] ] .
+
+<https://drift-king.org/ah/x-components/0.2.0/check/xc-23> a earl:TestCriterion ; dcterms:title "Paired line panes render with their required attributes, emit exactly the classes the model names, take every word from the site, and refuse without them" ; dcterms:relation <https://drift-king.org/ah/x-components/0.2.0/canary/xc-23> .
+<https://drift-king.org/ah/x-components/0.2.0/canary/xc-23> a earl:TestSubject ; rdfs:label "The canary of: Paired line panes render with their required attributes, emit exactly the classes the model names, take every word from the site, and refuse without them" ;
+    dcterms:type <https://drift-king.org/ah/x-components/0.2.0/canary> .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/canary/xc-23> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-23> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ;
+    dcterms:description "a correct paired line panes has no problem; a paired line panes that renders without a word it needs is found; a paired line panes with a class the model does not name is found; a paired line panes that says a word of its own is found" ] ] .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/candidate> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-23> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ;
+    dcterms:description "the paired line panes renders with every attribute and with only its required ones; the paired line panes writes exactly the classes the model names for it (9); the paired line panes says no word the site did not give, with every attribute the sentinel and with none; the paired line panes refuses without each attribute the model requires of it" ] ] .
+
+<https://drift-king.org/ah/x-components/0.2.0/check/xc-24> a earl:TestCriterion ; dcterms:title "A sticker renders with its required attributes, emits exactly the classes the model names, takes every word from the site, and refuses without them" ; dcterms:relation <https://drift-king.org/ah/x-components/0.2.0/canary/xc-24> .
+<https://drift-king.org/ah/x-components/0.2.0/canary/xc-24> a earl:TestSubject ; rdfs:label "The canary of: A sticker renders with its required attributes, emits exactly the classes the model names, takes every word from the site, and refuses without them" ;
+    dcterms:type <https://drift-king.org/ah/x-components/0.2.0/canary> .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/canary/xc-24> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-24> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ;
+    dcterms:description "a correct sticker has no problem; a sticker that renders without a word it needs is found; a sticker with a class the model does not name is found; a sticker that says a word of its own is found" ] ] .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/candidate> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-24> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ;
+    dcterms:description "the sticker renders with every attribute and with only its required ones; the sticker writes exactly the classes the model names for it (1); the sticker says no word the site did not give, with every attribute the sentinel and with none; the sticker refuses without each attribute the model requires of it" ] ] .
+
+<https://drift-king.org/ah/x-components/0.2.0/check/xc-25> a earl:TestCriterion ; dcterms:title "A seal renders with its required attributes, emits exactly the classes the model names, takes every word from the site, and refuses without them" ; dcterms:relation <https://drift-king.org/ah/x-components/0.2.0/canary/xc-25> .
+<https://drift-king.org/ah/x-components/0.2.0/canary/xc-25> a earl:TestSubject ; rdfs:label "The canary of: A seal renders with its required attributes, emits exactly the classes the model names, takes every word from the site, and refuses without them" ;
+    dcterms:type <https://drift-king.org/ah/x-components/0.2.0/canary> .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/canary/xc-25> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-25> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ;
+    dcterms:description "a correct seal has no problem; a seal that renders without a word it needs is found; a seal with a class the model does not name is found; a seal that says a word of its own is found" ] ] .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/ah/x-components/0.2.0/release-checker> ; earl:mode earl:automatic ;
+  earl:subject <https://drift-king.org/ah/x-components/0.2.0/candidate> ; earl:test <https://drift-king.org/ah/x-components/0.2.0/check/xc-25> ; prov:wasGeneratedBy <https://drift-king.org/ah/x-components/0.2.0/release-checks-run> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ;
+    dcterms:description "the seal renders with every attribute and with only its required ones; the seal writes exactly the classes the model names for it (3); the seal says no word the site did not give, with every attribute the sentinel and with none; the seal refuses without each attribute the model requires of it" ] ] .
+

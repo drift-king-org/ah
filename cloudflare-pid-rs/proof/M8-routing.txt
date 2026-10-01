@@ -1,0 +1,26 @@
+Deployed Version ID: e08b559a-673a-4053-8fa8-4f015d1bf6da
+
+The routing fix (worker/src/index.js) was written earlier but never
+deployed -- the model and proof described one thing, Cloudflare ran
+another. Caught by curling the live domain directly. Deployed now, then
+verified live with the same three requests:
+
+$ curl -H "Accept:" https://pid1.drift-king.org/
+{"pid": 1, "started": "1790534209", "location": "cmh01", "durable_object": "8d0512be714ce0f87ec80435c1a99e733aa786569e47fead62520056d7a0cbff"}
+content-type: application/json
+HTTP: 200
+
+$ curl -H "Accept: text/html" https://pid1.drift-king.org/
+<!doctype html> ... <img src="/drift-king.webp" ...> ...
+content-type: text/html
+HTTP: 200
+
+$ curl -X POST https://pid1.drift-king.org/observe
+{"pid": 1, "started": "1790534209", "location": "cmh01", "durable_object": "8d0512be714ce0f87ec80435c1a99e733aa786569e47fead62520056d7a0cbff"}
+content-type: application/json
+HTTP: 200
+
+All three match expectation: no Accept header -> JSON, Accept: text/html
+-> HTML, POST /observe -> passed straight through to the container (JSON,
+not wrapped) -- pid1 itself doesn't route on path or method, so this
+confirms the Worker didn't intercept it.

@@ -1,0 +1,24 @@
+# Whether a (test, subject) pair has an approved, SIGNED, open gap -- not
+# merely a node an agent wrote claiming one. ?test and ?subject are bound by
+# the caller. A gap counts only if some prov:Activity actually used it, with
+# a real end time, a human (prov:Person) associated with it, and a DocuSign
+# dev envelope identifier -- and only if nothing has invalidated it since.
+# Who wrote the gap node itself (prov:wasAttributedTo) is not checked here:
+# writing one is free; it not counting until it is signed is the point.
+PREFIX prov:    <http://www.w3.org/ns/prov#>
+PREFIX earl:    <http://www.w3.org/ns/earl#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+
+SELECT ?test ?subject ?gap WHERE {
+  ?gap a earl:Assertion ;
+    earl:test ?test ;
+    earl:subject ?subject .
+  ?activity a prov:Activity ;
+    prov:used ?gap ;
+    prov:endedAtTime ?ended ;
+    prov:wasAssociatedWith ?signer ;
+    dcterms:identifier ?envelope .
+  ?signer a prov:Person .
+  FILTER (STRSTARTS(STR(?envelope), "docusign-dev:envelope:"))
+  FILTER NOT EXISTS { ?gap prov:wasInvalidatedBy ?anything }
+}

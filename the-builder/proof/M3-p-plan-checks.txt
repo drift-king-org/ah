@@ -1,0 +1,94 @@
+M3: the plan is P-Plan (http://purl.org/net/p-plan#). Every check is two
+steps, a canary-step and a real-step, chained sequentially; two command
+steps (scan, extract-strings) feed the checks that read their output.
+main.rs holds no SPARQL of its own: plan-steps.rq and step-precedes.rq
+answer what the steps and their order are; step-input-entities.rq and
+expected-outcome.rq answer what a step reads and what its outcome should
+be. The one hand-written exception, as agreed, is following owl:imports
+during bootstrap -- it has to run before any query can.
+
+Real bugs found by actually running this against the model, not by
+re-reading it by hand:
+
+1. the-builder/vocab/earl.rdf declares xml:base="" at its root. oxigraph's
+   RDF/XML reader takes that literally instead of resolving it against the
+   parser's own base first, so every rdf:about="" or "#Fragment" in the
+   file failed to parse with no base at all. Fixed in main.rs: the broken
+   attribute is patched to xml:base="http://www.w3.org/ns/earl#" in the
+   bytes handed to the parser only -- the vendored file on disk, and its
+   sha256, are untouched.
+
+2. p-plan:correspondsToVariable has domain p-plan:Entity (verified against
+   the vendored p-plan.rdf). Every file linked to a Variable needed
+   `a p-plan:Entity` asserted, the same way a step is typed both Step and
+   SoftwareConfiguration -- caught by domain-retypes itself once the real
+   run exercised it for the first time under M3's wiring.
+
+3. earl:test has range earl:TestCriterion and earl:subject has range
+   earl:TestSubject (verified against the vendored earl.rdf). Every check
+   .rq file needed earl:TestCriterion; every canary/subject file (including
+   ah.ttl itself and <not-ah/the-linter>, which needed earl:Assertor for
+   earl:assertedBy) needed earl:TestSubject -- caught by range-retypes.
+
+4. named-by-nobody.rq and code-strings-named.rq pin to ah.ttl's own
+   vann:preferredNamespaceUri specifically (the M0-era multi-base
+   regression fix). Reading it inside the query made a canary-step
+   impossible to evaluate without loading ah.ttl alongside the canary --
+   exactly what canary-isolation.rq exists to forbid. Fixed: both queries
+   now take ?base as bound by the caller (substitute_variable, the same
+   mechanism ?step/?plan already use), the same fix ah-workbench's own
+   the-generator/queries use for their own bound variables). main.rs reads
+   ?base once, from the real model, and only substitutes it into a query
+   that actually projects it (checked via a light SELECT-clause text scan,
+   not a SPARQL parse).
+
+5. range-retypes.ttl (this session's own canary) was missing the
+   self-contained vann:preferredNamespaceUri stand-in that domain-retypes.ttl
+   already had, so it silently couldn't fire in isolation. Fixed to match.
+
+Full run, https://drift-king.org/not-ah/the-linter's own steps in order,
+the-builder's own printed lines (not a side script's):
+
+https://drift-king.org/not-ah/the-linter/canary-isolation/canary-step: http://www.w3.org/ns/earl#failed (expected)
+https://drift-king.org/not-ah/the-linter/canary-isolation/real-step: http://www.w3.org/ns/earl#passed (expected)
+https://drift-king.org/not-ah/the-linter/iri-names-not-values/canary-step: http://www.w3.org/ns/earl#failed (expected)
+https://drift-king.org/not-ah/the-linter/iri-names-not-values/real-step: http://www.w3.org/ns/earl#passed (expected)
+https://drift-king.org/not-ah/the-linter/named-by-nobody/canary-step: http://www.w3.org/ns/earl#failed (expected)
+https://drift-king.org/not-ah/the-linter/named-by-nobody/real-step: http://www.w3.org/ns/earl#passed (expected)
+https://drift-king.org/not-ah/the-linter/code-strings-named/canary-step: http://www.w3.org/ns/earl#failed (expected)
+https://drift-king.org/not-ah/the-linter/code-strings-named/real-step: OPEN GAP -- expected http://www.w3.org/ns/earl#passed, got http://www.w3.org/ns/earl#failed (query https://drift-king.org/the-linter/checks/code-strings-named.rq, subject https://drift-king.org/ah.ttl)
+  (23 rows -- see M3-code-strings-named-gap.txt, the-builder's own output)
+https://drift-king.org/not-ah/the-linter/domain-retypes/canary-step: http://www.w3.org/ns/earl#failed (expected)
+https://drift-king.org/not-ah/the-linter/domain-retypes/real-step: http://www.w3.org/ns/earl#passed (expected)
+https://drift-king.org/not-ah/the-linter/range-retypes/canary-step: http://www.w3.org/ns/earl#failed (expected)
+https://drift-king.org/not-ah/the-linter/range-retypes/real-step: http://www.w3.org/ns/earl#passed (expected)
+https://drift-king.org/not-ah/the-linter/namespace-terms-defined/canary-step: http://www.w3.org/ns/earl#failed (expected)
+https://drift-king.org/not-ah/the-linter/namespace-terms-defined/real-step: http://www.w3.org/ns/earl#passed (expected)
+https://drift-king.org/not-ah/the-linter/terms-defined-in-vocab/canary-step: http://www.w3.org/ns/earl#failed (expected)
+https://drift-king.org/not-ah/the-linter/terms-defined-in-vocab/real-step: http://www.w3.org/ns/earl#passed (expected)
+
+Build steps ran after: build pid1.bin (cargo zigbuild, real cross-compile),
+make the favicons, convert the source image to webp, make pid1-layer.tar,
+publish the signed letter of intent, byte-exact (sha256-checked, exits 1 on
+mismatch -- did not, matched). Stopped at the crane push (401 Unauthorized:
+this environment has no registry credentials) -- before deploy, as
+instructed. The lead architect runs the deploy.
+
+Known, open gap (approved by the lead architect): code-strings-named finds
+23 real unnamed strings in cloudflare-pid-rs/worker/src/index.js -- the
+first time this check ever ran against real code, not just its canaries.
+Recorded in the model (not-ah/the-linter/gap/code-strings-named-cloudflare-pid-rs),
+attributed to ah/agent/lead-architect, checked generically by main.rs's
+known_gap() before treating a mismatch as fatal (a new queries/known-gap.rq).
+Itemized list: M3-code-strings-named-gap.txt.
+
+Correction to an earlier count: a side rdflib script (since deleted, per
+the reviewer's instruction) reported 31 findings, 9 of them in
+cloudflare-pid-rs/pid1/src/main.rs. Re-checked against the-builder's own
+output: pid1/src has zero findings. rdflib's IRI() raises on a string like
+"pid1: failed to install {signal:?} handler: {e}" (spaces and braces are
+not valid IRI characters); oxigraph's does not, and the address-check's
+FILTER NOT EXISTS then finds nothing wrong with it, so the row never
+becomes a violation on the engine that actually runs the check. The 23-row
+list below is what oxigraph -- the-builder's own engine -- actually finds,
+which is what governs.

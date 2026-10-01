@@ -1,0 +1,2247 @@
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix dcat:    <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix sd:      <https://w3id.org/okn/o/sd#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix earl:    <http://www.w3.org/ns/earl#> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
+@prefix vann:    <http://purl.org/vocab/vann/> .
+@prefix p-plan:  <http://purl.org/net/p-plan#> .
+@prefix oa:      <http://www.w3.org/ns/oa#> .
+@prefix sh:      <http://www.w3.org/ns/shacl#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+
+# This document. Not the catalog it describes: that has its own IRI below.
+<https://drift-king.org/not-ah.ttl>
+    a owl:Ontology , prov:Entity ;
+    # DCAT by its real name. Fetched from w3.org for now.
+    owl:imports <http://www.w3.org/ns/dcat> ,
+        # DCMI Terms by its real name, for dcterms:requires and the rest.
+        <http://purl.org/dc/terms/> ,
+        # SDO by its real name, for sd:hasExecutionCommand and sd:SoftwareVersion.
+        <https://w3id.org/okn/o/sd> ,
+        # What the kept x-components 0.1.0 tarball's provenance says, derived
+        # from the kept files by the-builder and compared on every build.
+        <https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0/provenance.ttl> .
+
+# The other half. Same shape as ah, opposite membership. Holds the tool pins
+# cloudflare-pid-rs (and anything else ah requires) actually runs on: each is
+# added here once installed and its version confirmed, never staged ahead of
+# that — an entry here is a claim that this exact pin was seen to work.
+<https://drift-king.org/not-ah>
+    a dcat:Catalog ;
+    dcterms:title "not-everything" ;
+    # Its own linter, the way ah-workbench's not-ah requires its own. The
+    # linter checks not-ah too: nothing is exempt.
+    dcterms:requires <https://drift-king.org/not-ah/the-linter> .
+
+# What not-ah's toolchain pins are. Ours to name; each points at the exact
+# release its version command was seen to print. Confirmed working, not
+# staged ahead of that.
+<https://drift-king.org/not-ah/rustc>
+    a sd:SoftwareVersion ;
+    sd:name "rustc" ;
+    sd:hasVersionId "1.98.1" ;
+    dcterms:source <https://github.com/rust-lang/rust/releases/tag/1.98.1> .
+
+<https://drift-king.org/not-ah/cargo-zigbuild>
+    a sd:SoftwareVersion ;
+    sd:name "cargo-zigbuild" ;
+    sd:hasVersionId "0.23.0" ;
+    dcterms:source <https://github.com/rust-cross/cargo-zigbuild/releases/tag/v0.23.0> .
+
+# ziglang/zig has no GitHub tag or release for 0.16.0 as of this dig — its
+# tag list tops out at 0.15.2. Sourced from Zig's own release notes instead
+# of a fabricated GitHub tag; installed via the PyPI wheel, which is what
+# python -m ziglang actually runs.
+<https://drift-king.org/not-ah/zig>
+    a sd:SoftwareVersion ;
+    sd:name "zig" ;
+    sd:hasVersionId "0.16.0" ;
+    sd:hasDownloadURL "https://pypi.org/project/ziglang/0.16.0/"^^xsd:anyURI ;
+    dcterms:source <https://ziglang.org/download/0.16.0/release-notes.html> .
+
+# What makes a build without Docker possible: a client-only OCI tool.
+# Downloaded as go-containerregistry_Windows_x86_64.tar.gz and checked
+# against that release's own checksums.txt before it was ever run.
+<https://drift-king.org/not-ah/crane>
+    a sd:SoftwareVersion ;
+    sd:name "crane" ;
+    sd:hasVersionId "0.22.1" ;
+    sd:hasDownloadURL "https://github.com/google/go-containerregistry/releases/download/v0.22.1/go-containerregistry_Windows_x86_64.tar.gz"^^xsd:anyURI ;
+    dcterms:source <https://github.com/google/go-containerregistry/releases/tag/v0.22.1> .
+
+<https://drift-king.org/not-ah/wrangler>
+    a sd:SoftwareVersion ;
+    sd:name "wrangler" ;
+    sd:hasVersionId "4.145.0" ;
+    sd:hasDownloadURL "https://www.npmjs.com/package/wrangler/v/4.145.0"^^xsd:anyURI ;
+    dcterms:source <https://github.com/cloudflare/workers-sdk/releases/tag/wrangler%404.145.0> .
+
+# nix-rust/nix publishes no GitHub releases at all ("There aren't any
+# releases here") — crates.io is the real, verifiable distribution point,
+# so it stands in for both source and download, same call as for zig.
+<https://drift-king.org/not-ah/crate/nix>
+    a sd:SoftwareVersion ;
+    sd:name "nix" ;
+    sd:hasVersionId "0.29.0" ;
+    sd:hasDownloadURL "https://crates.io/crates/nix/0.29.0"^^xsd:anyURI ;
+    dcterms:source <https://crates.io/crates/nix/0.29.0> ;
+    rdfs:comment "Cargo features enabled: signal, process." .
+
+<https://drift-king.org/not-ah/crate/libc>
+    a sd:SoftwareVersion ;
+    sd:name "libc" ;
+    sd:hasVersionId "0.2.189" ;
+    sd:hasDownloadURL "https://crates.io/crates/libc/0.2.189"^^xsd:anyURI ;
+    dcterms:source <https://github.com/rust-lang/libc/releases/tag/0.2.189> .
+
+<https://drift-king.org/not-ah/crate/serde_json>
+    a sd:SoftwareVersion ;
+    sd:name "serde_json" ;
+    sd:hasVersionId "1.0.151" ;
+    sd:hasDownloadURL "https://crates.io/crates/serde_json/1.0.151"^^xsd:anyURI ;
+    dcterms:source <https://github.com/serde-rs/json/releases/tag/v1.0.151> ;
+    rdfs:comment "Parses ast-grep's --json=compact output and reads the code-scope/publish-copies query results' data shape where needed. Added in M3.6, named here now -- a real gap, caught by named-by-nobody in spirit even though it only checks files, not Cargo.toml entries." .
+
+<https://drift-king.org/not-ah/crate/mustache>
+    a sd:SoftwareVersion ;
+    sd:name "mustache" ;
+    sd:hasVersionId "0.9.0" ;
+    sd:hasDownloadURL "https://crates.io/crates/mustache/0.9.0"^^xsd:anyURI ;
+    dcterms:source <https://github.com/nickel-org/rust-mustache/releases/tag/v0.9.0> ;
+    rdfs:comment "Chosen by running it against not-ah/mustache-spec: 123/123 non-partial tests pass (comments, delimiters minus its two partial-behavior cases, interpolation, inverted, sections -- every feature index.mustache and letter.mustache actually use). Partials are untested: neither template uses {{> }}." .
+
+<https://drift-king.org/not-ah/crate/yaml-rust2>
+    a sd:SoftwareVersion ;
+    sd:name "yaml-rust2" ;
+    sd:hasVersionId "0.13.0" ;
+    sd:hasDownloadURL "https://crates.io/crates/yaml-rust2/0.13.0"^^xsd:anyURI ;
+    dcterms:source <https://github.com/Ethiraric/yaml-rust2/releases/tag/v0.13.0> ;
+    dcterms:identifier "sha256:57e5b818a27a4cd30884ea380857a5e56f7ec3ba24a3990a3cc0b95af3238e18" ;
+    rdfs:comment "Reads a page's copy (YAML 1.2) so a render step can give it to a template, as it gives a query's rows or a CommonMark text. Chosen because it is a YAML 1.2 parser with no code of its own to run, and with default features off it brings no encoding crate. The sha256 is the crate file's, as crates.io records it." .
+
+# ---------------------------------------------------------------------------
+# The official Mustache spec (M3.7), vendored the same way the vocabularies
+# are: pinned to one tag, sha256 per file, read from disk, never fetched at
+# render time. Only the six core spec files -- ~lambdas, ~dynamic-names and
+# ~inheritance are optional extensions this project doesn't use.
+# ---------------------------------------------------------------------------
+<https://drift-king.org/not-ah/mustache-spec>
+    a dcat:Dataset ;
+    dcterms:title "Mustache spec v1.4.3" ;
+    dcterms:source <https://github.com/mustache/spec/releases/tag/v1.4.3> ;
+    dcat:distribution <https://drift-king.org/not-ah/mustache-spec/specs/comments.json> ,
+        <https://drift-king.org/not-ah/mustache-spec/specs/delimiters.json> ,
+        <https://drift-king.org/not-ah/mustache-spec/specs/interpolation.json> ,
+        <https://drift-king.org/not-ah/mustache-spec/specs/inverted.json> ,
+        <https://drift-king.org/not-ah/mustache-spec/specs/partials.json> ,
+        <https://drift-king.org/not-ah/mustache-spec/specs/sections.json> .
+<https://drift-king.org/not-ah/mustache-spec/specs/comments.json>
+    a dcat:Distribution ; dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcat:downloadURL "https://raw.githubusercontent.com/mustache/spec/v1.4.3/specs/comments.json"^^xsd:anyURI ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/application/json> ;
+    dcterms:identifier "sha256:e5e07151b538c62d3d00e585ff49e411817ba7eb834267fd5ad67225b6e025b6" .
+<https://drift-king.org/not-ah/mustache-spec/specs/delimiters.json>
+    a dcat:Distribution ; dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcat:downloadURL "https://raw.githubusercontent.com/mustache/spec/v1.4.3/specs/delimiters.json"^^xsd:anyURI ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/application/json> ;
+    dcterms:identifier "sha256:a5ac3b70e04ecd03f292977e172883a41c97a949201e7d6aa364054148df225e" .
+<https://drift-king.org/not-ah/mustache-spec/specs/interpolation.json>
+    a dcat:Distribution ; dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcat:downloadURL "https://raw.githubusercontent.com/mustache/spec/v1.4.3/specs/interpolation.json"^^xsd:anyURI ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/application/json> ;
+    dcterms:identifier "sha256:530f691371198333f894a4b7c64cf7bdfd2247dfa04e769202c4c3fc31c28bf1" .
+<https://drift-king.org/not-ah/mustache-spec/specs/inverted.json>
+    a dcat:Distribution ; dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcat:downloadURL "https://raw.githubusercontent.com/mustache/spec/v1.4.3/specs/inverted.json"^^xsd:anyURI ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/application/json> ;
+    dcterms:identifier "sha256:8c5f81135bfad218ca9a4524221c3199e3b0e82654f9b4686013ca6ef93edaa5" .
+<https://drift-king.org/not-ah/mustache-spec/specs/partials.json>
+    a dcat:Distribution ; dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcat:downloadURL "https://raw.githubusercontent.com/mustache/spec/v1.4.3/specs/partials.json"^^xsd:anyURI ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/application/json> ;
+    dcterms:identifier "sha256:61b0de5f51b8cb61259a7291aeaa2df26ef8e6b410be1d5ebd39e6e318a1f640" ;
+    rdfs:comment "Not required to pass: neither site template uses {{> partial}}." .
+<https://drift-king.org/not-ah/mustache-spec/specs/sections.json>
+    a dcat:Distribution ; dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcat:downloadURL "https://raw.githubusercontent.com/mustache/spec/v1.4.3/specs/sections.json"^^xsd:anyURI ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/application/json> ;
+    dcterms:identifier "sha256:f03d109633861186e788d8c63b63a4717635c3049f0d4378aa249dd303c7da82" .
+
+<https://drift-king.org/not-ah/ffmpeg>
+    a sd:SoftwareVersion ;
+    sd:name "ffmpeg" ;
+    sd:hasVersionId "8.0.1" ;
+    sd:hasDownloadURL "https://www.gyan.dev/ffmpeg/builds/"^^xsd:anyURI ;
+    dcterms:source <https://ffmpeg.org/releases/ffmpeg-8.0.1.tar.xz> .
+
+<https://drift-king.org/not-ah/npm/cloudflare-containers>
+    a sd:SoftwareVersion ;
+    sd:name "@cloudflare/containers" ;
+    sd:hasVersionId "0.3.7" ;
+    sd:hasDownloadURL "https://www.npmjs.com/package/@cloudflare/containers/v/0.3.7"^^xsd:anyURI ;
+    dcterms:source <https://github.com/cloudflare/containers/releases/tag/v0.3.7> .
+
+# The append step that pushes pid1-layer.tar onto an empty base. Runs
+# before mutate, which sets entrypoint/platform/port on what this pushes.
+# The registry login. Cloudflare's registry takes only short-lived
+# credentials, so every push gets its own: wrangler asks for 30 minutes of
+# push and pull, node splits wrangler's JSON into a username line and the
+# password, and crane reads the password on stdin. The password passes
+# through pipes only. It is never in the model, in a file the builder writes,
+# or in the builder's output; crane keeps it in its own config until the
+# logout step. Sources: wrangler's registries credentials command (--json
+# prints the username and the password) and its own docker login, which
+# does the same thing with --password-stdin. If wrangler or node fails, no
+# username reaches the read, and the step fails before crane is called.
+<https://drift-king.org/not-ah/crane/login>
+    a sd:SoftwareConfiguration , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    # A ship step, like the push it opens: it waits for every check.
+    p-plan:isPrecededBy <https://drift-king.org/ah/cloudflare-pid-rs/make-layer> ,
+        <https://drift-king.org/not-ah/the-linter/ship-steps-marked/real-step> ;
+    dcterms:title "push pid1: log crane in to the registry for 30 minutes" ;
+    sd:hasExecutionCommand "cd cloudflare-pid-rs/worker && npx --yes wrangler@4.145.0 containers registries credentials --push --pull --expiration-minutes 30 --json | node -e 'const c = JSON.parse(require(\"fs\").readFileSync(0, \"utf8\")); process.stdout.write(c.username + \"\\n\" + c.password)' | { read -r u && [ -n \"$u\" ] && ../.tools/crane/crane.exe auth login registry.cloudflare.com -u \"$u\" --password-stdin; }" ;
+    dcterms:references <https://github.com/cloudflare/workers-sdk/blob/main/packages/wrangler/src/containers/registries.ts> ,
+        <https://github.com/cloudflare/workers-sdk/blob/main/packages/containers-shared/src/login.ts> ;
+    dcterms:requires <https://drift-king.org/not-ah/wrangler> , <https://drift-king.org/not-ah/crane> , <https://drift-king.org/not-ah/node> .
+
+<https://drift-king.org/not-ah/node>
+    a sd:SoftwareVersion ;
+    sd:name "node" ;
+    rdfs:comment "The Node.js npx already runs on. Not pinned yet: its version is the next thing to record." .
+
+<https://drift-king.org/not-ah/crane/append-pid1>
+    a sd:SoftwareConfiguration , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    # A ship step: pushing to the registry waits for every check, and for the
+    # login that lets it push.
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/crane/login> ;
+    dcterms:title "push pid1: append the layer to an empty base" ;
+    sd:hasExecutionCommand "cd cloudflare-pid-rs && ./.tools/crane/crane.exe append -f pid1-layer.tar --oci-empty-base -t registry.cloudflare.com/${CLOUDFLARE_ACCOUNT_ID:?}/cloudflare-pid-rs:latest" ;
+    dcterms:requires <https://drift-king.org/not-ah/setting/cloudflare-account-id> ;
+    dcterms:requires <https://drift-king.org/not-ah/crane> .
+
+# The mutate step that sets pid1's entrypoint and exposed port.
+# MSYS_NO_PATHCONV=1 is load-bearing: without it, running crane.exe (a
+# native Windows binary) from Git Bash rewrites the literal /pid1 argument
+# into a Windows path before crane ever sees it. Caught once via the pushed
+# config, fixed once, recorded here so it cannot recur silently.
+<https://drift-king.org/not-ah/crane/mutate-pid1>
+    a sd:SoftwareConfiguration , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/crane/append-pid1> ;
+    p-plan:hasOutputVar <https://drift-king.org/not-ah/crane/var/image> ;
+    dcterms:title "push pid1: set entrypoint and exposed port" ;
+    sd:hasExecutionCommand "cd cloudflare-pid-rs && MSYS_NO_PATHCONV=1 ./.tools/crane/crane.exe mutate registry.cloudflare.com/${CLOUDFLARE_ACCOUNT_ID:?}/cloudflare-pid-rs@sha256:2c0a8cae7dea4943d408233e6c9d19b8781a1da71fc4ae9b6e97d60e64978459 --set-platform linux/amd64 --entrypoint /pid1 --exposed-ports 8080 -t registry.cloudflare.com/${CLOUDFLARE_ACCOUNT_ID:?}/cloudflare-pid-rs:latest" ;
+    dcterms:requires <https://drift-king.org/not-ah/setting/cloudflare-account-id> ;
+    dcterms:requires <https://drift-king.org/not-ah/crane> .
+
+<https://drift-king.org/not-ah/crane/var/image> a p-plan:Variable ; rdfs:label "the pushed image" .
+
+# The logout: crane forgets the password as soon as the push is done, rather
+# than keeping it until it expires.
+<https://drift-king.org/not-ah/crane/logout>
+    a sd:SoftwareConfiguration , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/crane/mutate-pid1> ;
+    dcterms:title "push pid1: log crane out of the registry" ;
+    sd:hasExecutionCommand "cd cloudflare-pid-rs && ./.tools/crane/crane.exe auth logout registry.cloudflare.com" ;
+    dcterms:requires <https://drift-king.org/not-ah/crane> .
+
+# ---------------------------------------------------------------------------
+# the-linter. Its checks are SPARQL files, each proven on a canary before its
+# findings count. Not yet wired to run: named first, so the code that runs
+# them is written against names that already exist.
+# ---------------------------------------------------------------------------
+<https://drift-king.org/not-ah/the-linter>
+    a prov:SoftwareAgent , earl:Assertor .
+
+<https://drift-king.org/the-linter/checks/domain-retypes.rq>
+    a dcat:Resource , p-plan:Entity , earl:TestCriterion ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/> ;
+    dcterms:title "a domain must not retype what the model already typed" .
+
+# Must be caught: a dcat:Dataset carrying dcat:downloadURL, whose domain is
+# dcat:Distribution. Must stay clean: the same property on a Distribution.
+<https://drift-king.org/the-linter/canaries/domain-retypes.ttl>
+    a p-plan:Entity , earl:TestSubject ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <http://www.w3.org/TR/turtle/> .
+
+[ a earl:Assertion ;
+  earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/the-linter/canaries/domain-retypes.ttl> ;
+  earl:test <https://drift-king.org/the-linter/checks/domain-retypes.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ] ] .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/ah.ttl> ;
+  earl:test <https://drift-king.org/the-linter/checks/domain-retypes.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ] ] .
+
+# Marks an observation as coming from a disk scan, not from the model
+# proper. Whatever runs named-by-nobody.rq injects one of these triples per
+# real file found, fresh, every run -- never a kept list.
+<https://drift-king.org/not-ah/the-linter/disk-scan>
+    a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    rdfs:comment "Not a fact about the repo -- a marker an observation is filed under, so the check can tell an injected disk-scan record from a real model statement." .
+
+<https://drift-king.org/the-linter/checks/named-by-nobody.rq>
+    a dcat:Resource , p-plan:Entity , earl:TestCriterion ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/> ;
+    dcterms:title "every file on disk must be named by the model" .
+
+# Must be caught: an observation whose computed address nothing names.
+# Must stay clean: the same shape, but the address is .gitignore, which
+# ah.ttl does name.
+<https://drift-king.org/the-linter/canaries/named-by-nobody.ttl>
+    a p-plan:Entity , earl:TestSubject ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <http://www.w3.org/TR/turtle/> .
+
+[ a earl:Assertion ;
+  earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/the-linter/canaries/named-by-nobody.ttl> ;
+  earl:test <https://drift-king.org/the-linter/checks/named-by-nobody.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ] ] .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/ah.ttl> ;
+  earl:test <https://drift-king.org/the-linter/checks/named-by-nobody.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ] ] .
+
+<https://drift-king.org/not-ah/ast-grep>
+    a sd:SoftwareVersion ;
+    sd:name "ast-grep-cli" ;
+    sd:hasVersionId "0.45.3" ;
+    sd:hasDownloadURL "https://pypi.org/project/ast-grep-cli/0.45.3/"^^xsd:anyURI ;
+    dcterms:source <https://github.com/ast-grep/ast-grep/releases/tag/0.45.3> ;
+    rdfs:comment "Same pin ah-workbench already uses. Extracts string literals for the-linter's Rust and JS rules." .
+
+# ---------------------------------------------------------------------------
+# The words Rust and JS code are recorded in: tree-sitter's own grammars, as
+# ast-grep exposes them. Not an ASDL grammar like CPython publishes --
+# tree-sitter's grammar.js is the closest real source of truth for each.
+# What each check observes is a whole binary_expression when strings.rq
+# joins two literals with +, or a plain literal otherwise -- one class
+# either way, since the check only ever wants one value and one line.
+# ---------------------------------------------------------------------------
+<https://drift-king.org/rust/ast#>
+    a owl:NamedIndividual ;
+    dcterms:title "tree-sitter-rust grammar, as ast-grep records code in" ;
+    vann:preferredNamespacePrefix "rs" ;
+    vann:preferredNamespaceUri "https://drift-king.org/rust/ast#" ;
+    rdfs:isDefinedBy <https://github.com/tree-sitter/tree-sitter-rust/blob/v0.24.0/grammar.js> .
+
+<https://drift-king.org/rust/ast#StringLiteral>
+    a owl:Class ;
+    rdfs:label "string_literal" ;
+    rdfs:isDefinedBy <https://github.com/tree-sitter/tree-sitter-rust/blob/v0.24.0/grammar.js> ;
+    rdfs:comment "the-linter/rules/strings-rust-v2.yml's match: a string_literal, a whole concat! invocation, or a whole binary_expression joining two with +. A format! invocation is not one unit: each literal in it is its own, and so is each side of a comparison." .
+
+<https://drift-king.org/rust/ast#StringLiteral.value>
+    a owl:DatatypeProperty ;
+    rdfs:domain <https://drift-king.org/rust/ast#StringLiteral> ;
+    rdfs:label "StringLiteral.value" ;
+    rdfs:comment "The literal's text, quotes stripped; for a joined pair, both pieces' values concatenated." .
+
+<https://drift-king.org/rust/ast#StringLiteral.line>
+    a owl:DatatypeProperty ;
+    rdfs:domain <https://drift-king.org/rust/ast#StringLiteral> ;
+    rdfs:label "StringLiteral.line" ;
+    rdfs:comment "The line the literal, or the joining expression, starts on." .
+
+<https://drift-king.org/javascript/ast#>
+    a owl:NamedIndividual ;
+    dcterms:title "tree-sitter-javascript grammar, as ast-grep records code in" ;
+    vann:preferredNamespacePrefix "js" ;
+    vann:preferredNamespaceUri "https://drift-king.org/javascript/ast#" ;
+    rdfs:isDefinedBy <https://github.com/tree-sitter/tree-sitter-javascript/blob/v0.23.1/grammar.js> .
+
+<https://drift-king.org/javascript/ast#String>
+    a owl:Class ;
+    rdfs:label "string" ;
+    rdfs:isDefinedBy <https://github.com/tree-sitter/tree-sitter-javascript/blob/v0.23.1/grammar.js> ;
+    rdfs:comment "the-linter/rules/strings-js-v2.yml's match: a string, a template_string, or a whole binary_expression joining two with +. Each side of a comparison is its own." .
+
+<https://drift-king.org/javascript/ast#String.value>
+    a owl:DatatypeProperty ;
+    rdfs:domain <https://drift-king.org/javascript/ast#String> ;
+    rdfs:label "String.value" ;
+    rdfs:comment "The literal's text, quotes stripped; for a joined pair, both pieces' values concatenated." .
+
+<https://drift-king.org/javascript/ast#String.line>
+    a owl:DatatypeProperty ;
+    rdfs:domain <https://drift-king.org/javascript/ast#String> ;
+    rdfs:label "String.line" ;
+    rdfs:comment "The line the literal, or the joining expression, starts on." .
+
+<https://drift-king.org/the-linter/rules/strings-rust.yml>
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    # Replaced, never edited: its bytes are on a signed approval page (#10).
+    # It no longer references the language, so nothing reads with it.
+    dcterms:isReplacedBy <https://drift-king.org/the-linter/rules/strings-rust-v2.yml> ;
+    dcterms:subject <https://drift-king.org/rust/ast#StringLiteral> ;
+    dcterms:conformsTo <https://yaml.org/spec/1.2.2/> ;
+    rdfs:comment "An ast-grep rule. ast-grep's own rule-schema reference (not yet dug into this repo) would be the more exact conformsTo; YAML's own spec is what's verified so far." .
+
+<https://drift-king.org/the-linter/rules/strings-js.yml>
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    # Replaced, never edited: its bytes are on a signed approval page (#10).
+    dcterms:isReplacedBy <https://drift-king.org/the-linter/rules/strings-js-v2.yml> ;
+    dcterms:subject <https://drift-king.org/javascript/ast#String> ;
+    dcterms:conformsTo <https://yaml.org/spec/1.2.2/> ;
+    rdfs:comment "An ast-grep rule, same shape as strings-rust.yml, for tree-sitter-javascript's grammar." .
+
+# The rules as they read today. v1 skipped every literal inside a binary
+# expression, meaning to skip only the two sides of a join; a comparison such
+# as a == "x" went unseen. v2 skips a literal only when it is one side of a
+# join the first branch already caught as one unit.
+<https://drift-king.org/the-linter/rules/strings-rust-v2.yml>
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    prov:wasRevisionOf <https://drift-king.org/the-linter/rules/strings-rust.yml> ;
+    dcterms:references <https://doc.rust-lang.org/reference/> ;
+    dcterms:subject <https://drift-king.org/rust/ast#StringLiteral> ;
+    dcterms:conformsTo <https://yaml.org/spec/1.2.2/> ;
+    rdfs:comment "An ast-grep rule. ast-grep's own rule-schema reference (not yet dug into this repo) would be the more exact conformsTo; YAML's own spec is what's verified so far." .
+
+<https://drift-king.org/the-linter/rules/strings-js-v2.yml>
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    prov:wasRevisionOf <https://drift-king.org/the-linter/rules/strings-js.yml> ;
+    dcterms:references <https://tc39.es/ecma262/> ;
+    dcterms:subject <https://drift-king.org/javascript/ast#String> ;
+    dcterms:conformsTo <https://yaml.org/spec/1.2.2/> ;
+    rdfs:comment "An ast-grep rule, same shape as strings-rust-v2.yml, for tree-sitter-javascript's grammar." .
+
+<https://drift-king.org/the-linter/checks/code-strings-named.rq>
+    a dcat:Resource , p-plan:Entity , earl:TestCriterion ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/> ;
+    dcterms:title "every string in hand-written code must name something the model names" .
+
+<https://drift-king.org/the-linter/checks/namespace-terms-defined.rq>
+    a dcat:Resource ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/> ;
+    dcterms:title "a term built from a name in code must be defined by the model" .
+
+# ---------------------------------------------------------------------------
+# code-strings-named's canaries, ported: the four that apply outside Python
+# (bare-string, joined-words, others-label, unnamed-string), plus one new
+# case ah-workbench didn't need -- a copied model value, not a name.
+# ---------------------------------------------------------------------------
+<https://drift-king.org/the-linter/canaries/bare-string-rust.rs>
+    a earl:TestSubject ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <https://doc.rust-lang.org/reference/> .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/the-linter/canaries/bare-string-rust.rs> ;
+  earl:test <https://drift-king.org/the-linter/checks/code-strings-named.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ] ] .
+
+<https://drift-king.org/the-linter/canaries/bare-string-js.js>
+    a earl:TestSubject ;
+    dcterms:conformsTo <https://tc39.es/ecma262/> ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/the-linter/canaries/bare-string-js.js> ;
+  earl:test <https://drift-king.org/the-linter/checks/code-strings-named.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ] ] .
+
+<https://drift-king.org/the-linter/canaries/joined-words-rust.rs>
+    a earl:TestSubject ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <https://doc.rust-lang.org/reference/> .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/the-linter/canaries/joined-words-rust.rs> ;
+  earl:test <https://drift-king.org/the-linter/checks/code-strings-named.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ] ] .
+
+<https://drift-king.org/the-linter/canaries/joined-words-js.js>
+    a earl:TestSubject ;
+    dcterms:conformsTo <https://tc39.es/ecma262/> ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/the-linter/canaries/joined-words-js.js> ;
+  earl:test <https://drift-king.org/the-linter/checks/code-strings-named.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ] ] .
+
+<https://drift-king.org/the-linter/canaries/others-label-rust.rs>
+    a earl:TestSubject ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <https://doc.rust-lang.org/reference/> .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/the-linter/canaries/others-label-rust.rs> ;
+  earl:test <https://drift-king.org/the-linter/checks/code-strings-named.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ] ] .
+
+<https://drift-king.org/the-linter/canaries/others-label-js.js>
+    a earl:TestSubject ;
+    dcterms:conformsTo <https://tc39.es/ecma262/> ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/the-linter/canaries/others-label-js.js> ;
+  earl:test <https://drift-king.org/the-linter/checks/code-strings-named.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ] ] .
+
+<https://drift-king.org/the-linter/canaries/unnamed-string-rust.rs>
+    a p-plan:Entity , earl:TestSubject ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <https://doc.rust-lang.org/reference/> .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/the-linter/canaries/unnamed-string-rust.rs> ;
+  earl:test <https://drift-king.org/the-linter/checks/code-strings-named.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ] ] .
+
+<https://drift-king.org/the-linter/canaries/unnamed-string-js.js>
+    a earl:TestSubject ;
+    dcterms:conformsTo <https://tc39.es/ecma262/> ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/the-linter/canaries/unnamed-string-js.js> ;
+  earl:test <https://drift-king.org/the-linter/checks/code-strings-named.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ] ] .
+
+<https://drift-king.org/the-linter/canaries/compared-string-rust.rs>
+    a p-plan:Entity , earl:TestSubject ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <https://doc.rust-lang.org/reference/> .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/the-linter/canaries/compared-string-rust.rs> ;
+  earl:test <https://drift-king.org/the-linter/checks/code-strings-named.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ] ] .
+
+<https://drift-king.org/the-linter/canaries/compared-string-js.js>
+    a p-plan:Entity , earl:TestSubject ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <https://tc39.es/ecma262/> .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/the-linter/canaries/compared-string-js.js> ;
+  earl:test <https://drift-king.org/the-linter/checks/code-strings-named.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ] ] .
+
+<https://drift-king.org/the-linter/canaries/copied-value-rust.rs>
+    a earl:TestSubject ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <https://doc.rust-lang.org/reference/> ;
+    rdfs:comment "1.98.1 copies not-ah/rustc's sd:hasVersionId. Not a naming property, so still caught -- the case both rust-toolchain.toml files actually violate today." .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/the-linter/canaries/copied-value-rust.rs> ;
+  earl:test <https://drift-king.org/the-linter/checks/code-strings-named.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ] ] .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/ah.ttl> ;
+  earl:test <https://drift-king.org/the-linter/checks/code-strings-named.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ] ;
+  rdfs:comment "The target, not today's reality: see the open gap below. Kept as earl:passed (not earl:failed) so ah.ttl is never itself read as a failed-assertion subject -- that would make canary-isolation.rq treat the real model as its own canary." ] .
+
+# The gap itself (M3.1) is modeled in ah.ttl, not here: it is a fact about
+# the build's current state, not about the-linter's own machinery, and the
+# reviewer's shape for it needs oa: (Web Annotation), which ah.ttl imports.
+
+<https://drift-king.org/not-ah/agent/coder>
+    a prov:SoftwareAgent ;
+    rdfs:label "the coder" ;
+    rdfs:comment "Writes gap nodes and model changes. Never the one who signs a gap -- that takes a real prov:Activity with a DocuSign dev envelope id (known-gap.rq)." .
+
+<https://drift-king.org/not-ah/agent/reviewer>
+    a prov:SoftwareAgent ;
+    rdfs:label "the reviewer" .
+
+<https://drift-king.org/the-linter/checks/range-retypes.rq>
+    a dcat:Resource , p-plan:Entity , earl:TestCriterion ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/> ;
+    dcterms:title "a range must not retype what the model already typed" .
+<https://drift-king.org/the-linter/canaries/range-retypes.ttl>
+    a p-plan:Entity , earl:TestSubject ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <http://www.w3.org/TR/turtle/> .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/the-linter/canaries/range-retypes.ttl> ;
+  earl:test <https://drift-king.org/the-linter/checks/range-retypes.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ] ] .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/ah.ttl> ;
+  earl:test <https://drift-king.org/the-linter/checks/range-retypes.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ] ] .
+
+<https://drift-king.org/the-linter/checks/namespace-terms-defined.rq>
+    a dcat:Resource , p-plan:Entity , earl:TestCriterion .
+<https://drift-king.org/the-linter/canaries/namespace-terms-defined.ttl>
+    a p-plan:Entity , earl:TestSubject ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <http://www.w3.org/TR/turtle/> ;
+    rdfs:comment "Supplies its own vann: declaration for py: -- drift-king has no Python-AST recording built yet, so nothing else would give this check anything to check." .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/the-linter/canaries/namespace-terms-defined.ttl> ;
+  earl:test <https://drift-king.org/the-linter/checks/namespace-terms-defined.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ] ] .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/ah.ttl> ;
+  earl:test <https://drift-king.org/the-linter/checks/namespace-terms-defined.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ] ] .
+
+<https://drift-king.org/the-linter/checks/terms-defined-in-vocab.rq>
+    a dcat:Resource , p-plan:Entity , earl:TestCriterion ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/> ;
+    dcterms:title "a term we use from a vendored vocabulary must be a term that vocabulary defines" .
+<https://drift-king.org/the-linter/canaries/terms-defined-in-vocab.ttl>
+    a p-plan:Entity , earl:TestSubject ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <http://www.w3.org/TR/turtle/> ;
+    rdfs:comment "p-plan:isPreceededBy -- the exact misspelling that made this check necessary." .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/the-linter/canaries/terms-defined-in-vocab.ttl> ;
+  earl:test <https://drift-king.org/the-linter/checks/terms-defined-in-vocab.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ] ] .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/ah.ttl> ;
+  earl:test <https://drift-king.org/the-linter/checks/terms-defined-in-vocab.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ] ] .
+
+<https://drift-king.org/the-linter/canaries/plan-cycle.ttl>
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <http://www.w3.org/TR/turtle/> ;
+    rdfs:comment "Two steps in their own fake plan, each isPrecededBy the other. the-builder's step-ordering must detect the cycle and stop." .
+
+# ---------------------------------------------------------------------------
+# M3: the plan, with the checks as steps. Two command steps (scan, string
+# extraction) feed the query steps that read their output; every check is a
+# canary step, then a real step preceded by it. Chained sequentially --
+# isPrecededBy is transitive, but the-builder's own ordering only follows
+# direct edges, so the chain has to be real, not just implied.
+# ---------------------------------------------------------------------------
+<https://drift-king.org/not-ah/the-linter/scan>
+    a sd:SoftwareConfiguration , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasOutputVar <https://drift-king.org/not-ah/the-linter/var/disk-scan> ;
+    dcterms:title "scan the disk" ;
+    sd:hasExecutionCommand "git ls-files -co --exclude-standard" .
+<https://drift-king.org/not-ah/the-linter/var/disk-scan>
+    a p-plan:Variable ; rdfs:label "disk-scan observations" .
+
+<https://drift-king.org/not-ah/the-linter/extract-strings>
+    a sd:SoftwareConfiguration , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasInputVar <https://drift-king.org/not-ah/the-linter/var/source-code> ;
+    p-plan:hasOutputVar <https://drift-king.org/not-ah/the-linter/var/extracted-strings> ;
+    dcterms:title "extract strings with ast-grep" ;
+    rdfs:comment "Reads every source folder that is one of its inputs, with that folder's rule (the-builder/queries/code-scope.rq). All the code we write is in scope, the-builder's own included. The command only checks ast-grep is there; the folders come from the model, never from main.rs." ;
+    sd:hasExecutionCommand "ast-grep --version" ;
+    dcterms:requires <https://drift-king.org/not-ah/ast-grep> .
+<https://drift-king.org/not-ah/the-linter/var/extracted-strings>
+    a p-plan:Variable ; rdfs:label "extracted string literals, as RDF" .
+<https://drift-king.org/not-ah/the-linter/var/source-code>
+    a p-plan:Variable ; rdfs:label "the source folders the string check reads" .
+
+# The code we write, each folder with the rule that reads it (reviewer).
+<https://drift-king.org/the-builder/src>
+    a p-plan:Entity ;
+    p-plan:correspondsToVariable <https://drift-king.org/not-ah/the-linter/var/source-code> ;
+    dcterms:requires <https://drift-king.org/the-linter/rules/strings-rust-v2.yml> .
+<https://drift-king.org/cloudflare-pid-rs/pid1/src>
+    a p-plan:Entity ;
+    p-plan:correspondsToVariable <https://drift-king.org/not-ah/the-linter/var/source-code> ;
+    dcterms:requires <https://drift-king.org/the-linter/rules/strings-rust-v2.yml> .
+<https://drift-king.org/cloudflare-pid-rs/worker/src>
+    a p-plan:Entity ;
+    p-plan:correspondsToVariable <https://drift-king.org/not-ah/the-linter/var/source-code> ;
+    dcterms:requires <https://drift-king.org/the-linter/rules/strings-js-v2.yml> .
+
+<https://drift-king.org/ah.ttl> p-plan:correspondsToVariable <https://drift-king.org/not-ah/the-linter/var/the-model> .
+<https://drift-king.org/not-ah/the-linter/var/the-model>
+    a p-plan:Variable ; rdfs:label "the loaded model" .
+
+<https://drift-king.org/the-linter/checks/named-by-nobody.rq> p-plan:correspondsToVariable <https://drift-king.org/not-ah/the-linter/var/named-by-nobody-rq> .
+<https://drift-king.org/not-ah/the-linter/var/named-by-nobody-rq> a p-plan:Variable .
+<https://drift-king.org/the-linter/canaries/named-by-nobody.ttl> p-plan:correspondsToVariable <https://drift-king.org/not-ah/the-linter/var/named-by-nobody-canary> .
+<https://drift-king.org/not-ah/the-linter/var/named-by-nobody-canary> a p-plan:Variable .
+
+<https://drift-king.org/not-ah/the-linter/named-by-nobody/canary-step>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/the-linter/scan> ;
+    p-plan:hasInputVar <https://drift-king.org/not-ah/the-linter/var/named-by-nobody-rq> ,
+        <https://drift-king.org/not-ah/the-linter/var/named-by-nobody-canary> ;
+    dcterms:title "named-by-nobody: canary must find something" .
+<https://drift-king.org/not-ah/the-linter/named-by-nobody/real-step>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/the-linter/named-by-nobody/canary-step> ;
+    p-plan:hasInputVar <https://drift-king.org/not-ah/the-linter/var/named-by-nobody-rq> ,
+        <https://drift-king.org/not-ah/the-linter/var/the-model> ,
+        <https://drift-king.org/not-ah/the-linter/var/disk-scan> ;
+    dcterms:title "named-by-nobody: the real model must pass" .
+
+<https://drift-king.org/the-linter/checks/code-strings-named.rq> p-plan:correspondsToVariable <https://drift-king.org/not-ah/the-linter/var/code-strings-named-rq> .
+<https://drift-king.org/not-ah/the-linter/var/code-strings-named-rq> a p-plan:Variable .
+<https://drift-king.org/the-linter/canaries/unnamed-string-rust.rs> p-plan:correspondsToVariable <https://drift-king.org/not-ah/the-linter/var/code-strings-named-canary> .
+<https://drift-king.org/not-ah/the-linter/var/code-strings-named-canary>
+    a p-plan:Variable ;
+    rdfs:comment "code-strings-named has nine canaries (H2/M0), each an EARL assertion in its own right; this is the one wired as the P-Plan gate, since the gate only needs one that must find something." .
+
+<https://drift-king.org/not-ah/the-linter/code-strings-named/canary-step>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/the-linter/named-by-nobody/real-step> ,
+        <https://drift-king.org/not-ah/the-linter/extract-strings> ;
+    p-plan:hasInputVar <https://drift-king.org/not-ah/the-linter/var/code-strings-named-rq> ,
+        <https://drift-king.org/not-ah/the-linter/var/code-strings-named-canary> ;
+    dcterms:title "code-strings-named: canary must find something" .
+# Each side of a comparison is its own string, in both rules: one gate per
+# language, since each rule was fixed on its own.
+<https://drift-king.org/the-linter/canaries/compared-string-rust.rs> p-plan:correspondsToVariable <https://drift-king.org/not-ah/the-linter/var/compared-string-rust-canary> .
+<https://drift-king.org/not-ah/the-linter/var/compared-string-rust-canary> a p-plan:Variable .
+<https://drift-king.org/the-linter/canaries/compared-string-js.js> p-plan:correspondsToVariable <https://drift-king.org/not-ah/the-linter/var/compared-string-js-canary> .
+<https://drift-king.org/not-ah/the-linter/var/compared-string-js-canary> a p-plan:Variable .
+<https://drift-king.org/not-ah/the-linter/code-strings-named/compared-rust-canary-step>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/the-linter/code-strings-named/canary-step> ;
+    p-plan:hasInputVar <https://drift-king.org/not-ah/the-linter/var/code-strings-named-rq> ,
+        <https://drift-king.org/not-ah/the-linter/var/compared-string-rust-canary> ;
+    dcterms:title "code-strings-named: a compared Rust string must be found" .
+<https://drift-king.org/not-ah/the-linter/code-strings-named/compared-js-canary-step>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/the-linter/code-strings-named/compared-rust-canary-step> ;
+    p-plan:hasInputVar <https://drift-king.org/not-ah/the-linter/var/code-strings-named-rq> ,
+        <https://drift-king.org/not-ah/the-linter/var/compared-string-js-canary> ;
+    dcterms:title "code-strings-named: a compared JavaScript string must be found" .
+<https://drift-king.org/not-ah/the-linter/code-strings-named/real-step>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/the-linter/code-strings-named/compared-js-canary-step> ;
+    p-plan:hasInputVar <https://drift-king.org/not-ah/the-linter/var/code-strings-named-rq> ,
+        <https://drift-king.org/not-ah/the-linter/var/the-model> ,
+        <https://drift-king.org/not-ah/the-linter/var/extracted-strings> ;
+    dcterms:title "code-strings-named: the real model must pass" .
+
+<https://drift-king.org/the-linter/checks/domain-retypes.rq> p-plan:correspondsToVariable <https://drift-king.org/not-ah/the-linter/var/domain-retypes-rq> .
+<https://drift-king.org/not-ah/the-linter/var/domain-retypes-rq> a p-plan:Variable .
+<https://drift-king.org/the-linter/canaries/domain-retypes.ttl> p-plan:correspondsToVariable <https://drift-king.org/not-ah/the-linter/var/domain-retypes-canary> .
+<https://drift-king.org/not-ah/the-linter/var/domain-retypes-canary> a p-plan:Variable .
+
+<https://drift-king.org/not-ah/the-linter/domain-retypes/canary-step>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/the-linter/code-strings-named/real-step> ;
+    p-plan:hasInputVar <https://drift-king.org/not-ah/the-linter/var/domain-retypes-rq> ,
+        <https://drift-king.org/not-ah/the-linter/var/domain-retypes-canary> ;
+    dcterms:title "domain-retypes: canary must find something" .
+<https://drift-king.org/not-ah/the-linter/domain-retypes/real-step>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/the-linter/domain-retypes/canary-step> ;
+    p-plan:hasInputVar <https://drift-king.org/not-ah/the-linter/var/domain-retypes-rq> ,
+        <https://drift-king.org/not-ah/the-linter/var/the-model> ;
+    dcterms:title "domain-retypes: the real model must pass" .
+
+<https://drift-king.org/the-linter/checks/range-retypes.rq> p-plan:correspondsToVariable <https://drift-king.org/not-ah/the-linter/var/range-retypes-rq> .
+<https://drift-king.org/not-ah/the-linter/var/range-retypes-rq> a p-plan:Variable .
+<https://drift-king.org/the-linter/canaries/range-retypes.ttl> p-plan:correspondsToVariable <https://drift-king.org/not-ah/the-linter/var/range-retypes-canary> .
+<https://drift-king.org/not-ah/the-linter/var/range-retypes-canary> a p-plan:Variable .
+
+<https://drift-king.org/not-ah/the-linter/range-retypes/canary-step>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/the-linter/domain-retypes/real-step> ;
+    p-plan:hasInputVar <https://drift-king.org/not-ah/the-linter/var/range-retypes-rq> ,
+        <https://drift-king.org/not-ah/the-linter/var/range-retypes-canary> ;
+    dcterms:title "range-retypes: canary must find something" .
+<https://drift-king.org/not-ah/the-linter/range-retypes/real-step>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/the-linter/range-retypes/canary-step> ;
+    p-plan:hasInputVar <https://drift-king.org/not-ah/the-linter/var/range-retypes-rq> ,
+        <https://drift-king.org/not-ah/the-linter/var/the-model> ;
+    dcterms:title "range-retypes: the real model must pass" .
+
+<https://drift-king.org/the-linter/checks/namespace-terms-defined.rq> p-plan:correspondsToVariable <https://drift-king.org/not-ah/the-linter/var/namespace-terms-defined-rq> .
+<https://drift-king.org/not-ah/the-linter/var/namespace-terms-defined-rq> a p-plan:Variable .
+<https://drift-king.org/the-linter/canaries/namespace-terms-defined.ttl> p-plan:correspondsToVariable <https://drift-king.org/not-ah/the-linter/var/namespace-terms-defined-canary> .
+<https://drift-king.org/not-ah/the-linter/var/namespace-terms-defined-canary> a p-plan:Variable .
+
+<https://drift-king.org/not-ah/the-linter/namespace-terms-defined/canary-step>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/the-linter/range-retypes/real-step> ;
+    p-plan:hasInputVar <https://drift-king.org/not-ah/the-linter/var/namespace-terms-defined-rq> ,
+        <https://drift-king.org/not-ah/the-linter/var/namespace-terms-defined-canary> ;
+    dcterms:title "namespace-terms-defined: canary must find something" .
+<https://drift-king.org/not-ah/the-linter/namespace-terms-defined/real-step>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/the-linter/namespace-terms-defined/canary-step> ;
+    p-plan:hasInputVar <https://drift-king.org/not-ah/the-linter/var/namespace-terms-defined-rq> ,
+        <https://drift-king.org/not-ah/the-linter/var/the-model> ;
+    dcterms:title "namespace-terms-defined: the real model must pass" .
+
+<https://drift-king.org/the-linter/checks/terms-defined-in-vocab.rq> p-plan:correspondsToVariable <https://drift-king.org/not-ah/the-linter/var/terms-defined-in-vocab-rq> .
+<https://drift-king.org/not-ah/the-linter/var/terms-defined-in-vocab-rq> a p-plan:Variable .
+<https://drift-king.org/the-linter/canaries/terms-defined-in-vocab.ttl> p-plan:correspondsToVariable <https://drift-king.org/not-ah/the-linter/var/terms-defined-in-vocab-canary> .
+<https://drift-king.org/not-ah/the-linter/var/terms-defined-in-vocab-canary> a p-plan:Variable .
+
+<https://drift-king.org/not-ah/the-linter/terms-defined-in-vocab/canary-step>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/the-linter/namespace-terms-defined/real-step> ;
+    p-plan:hasInputVar <https://drift-king.org/not-ah/the-linter/var/terms-defined-in-vocab-rq> ,
+        <https://drift-king.org/not-ah/the-linter/var/terms-defined-in-vocab-canary> ;
+    dcterms:title "terms-defined-in-vocab: canary must find something" .
+<https://drift-king.org/not-ah/the-linter/terms-defined-in-vocab/real-step>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/the-linter/terms-defined-in-vocab/canary-step> ;
+    p-plan:hasInputVar <https://drift-king.org/not-ah/the-linter/var/terms-defined-in-vocab-rq> ,
+        <https://drift-king.org/not-ah/the-linter/var/the-model> ;
+    dcterms:title "terms-defined-in-vocab: the real model must pass" .
+
+# ---------------------------------------------------------------------------
+# Vendored vocabularies (M1). Oxigraph doesn't follow owl:imports, so a
+# check that needs a vocabulary's own rdfs:domain/range statements (the
+# ones domain-retypes and range-retypes actually run against) has to read
+# a local copy. Fetched once, named here with the sha256 of the exact bytes
+# on disk, and mapped in catalog-v001.xml by each vocabulary's own
+# self-declared name -- not the URL it happened to be fetched from. No
+# network at build time from here on: the-builder reads only vocab/.
+# ---------------------------------------------------------------------------
+<https://drift-king.org/not-ah/vocab/dcat>
+    a dcat:Dataset ;
+    dcterms:title "DCAT" ;
+    dcat:distribution <https://drift-king.org/the-builder/vocab/dcat3.ttl> .
+<https://drift-king.org/the-builder/vocab/dcat3.ttl>
+    a dcat:Distribution ;
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcat:downloadURL "https://www.w3.org/ns/dcat3.ttl"^^xsd:anyURI ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/text/turtle> ;
+    dcterms:identifier "sha256:d1624d3bbf364f6fc1d43b9a188bbb9e67639b1a7d46a5cb7ea3f5d47d02b62f" .
+
+<https://drift-king.org/not-ah/vocab/dcmi-terms>
+    a dcat:Dataset ;
+    dcterms:title "DCMI Terms" ;
+    dcat:distribution <https://drift-king.org/the-builder/vocab/dublin_core_terms.ttl> .
+<https://drift-king.org/the-builder/vocab/dublin_core_terms.ttl>
+    a dcat:Distribution ;
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcat:downloadURL "https://www.dublincore.org/specifications/dublin-core/dcmi-terms/dublin_core_terms.ttl"^^xsd:anyURI ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/text/turtle> ;
+    dcterms:identifier "sha256:13df401072dd7015bf9d75162f3e41c8138075304b7b9cc1aa1e9c16db976797" ;
+    rdfs:comment "purl.org/dc/terms/'s own redirect chain terminates at purl.archive.org, which was down (real 503, confirmed twice) -- fetched from DCMI's own direct hosting instead, same bytes." .
+
+<https://drift-king.org/not-ah/vocab/prov-o>
+    a dcat:Dataset ;
+    dcterms:title "PROV-O" ;
+    dcat:distribution <https://drift-king.org/the-builder/vocab/prov-o.ttl> .
+<https://drift-king.org/the-builder/vocab/prov-o.ttl>
+    a dcat:Distribution ;
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcat:downloadURL "http://www.w3.org/ns/prov-o#"^^xsd:anyURI ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/text/turtle> ;
+    dcterms:identifier "sha256:7d203989f67b38bca572253942acc5a1bf24ce3ccfece16f072dcb4be2b79a96" .
+
+<https://drift-king.org/not-ah/vocab/sd>
+    a dcat:Dataset ;
+    dcterms:title "SD" ;
+    dcat:distribution <https://drift-king.org/the-builder/vocab/sd.ttl> .
+<https://drift-king.org/the-builder/vocab/sd.ttl>
+    a dcat:Distribution ;
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcat:downloadURL "https://w3id.org/okn/o/sd"^^xsd:anyURI ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/text/turtle> ;
+    dcterms:identifier "sha256:c44942dce9260d53a25e42adf73e3c04f9f58d8dcd20d2957b02af105c589fef" .
+
+<https://drift-king.org/not-ah/vocab/sosa>
+    a dcat:Dataset ;
+    dcterms:title "SOSA" ;
+    dcat:distribution <https://drift-king.org/the-builder/vocab/sosa.ttl> .
+<https://drift-king.org/the-builder/vocab/sosa.ttl>
+    a dcat:Distribution ;
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcat:downloadURL "http://www.w3.org/ns/sosa/"^^xsd:anyURI ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/text/turtle> ;
+    dcterms:identifier "sha256:c70b0d1c843c0047e4c98e0a89392e46a05752ff6365bda7f7f55303905a0392" .
+
+<https://drift-king.org/not-ah/vocab/shacl>
+    a dcat:Dataset ;
+    dcterms:title "SHACL" ;
+    rdfs:comment "The Shapes Constraint Language, for closing the model off: what a contract, a signing or any other record must hold. Also what @apricotter/x-components' component.ttl imports, by the name without its #." ;
+    dcat:distribution <https://drift-king.org/the-builder/vocab/shacl.ttl> .
+<https://drift-king.org/the-builder/vocab/shacl.ttl>
+    a dcat:Distribution ;
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcat:downloadURL "https://www.w3.org/ns/shacl.ttl"^^xsd:anyURI ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/text/turtle> ;
+    dcterms:identifier "sha256:0e5d8aea0eab98a072d4a02faaee1ee914ec99eab2ca473429726faed4a13f69" .
+
+<https://drift-king.org/not-ah/vocab/vann>
+    a dcat:Dataset ;
+    dcterms:title "VANN" ;
+    dcat:distribution <https://drift-king.org/the-builder/vocab/vann.rdf> .
+<https://drift-king.org/the-builder/vocab/vann.rdf>
+    a dcat:Distribution ;
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcat:downloadURL "https://vocab.org/vann/vann-vocab-20100607.rdf"^^xsd:anyURI ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/application/rdf+xml> ;
+    dcterms:identifier "sha256:cd314dbeebfd4fe1840fdddfc3873b4e813a06d8fae80b1e442e2bb918ef3dd8" ;
+    rdfs:comment "purl.org/vocab/vann/ redirects to vocab.org/vann/, whose default representation is HTML (ignores Accept: text/turtle); vann-vocab-20100607.rdf is the real vocabulary, fetched with Accept: application/rdf+xml." .
+
+<https://drift-king.org/not-ah/vocab/skos>
+    a dcat:Dataset ;
+    dcterms:title "SKOS" ;
+    dcat:distribution <https://drift-king.org/the-builder/vocab/skos.rdf> .
+<https://drift-king.org/the-builder/vocab/skos.rdf>
+    a dcat:Distribution ;
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcat:downloadURL "http://www.w3.org/2004/02/skos/core"^^xsd:anyURI ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/application/rdf+xml> ;
+    dcterms:identifier "sha256:e79633b8d0564816cee8a99f5c9acf9a0e6fc7257c7209acd684ecad53a89dd6" ;
+    rdfs:comment "Not one of M1's nine -- found by actually running the-builder against the catalog: DCAT's own owl:imports needs it. Accept: text/turtle got RDF/XML anyway; Accept: application/rdf+xml is honest about what it serves." .
+
+<https://drift-king.org/not-ah/vocab/earl>
+    a dcat:Dataset ;
+    dcterms:title "EARL" ;
+    dcat:distribution <https://drift-king.org/the-builder/vocab/earl.rdf> .
+<https://drift-king.org/the-builder/vocab/earl.rdf>
+    a dcat:Distribution ;
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcat:downloadURL "http://www.w3.org/ns/earl#"^^xsd:anyURI ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/application/rdf+xml> ;
+    dcterms:identifier "sha256:4cde74807d5e31e58cc462ea6c1b1fc8fc0cf5bdbf8ac224ef95525efbeb2879" ;
+    rdfs:comment "Accept: text/turtle got 406 Not Acceptable at this URL; application/rdf+xml is what it actually serves." .
+
+<https://drift-king.org/not-ah/vocab/oa>
+    a dcat:Dataset ;
+    dcterms:title "Web Annotation" ;
+    dcat:distribution <https://drift-king.org/the-builder/vocab/oa.ttl> .
+<https://drift-king.org/the-builder/vocab/oa.ttl>
+    a dcat:Distribution ;
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcat:downloadURL "http://www.w3.org/ns/oa#"^^xsd:anyURI ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/text/turtle> ;
+    dcterms:identifier "sha256:f661e37d33bf29176390101687711734a7e33a716bdecfb66b90c732373d7af5" .
+
+<https://drift-king.org/not-ah/vocab/p-plan>
+    a dcat:Dataset ;
+    dcterms:title "P-Plan" ;
+    dcat:distribution <https://drift-king.org/the-builder/vocab/p-plan.rdf> .
+<https://drift-king.org/the-builder/vocab/p-plan.rdf>
+    a dcat:Distribution ;
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcat:downloadURL "http://purl.org/net/p-plan#"^^xsd:anyURI ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/application/rdf+xml> ;
+    dcterms:identifier "sha256:b426b2b8471f41a337256d3248fc0f595be8bc83e3969ac27c1dc51f689c5b32" ;
+    rdfs:comment "Accept: text/turtle got 406 Not Acceptable at this URL; application/rdf+xml is what it actually serves. Corrected: this file declares isPrecededBy, the normal spelling -- an earlier note here claiming isPreceededBy (double e) was wrong, copied from a summarised web page rather than checked against this vendored file. The vendored copy is the authority over any doc, this one included." .
+
+# What not-ah lists, ah never lists. The inverse is stated in ah.ttl.
+[ a owl:Restriction ;
+  owl:onProperty [ owl:inverseOf dcat:resource ] ;
+  owl:hasValue <https://drift-king.org/not-ah> ]
+  owl:disjointWith
+[ a owl:Restriction ;
+  owl:onProperty [ owl:inverseOf dcat:resource ] ;
+  owl:hasValue <https://drift-king.org/ah> ] .
+
+# DCMI declares requires only as rdf:Property, so OWL cannot tell it links
+# two things and Protégé files it as an annotation. This names it a relation.
+# A statement about DCMI's term, not ours: the one foreign subject here.
+dcterms:requires a owl:ObjectProperty .
+
+# ---------------------------------------------------------------------------
+# canary-isolation (added by the reviewer, 2026-09-28): no step may read a
+# canary and the model together. A linter check, not a builder rule, so the
+# plan itself is what gets checked. First in the check chain: the chain's
+# first canary step is preceded by its real step, so every build step is too.
+# ---------------------------------------------------------------------------
+<https://drift-king.org/the-linter/checks/canary-isolation.rq>
+    a dcat:Resource , earl:TestCriterion ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/> ;
+    dcterms:title "no step reads a canary and the model together" .
+
+# Must be caught: a step reading a canary and ah.ttl. Must stay clean: a step
+# reading the canary alone. Its own fake plan.
+<https://drift-king.org/the-linter/canaries/canary-isolation.ttl>
+    a p-plan:Entity , earl:TestSubject ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <http://www.w3.org/TR/turtle/> .
+
+[ a earl:Assertion ;
+  earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/the-linter/canaries/canary-isolation.ttl> ;
+  earl:test <https://drift-king.org/the-linter/checks/canary-isolation.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ] ] .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/ah.ttl> ;
+  earl:test <https://drift-king.org/the-linter/checks/canary-isolation.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ] ] .
+
+<https://drift-king.org/the-linter/checks/canary-isolation.rq> p-plan:correspondsToVariable <https://drift-king.org/not-ah/the-linter/var/canary-isolation-rq> .
+<https://drift-king.org/not-ah/the-linter/var/canary-isolation-rq> a p-plan:Variable .
+<https://drift-king.org/the-linter/canaries/canary-isolation.ttl> p-plan:correspondsToVariable <https://drift-king.org/not-ah/the-linter/var/canary-isolation-canary> .
+<https://drift-king.org/not-ah/the-linter/var/canary-isolation-canary> a p-plan:Variable .
+
+<https://drift-king.org/not-ah/the-linter/canary-isolation/canary-step>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasInputVar <https://drift-king.org/not-ah/the-linter/var/canary-isolation-rq> ,
+        <https://drift-king.org/not-ah/the-linter/var/canary-isolation-canary> ;
+    dcterms:title "canary-isolation: canary must find something" .
+<https://drift-king.org/not-ah/the-linter/canary-isolation/real-step>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/the-linter/canary-isolation/canary-step> ;
+    p-plan:hasInputVar <https://drift-king.org/not-ah/the-linter/var/canary-isolation-rq> ,
+        <https://drift-king.org/not-ah/the-linter/var/the-model> ;
+    dcterms:title "canary-isolation: the real model must pass" .
+
+# Put it first: the chain's first check now waits for this one.
+<https://drift-king.org/not-ah/the-linter/named-by-nobody/canary-step>
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/the-linter/canary-isolation/real-step> .
+# Asserted, not inferred: correspondsToVariable's domain is p-plan:Entity.
+<https://drift-king.org/the-linter/checks/canary-isolation.rq> a p-plan:Entity .
+
+# ---------------------------------------------------------------------------
+# iri-names-not-values (added by the reviewer, 2026-09-28): an IRI in our
+# namespace is a name and must not carry a value such as a digest. Runs early
+# in the check chain, next to canary-isolation.
+# ---------------------------------------------------------------------------
+<https://drift-king.org/the-linter/checks/iri-names-not-values.rq>
+    a dcat:Resource , p-plan:Entity , earl:TestCriterion ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/> ;
+    dcterms:title "an IRI names a thing; it never carries a value" .
+
+# Must be caught: an image IRI with its sha256 in the path. Must stay clean:
+# the same image under a stable name, with the digest as data.
+<https://drift-king.org/the-linter/canaries/iri-names-not-values.ttl>
+    a p-plan:Entity , earl:TestSubject ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <http://www.w3.org/TR/turtle/> .
+
+[ a earl:Assertion ;
+  earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/the-linter/canaries/iri-names-not-values.ttl> ;
+  earl:test <https://drift-king.org/the-linter/checks/iri-names-not-values.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ] ] .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/ah.ttl> ;
+  earl:test <https://drift-king.org/the-linter/checks/iri-names-not-values.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ] ] .
+
+<https://drift-king.org/the-linter/checks/iri-names-not-values.rq> p-plan:correspondsToVariable <https://drift-king.org/not-ah/the-linter/var/iri-names-not-values-rq> .
+<https://drift-king.org/not-ah/the-linter/var/iri-names-not-values-rq> a p-plan:Variable .
+<https://drift-king.org/the-linter/canaries/iri-names-not-values.ttl> p-plan:correspondsToVariable <https://drift-king.org/not-ah/the-linter/var/iri-names-not-values-canary> .
+<https://drift-king.org/not-ah/the-linter/var/iri-names-not-values-canary> a p-plan:Variable .
+
+<https://drift-king.org/not-ah/the-linter/iri-names-not-values/canary-step>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasInputVar <https://drift-king.org/not-ah/the-linter/var/iri-names-not-values-rq> ,
+        <https://drift-king.org/not-ah/the-linter/var/iri-names-not-values-canary> ;
+    dcterms:title "iri-names-not-values: canary must find something" .
+<https://drift-king.org/not-ah/the-linter/iri-names-not-values/real-step>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/the-linter/iri-names-not-values/canary-step> ;
+    p-plan:hasInputVar <https://drift-king.org/not-ah/the-linter/var/iri-names-not-values-rq> ,
+        <https://drift-king.org/not-ah/the-linter/var/the-model> ;
+    dcterms:title "iri-names-not-values: the real model must pass" .
+
+# ---------------------------------------------------------------------------
+# approvals-are-documents (added by the reviewer, M3.8): every file in
+# approvals/ is a CommonMark document the model names. Runs between
+# iri-names-not-values and named-by-nobody; its real step reads the disk scan.
+# ---------------------------------------------------------------------------
+<https://drift-king.org/the-linter/checks/approvals-are-documents.rq>
+    a dcat:Resource , p-plan:Entity , earl:TestCriterion , prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/> ;
+    prov:wasAttributedTo <https://drift-king.org/not-ah/agent/reviewer> ;
+    dcterms:title "every file in approvals/ is a CommonMark document the model names" .
+
+# Must be caught: an unnamed file and a plain-text file in approvals/. Must
+# stay clean: a CommonMark document there, and a file outside the folder.
+<https://drift-king.org/the-linter/canaries/approvals-are-documents.ttl>
+    a p-plan:Entity , earl:TestSubject , prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <http://www.w3.org/TR/turtle/> ;
+    prov:wasAttributedTo <https://drift-king.org/not-ah/agent/reviewer> .
+
+[ a earl:Assertion ;
+  earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/the-linter/canaries/approvals-are-documents.ttl> ;
+  earl:test <https://drift-king.org/the-linter/checks/approvals-are-documents.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ] ] .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/ah.ttl> ;
+  earl:test <https://drift-king.org/the-linter/checks/approvals-are-documents.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ] ] .
+
+<https://drift-king.org/the-linter/checks/approvals-are-documents.rq> p-plan:correspondsToVariable <https://drift-king.org/not-ah/the-linter/var/approvals-are-documents-rq> .
+<https://drift-king.org/not-ah/the-linter/var/approvals-are-documents-rq> a p-plan:Variable .
+<https://drift-king.org/the-linter/canaries/approvals-are-documents.ttl> p-plan:correspondsToVariable <https://drift-king.org/not-ah/the-linter/var/approvals-are-documents-canary> .
+<https://drift-king.org/not-ah/the-linter/var/approvals-are-documents-canary> a p-plan:Variable .
+
+<https://drift-king.org/not-ah/the-linter/approvals-are-documents/canary-step>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/the-linter/iri-names-not-values/real-step> ;
+    p-plan:hasInputVar <https://drift-king.org/not-ah/the-linter/var/approvals-are-documents-rq> ,
+        <https://drift-king.org/not-ah/the-linter/var/approvals-are-documents-canary> ;
+    dcterms:title "approvals-are-documents: canary must find something" .
+<https://drift-king.org/not-ah/the-linter/approvals-are-documents/real-step>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/the-linter/approvals-are-documents/canary-step> ,
+        <https://drift-king.org/not-ah/the-linter/scan> ;
+    p-plan:hasInputVar <https://drift-king.org/not-ah/the-linter/var/approvals-are-documents-rq> ,
+        <https://drift-king.org/not-ah/the-linter/var/the-model> ,
+        <https://drift-king.org/not-ah/the-linter/var/disk-scan> ;
+    dcterms:title "approvals-are-documents: the real model must pass" .
+
+<https://drift-king.org/not-ah/the-linter/named-by-nobody/canary-step>
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/the-linter/approvals-are-documents/real-step> .
+
+# ---------------------------------------------------------------------------
+# The two questions the-builder asks the model directly (M3): what a plan's
+# steps are, and which precedes which. Named here so main.rs holds no SPARQL
+# of its own -- the same discipline as the-linter's checks, applied to the
+# builder's own mechanics.
+# ---------------------------------------------------------------------------
+<https://drift-king.org/the-builder/queries/subject-rule.rq>
+    a dcat:Resource ;
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/> ;
+    dcterms:title "the ast-grep rule and string class for a source file, from its language" .
+
+<https://drift-king.org/the-builder/queries/plan-steps.rq>
+    a dcat:Resource ;
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/> ;
+    dcterms:title "a plan's steps, with each one's title and command" .
+
+<https://drift-king.org/the-builder/queries/step-precedes.rq>
+    a dcat:Resource ;
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/> ;
+    dcterms:title "the isPrecededBy edges among a plan's steps" .
+
+<https://drift-king.org/the-builder/queries/step-input-entities.rq>
+    a dcat:Resource ;
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/> ;
+    dcterms:title "a step's input entities, by way of its Variables" .
+
+<https://drift-king.org/the-builder/queries/expected-outcome.rq>
+    a dcat:Resource ;
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/> ;
+    dcterms:title "the EARL outcome already asserted for a (test, subject) pair" .
+
+<https://drift-king.org/the-builder/queries/code-scope.rq>
+    a dcat:Resource , prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/> ;
+    prov:wasAttributedTo <https://drift-king.org/not-ah/agent/reviewer> ;
+    dcterms:title "which source folders the string check reads, and with which rule" .
+
+<https://drift-king.org/the-builder/queries/publish-copies.rq>
+    a dcat:Resource , prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/> ;
+    prov:wasAttributedTo <https://drift-king.org/not-ah/agent/reviewer> ;
+    dcterms:title "what a copy step publishes: source, target and sha256 for each output copy" .
+
+<https://drift-king.org/the-builder/queries/known-gap.rq>
+    a dcat:Resource ;
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/> ;
+    dcterms:title "whether a (test, subject) pair has a signed, open gap -- a prov:Activity actually signed it, not merely a node claiming one" .
+
+<https://drift-king.org/the-linter/canaries/known-gap-unsigned.ttl>
+    a earl:TestSubject ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <http://www.w3.org/TR/turtle/> ;
+    rdfs:comment "Canary for known-gap.rq (M3.1): a gap node shaped exactly like a real one, with no signing prov:Activity. known-gap.rq must find nothing for it -- an unsigned gap must not excuse a failure." .
+
+# file-provenance (added by the reviewer, 2026-09-28): named so
+# named-by-nobody passes. Wiring it as a check (plan steps, EARL
+# assertions, canary/real chain) is the reviewer's own next milestone,
+# after M3 is committed -- not done here.
+<https://drift-king.org/the-linter/checks/file-provenance.rq>
+    a dcat:Resource ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/> .
+<https://drift-king.org/the-linter/canaries/file-provenance.ttl>
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <http://www.w3.org/TR/turtle/> .
+
+# Fonts for drift-king.org (reviewer): Google Fonts' latin files, fetched once
+# and pinned. The Drift King Wild design embedded these exact bytes.
+<https://drift-king.org/site/fonts/bungee-400.woff2>
+    a dcat:Distribution , prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:title "Bungee, latin" ;
+    dcat:downloadURL "https://fonts.gstatic.com/s/bungee/v17/N0bU2SZBIuF2PU_0DXR1.woff2"^^xsd:anyURI ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/font/woff2> ;
+    dcterms:license <https://openfontlicense.org/> ;
+    dcterms:identifier "sha256:126eec706b7931682dbcf6c6efc274132c603f181fbf912678e6cfeb341e721b" .
+<https://drift-king.org/site/fonts/bungee-shade-400.woff2>
+    a dcat:Distribution , prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:title "Bungee Shade, latin" ;
+    dcat:downloadURL "https://fonts.gstatic.com/s/bungeeshade/v17/DtVkJxarWL0t2KdzK3oI_jkc6SjT.woff2"^^xsd:anyURI ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/font/woff2> ;
+    dcterms:license <https://openfontlicense.org/> ;
+    dcterms:identifier "sha256:5ac7452cbe7996c88c84998b86227ffbee8afb7ab5bd0b2b2512229dcac7e315" .
+<https://drift-king.org/site/fonts/chakra-petch-400.woff2>
+    a dcat:Distribution , prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:title "Chakra Petch 400, latin" ;
+    dcat:downloadURL "https://fonts.gstatic.com/s/chakrapetch/v13/cIf6MapbsEk7TDLdtEz1BwkWn6pg.woff2"^^xsd:anyURI ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/font/woff2> ;
+    dcterms:license <https://openfontlicense.org/> ;
+    dcterms:identifier "sha256:7d75be85dd1627e27ec151e9a3701e661bc4f8c2a93611bdd92f3a05d6bbd942" .
+<https://drift-king.org/site/fonts/chakra-petch-500.woff2>
+    a dcat:Distribution , prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:title "Chakra Petch 500, latin" ;
+    dcat:downloadURL "https://fonts.gstatic.com/s/chakrapetch/v13/cIflMapbsEk7TDLdtEz1BwkebIl1R5_F.woff2"^^xsd:anyURI ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/font/woff2> ;
+    dcterms:license <https://openfontlicense.org/> ;
+    dcterms:identifier "sha256:36ad966cb653de70ba37355c41003b02de8940b2df6cbcd46480a6ad8cadd65d" .
+<https://drift-king.org/site/fonts/chakra-petch-600.woff2>
+    a dcat:Distribution , prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:title "Chakra Petch 600, latin" ;
+    dcat:downloadURL "https://fonts.gstatic.com/s/chakrapetch/v13/cIflMapbsEk7TDLdtEz1BwkeQI51R5_F.woff2"^^xsd:anyURI ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/font/woff2> ;
+    dcterms:license <https://openfontlicense.org/> ;
+    dcterms:identifier "sha256:a5888696e9eb1b4bbbecc8eb3922b8369f49d4bddb72263e033cbd17f399be76" .
+<https://drift-king.org/site/fonts/chakra-petch-700.woff2>
+    a dcat:Distribution , prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:title "Chakra Petch 700, latin" ;
+    dcat:downloadURL "https://fonts.gstatic.com/s/chakrapetch/v13/cIflMapbsEk7TDLdtEz1BwkeJI91R5_F.woff2"^^xsd:anyURI ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/font/woff2> ;
+    dcterms:license <https://openfontlicense.org/> ;
+    dcterms:identifier "sha256:ce5095dc1cb200aaa939e38067a0677018d10e9f26ec38cdcf1557ac524fc775" .
+<https://drift-king.org/site/fonts/jetbrains-mono.woff2>
+    a dcat:Distribution , prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:title "JetBrains Mono, latin" ;
+    dcat:downloadURL "https://fonts.gstatic.com/s/jetbrainsmono/v24/tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxDcwg.woff2"^^xsd:anyURI ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/font/woff2> ;
+    dcterms:license <https://openfontlicense.org/> ;
+    dcterms:identifier "sha256:83c005d49d8a6a50474c73a5a36ac0468076e9c4a29da7bdb14995d80560a5be" .
+
+<https://drift-king.org/the-builder/queries/approval-files.rq>
+    a dcat:Resource , prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/> ;
+    prov:wasAttributedTo <https://drift-king.org/not-ah/agent/reviewer> ;
+    dcterms:title "the files an approval page lists, with their published address and sha256" .
+<https://drift-king.org/the-builder/queries/render-inputs.rq>
+    a dcat:Resource , prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/> ;
+    prov:wasAttributedTo <https://drift-king.org/not-ah/agent/reviewer> ;
+    dcterms:title "what a render step reads and writes, and each input's role" .
+<https://drift-king.org/the-builder/queries/letter-signing.rq>
+    a dcat:Resource , prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/> ;
+    prov:wasAttributedTo <https://drift-king.org/not-ah/agent/reviewer> ;
+    dcterms:title "the letter's signing: date, envelope and sha256, for the site" .
+
+# ---------------------------------------------------------------------------
+# @apricotter/x-components: Apricotter's components, which drift-king.org is
+# to be written in. Someone else's software, so it is listed here, like
+# @cloudflare/containers. Not published yet: when 0.1.0 is, its tarball's
+# sha256 and npm's integrity are added here, and the tarball is kept in the
+# repo so no build fetches it.
+# ---------------------------------------------------------------------------
+<https://drift-king.org/not-ah/npm/apricotter-x-components>
+    a sd:SoftwareVersion ;
+    sd:name "@apricotter/x-components" ;
+    sd:hasVersionId "0.1.0" ;
+    sd:hasDownloadURL "https://registry.npmjs.org/@apricotter/x-components/-/x-components-0.1.0.tgz"^^xsd:anyURI ;
+    dcterms:source <https://github.com/Apricotter/x-components> ;
+    dcterms:conformsTo <https://drift-king.org/intent/x-components-letter-of-intent.md> ;
+    rdfs:comment "What it promises is its signed letter of intent and list. Drift King audits the tarball against both before taking it." .
+
+# Its model, which ah will import once the tarball is kept here: the catalog
+# then maps each name to the file unpacked from it.
+<https://drift-king.org/not-ah/vocab/x-components>
+    a dcat:Dataset ;
+    dcterms:title "the x-components component model" ;
+    rdfs:comment "component.ttl, and the wai-aria.ttl it imports, as shipped in @apricotter/x-components 0.1.0. Every x-* tag drift-king.org uses must be one of its components." ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/npm/apricotter-x-components> .
+
+# ===========================================================================
+# @apricotter/x-components 0.1.0, the candidate: the files its tarball will
+# hold, kept here exactly as committed at b1a6b38 on its public repository,
+# before it is published. Drift King audits these bytes with its own checks.
+# Kept as files, not as a tarball: npm's version changes a tarball's bytes,
+# never its files'. When 0.1.0 is published, its tarball's files are checked
+# against these, file by file, before Drift King takes it.
+# ===========================================================================
+<https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0-candidate/LICENSE>
+    a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/npm/apricotter-x-components> ;
+    dcterms:identifier "sha256:c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4" ;
+    prov:wasDerivedFrom <https://github.com/Apricotter/x-components/blob/b1a6b38e4e0edabe68a1e8972eb641095a04440f/LICENSE> .
+<https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0-candidate/NOTICE>
+    a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/npm/apricotter-x-components> ;
+    dcterms:identifier "sha256:0160e5a552d5eaa44863878679f6907cc127bda9aabb13cf4676caa4d236785e" ;
+    prov:wasDerivedFrom <https://github.com/Apricotter/x-components/blob/b1a6b38e4e0edabe68a1e8972eb641095a04440f/NOTICE> .
+<https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0-candidate/README.md>
+    a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/npm/apricotter-x-components> ;
+    dcterms:conformsTo <https://spec.commonmark.org/> ;
+    dcterms:identifier "sha256:63fd44af17919c79bc1ebc1a5face9a24cd47a57d1b7b6215e83dccfe1c19cec" ;
+    prov:wasDerivedFrom <https://github.com/Apricotter/x-components/blob/b1a6b38e4e0edabe68a1e8972eb641095a04440f/README.md> .
+<https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0-candidate/package.json>
+    a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/npm/apricotter-x-components> ;
+    dcterms:conformsTo <https://www.rfc-editor.org/rfc/rfc8259> ;
+    dcterms:identifier "sha256:06967a773db45548451bf37046935a31403f7426e5107b1f400b12aba8a01e12" ;
+    prov:wasDerivedFrom <https://github.com/Apricotter/x-components/blob/b1a6b38e4e0edabe68a1e8972eb641095a04440f/package.json> .
+<https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0-candidate/component.ttl>
+    a prov:Entity , p-plan:Entity , earl:TestSubject ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/npm/apricotter-x-components> ;
+    dcterms:conformsTo <http://www.w3.org/TR/turtle/> ;
+    dcterms:identifier "sha256:6355b94284a4084e668c9420dd3def85655ebcb4d4bb2f73e65d664368c32fc8" ;
+    prov:wasDerivedFrom <https://github.com/Apricotter/x-components/blob/b1a6b38e4e0edabe68a1e8972eb641095a04440f/component.ttl> .
+<https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0-candidate/wai-aria.ttl>
+    a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/npm/apricotter-x-components> ;
+    dcterms:conformsTo <http://www.w3.org/TR/turtle/> ;
+    dcterms:identifier "sha256:d68deb932b1e5b4df041832daa75a8802804d191560de1a1ceeab60836c24bd6" ;
+    prov:wasDerivedFrom <https://github.com/Apricotter/x-components/blob/b1a6b38e4e0edabe68a1e8972eb641095a04440f/wai-aria.ttl> .
+<https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0-candidate/component-attributes.generated.mjs>
+    a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/npm/apricotter-x-components> ;
+    dcterms:identifier "sha256:172343b2f6f8d588f5db9c9a13804fee86cc44e5d31d4e0cbffc1a49aef7efe9" ;
+    prov:wasDerivedFrom <https://github.com/Apricotter/x-components/blob/b1a6b38e4e0edabe68a1e8972eb641095a04440f/component-attributes.generated.mjs> .
+<https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0-candidate/expand.mjs>
+    a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/npm/apricotter-x-components> ;
+    dcterms:identifier "sha256:9e8c7febbe22e12a2fda9900a775b99479e991441a08b73a27608b9bc27d6a93" ;
+    prov:wasDerivedFrom <https://github.com/Apricotter/x-components/blob/b1a6b38e4e0edabe68a1e8972eb641095a04440f/expand.mjs> .
+
+# The audit's checks. Each runs on the candidate's own model, loaded on its
+# own with only the vendored vocabularies beside it, and each points at the
+# sentence of the x-components letter it proves.
+<https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0-candidate/component.ttl> p-plan:correspondsToVariable <https://drift-king.org/not-ah/the-linter/var/x-components-model> .
+<https://drift-king.org/not-ah/the-linter/var/x-components-model> a p-plan:Variable ; rdfs:label "the x-components candidate's own model" .
+
+<https://drift-king.org/the-linter/checks/x-components-components-whole.rq>
+    a dcat:Resource , p-plan:Entity , earl:TestCriterion , oa:Annotation ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/> ;
+    dcterms:title "every component names its tag and the element it becomes" ;
+    oa:hasTarget [ a oa:SpecificResource ;
+        oa:hasSource <https://drift-king.org/intent/x-components-letter-of-intent.md> ;
+        oa:hasSelector [ a oa:TextPositionSelector ; oa:start 743 ; oa:end 809 ] ] ;
+    p-plan:correspondsToVariable <https://drift-king.org/not-ah/the-linter/x-components-components-whole/var/rq> .
+<https://drift-king.org/the-linter/canaries/x-components-components-whole.ttl>
+    a p-plan:Entity , earl:TestSubject ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <http://www.w3.org/TR/turtle/> ;
+    p-plan:correspondsToVariable <https://drift-king.org/not-ah/the-linter/x-components-components-whole/var/canary> .
+<https://drift-king.org/not-ah/the-linter/x-components-components-whole/var/rq> a p-plan:Variable .
+<https://drift-king.org/not-ah/the-linter/x-components-components-whole/var/canary> a p-plan:Variable .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/the-linter/canaries/x-components-components-whole.ttl> ;
+  earl:test <https://drift-king.org/the-linter/checks/x-components-components-whole.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ] ] .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0-candidate/component.ttl> ;
+  earl:test <https://drift-king.org/the-linter/checks/x-components-components-whole.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ] ] .
+<https://drift-king.org/not-ah/the-linter/x-components-components-whole/canary-step>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/the-linter/terms-defined-in-vocab/real-step> ;
+    p-plan:hasInputVar <https://drift-king.org/not-ah/the-linter/x-components-components-whole/var/rq> , <https://drift-king.org/not-ah/the-linter/x-components-components-whole/var/canary> ;
+    dcterms:title "every component names its tag and the element it becomes: its canary must be caught" .
+<https://drift-king.org/not-ah/the-linter/x-components-components-whole/real-step>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/the-linter/x-components-components-whole/canary-step> ;
+    p-plan:hasInputVar <https://drift-king.org/not-ah/the-linter/x-components-components-whole/var/rq> , <https://drift-king.org/not-ah/the-linter/var/x-components-model> ;
+    dcterms:title "every component names its tag and the element it becomes: the candidate must pass" .
+
+<https://drift-king.org/the-linter/checks/x-components-roles-resolve.rq>
+    a dcat:Resource , p-plan:Entity , earl:TestCriterion , oa:Annotation ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/> ;
+    dcterms:title "every ARIA role a component carries is one its model describes" ;
+    oa:hasTarget [ a oa:SpecificResource ;
+        oa:hasSource <https://drift-king.org/intent/x-components-letter-of-intent.md> ;
+        oa:hasSelector [ a oa:TextPositionSelector ; oa:start 743 ; oa:end 809 ] ] ;
+    p-plan:correspondsToVariable <https://drift-king.org/not-ah/the-linter/x-components-roles-resolve/var/rq> .
+<https://drift-king.org/the-linter/canaries/x-components-roles-resolve.ttl>
+    a p-plan:Entity , earl:TestSubject ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <http://www.w3.org/TR/turtle/> ;
+    p-plan:correspondsToVariable <https://drift-king.org/not-ah/the-linter/x-components-roles-resolve/var/canary> .
+<https://drift-king.org/not-ah/the-linter/x-components-roles-resolve/var/rq> a p-plan:Variable .
+<https://drift-king.org/not-ah/the-linter/x-components-roles-resolve/var/canary> a p-plan:Variable .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/the-linter/canaries/x-components-roles-resolve.ttl> ;
+  earl:test <https://drift-king.org/the-linter/checks/x-components-roles-resolve.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ] ] .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0-candidate/component.ttl> ;
+  earl:test <https://drift-king.org/the-linter/checks/x-components-roles-resolve.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ] ] .
+<https://drift-king.org/not-ah/the-linter/x-components-roles-resolve/canary-step>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/the-linter/x-components-components-whole/real-step> ;
+    p-plan:hasInputVar <https://drift-king.org/not-ah/the-linter/x-components-roles-resolve/var/rq> , <https://drift-king.org/not-ah/the-linter/x-components-roles-resolve/var/canary> ;
+    dcterms:title "every ARIA role a component carries is one its model describes: its canary must be caught" .
+<https://drift-king.org/not-ah/the-linter/x-components-roles-resolve/real-step>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/the-linter/x-components-roles-resolve/canary-step> ;
+    p-plan:hasInputVar <https://drift-king.org/not-ah/the-linter/x-components-roles-resolve/var/rq> , <https://drift-king.org/not-ah/the-linter/var/x-components-model> ;
+    dcterms:title "every ARIA role a component carries is one its model describes: the candidate must pass" .
+
+<https://drift-king.org/the-linter/checks/x-components-words-clean.rq>
+    a dcat:Resource , p-plan:Entity , earl:TestCriterion , oa:Annotation ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/> ;
+    dcterms:title "no label or comment in its model names anything internal" ;
+    oa:hasTarget [ a oa:SpecificResource ;
+        oa:hasSource <https://drift-king.org/intent/x-components-letter-of-intent.md> ;
+        oa:hasSelector [ a oa:TextPositionSelector ; oa:start 970 ; oa:end 999 ] ] ;
+    p-plan:correspondsToVariable <https://drift-king.org/not-ah/the-linter/x-components-words-clean/var/rq> .
+<https://drift-king.org/the-linter/canaries/x-components-words-clean.ttl>
+    a p-plan:Entity , earl:TestSubject ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <http://www.w3.org/TR/turtle/> ;
+    p-plan:correspondsToVariable <https://drift-king.org/not-ah/the-linter/x-components-words-clean/var/canary> .
+<https://drift-king.org/not-ah/the-linter/x-components-words-clean/var/rq> a p-plan:Variable .
+<https://drift-king.org/not-ah/the-linter/x-components-words-clean/var/canary> a p-plan:Variable .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/the-linter/canaries/x-components-words-clean.ttl> ;
+  earl:test <https://drift-king.org/the-linter/checks/x-components-words-clean.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ] ] .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0-candidate/component.ttl> ;
+  earl:test <https://drift-king.org/the-linter/checks/x-components-words-clean.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ] ] .
+<https://drift-king.org/not-ah/the-linter/x-components-words-clean/canary-step>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/the-linter/x-components-roles-resolve/real-step> ;
+    p-plan:hasInputVar <https://drift-king.org/not-ah/the-linter/x-components-words-clean/var/rq> , <https://drift-king.org/not-ah/the-linter/x-components-words-clean/var/canary> ;
+    dcterms:title "no label or comment in its model names anything internal: its canary must be caught" .
+<https://drift-king.org/not-ah/the-linter/x-components-words-clean/real-step>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/the-linter/x-components-words-clean/canary-step> ;
+    p-plan:hasInputVar <https://drift-king.org/not-ah/the-linter/x-components-words-clean/var/rq> , <https://drift-king.org/not-ah/the-linter/var/x-components-model> ;
+    dcterms:title "no label or comment in its model names anything internal: the candidate must pass" .
+
+# Every step that ships is marked a ship step, so a plain run cannot ship.
+<https://drift-king.org/the-linter/checks/ship-steps-marked.rq>
+    a dcat:Resource , p-plan:Entity , earl:TestCriterion ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/> ;
+    dcterms:title "every step that deploys or pushes is marked a ship step" ;
+    p-plan:correspondsToVariable <https://drift-king.org/not-ah/the-linter/ship-steps-marked/var/rq> .
+<https://drift-king.org/the-linter/canaries/ship-steps-marked.ttl>
+    a p-plan:Entity , earl:TestSubject ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <http://www.w3.org/TR/turtle/> ;
+    p-plan:correspondsToVariable <https://drift-king.org/not-ah/the-linter/ship-steps-marked/var/canary> .
+<https://drift-king.org/not-ah/the-linter/ship-steps-marked/var/rq> a p-plan:Variable .
+<https://drift-king.org/not-ah/the-linter/ship-steps-marked/var/canary> a p-plan:Variable .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/the-linter/canaries/ship-steps-marked.ttl> ;
+  earl:test <https://drift-king.org/the-linter/checks/ship-steps-marked.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ] ] .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/ah.ttl> ;
+  earl:test <https://drift-king.org/the-linter/checks/ship-steps-marked.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ] ] .
+<https://drift-king.org/not-ah/the-linter/ship-steps-marked/canary-step>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/the-linter/x-components-words-clean/real-step> ;
+    p-plan:hasInputVar <https://drift-king.org/not-ah/the-linter/ship-steps-marked/var/rq> , <https://drift-king.org/not-ah/the-linter/ship-steps-marked/var/canary> ;
+    dcterms:title "every step that deploys or pushes is marked a ship step: its canary must be caught" .
+<https://drift-king.org/not-ah/the-linter/ship-steps-marked/real-step>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/the-linter/ship-steps-marked/canary-step> ;
+    p-plan:hasInputVar <https://drift-king.org/not-ah/the-linter/ship-steps-marked/var/rq> , <https://drift-king.org/not-ah/the-linter/var/the-model> ;
+    dcterms:title "every step that deploys or pushes is marked a ship step: the model must pass" .
+
+# Every procedure is one chain, and every step says what to do, so a skill
+# that walks it has one way through and nothing to make up.
+<https://drift-king.org/the-linter/checks/procedure-chain.rq>
+    a dcat:Resource , p-plan:Entity , earl:TestCriterion ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/> ;
+    dcterms:title "every procedure is one chain, and every step says what to do" ;
+    p-plan:correspondsToVariable <https://drift-king.org/not-ah/the-linter/procedure-chain/var/rq> .
+<https://drift-king.org/the-linter/canaries/procedure-chain.ttl>
+    a p-plan:Entity , earl:TestSubject ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <http://www.w3.org/TR/turtle/> ;
+    p-plan:correspondsToVariable <https://drift-king.org/not-ah/the-linter/procedure-chain/var/canary> .
+<https://drift-king.org/not-ah/the-linter/procedure-chain/var/rq> a p-plan:Variable .
+<https://drift-king.org/not-ah/the-linter/procedure-chain/var/canary> a p-plan:Variable .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/the-linter/canaries/procedure-chain.ttl> ;
+  earl:test <https://drift-king.org/the-linter/checks/procedure-chain.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ] ] .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/ah.ttl> ;
+  earl:test <https://drift-king.org/the-linter/checks/procedure-chain.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ] ] .
+<https://drift-king.org/not-ah/the-linter/procedure-chain/canary-step>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/the-linter/ship-steps-marked/real-step> ;
+    p-plan:hasInputVar <https://drift-king.org/not-ah/the-linter/procedure-chain/var/rq> , <https://drift-king.org/not-ah/the-linter/procedure-chain/var/canary> ;
+    dcterms:title "every procedure is one chain, and every step says what to do: its canary must be caught" .
+<https://drift-king.org/not-ah/the-linter/procedure-chain/real-step>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/the-linter/procedure-chain/canary-step> ;
+    p-plan:hasInputVar <https://drift-king.org/not-ah/the-linter/procedure-chain/var/rq> , <https://drift-king.org/not-ah/the-linter/var/the-model> ;
+    dcterms:title "every procedure is one chain, and every step says what to do: the model must pass" .
+
+# Every address of ours the model names opens: a published file, or an
+# address a published file defines, which the site answers with a 303.
+<https://drift-king.org/the-linter/checks/every-address-opens.rq>
+    a dcat:Resource , p-plan:Entity , earl:TestCriterion ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/> ;
+    dcterms:title "every address of ours the model names opens" ;
+    p-plan:correspondsToVariable <https://drift-king.org/not-ah/the-linter/every-address-opens/var/rq> .
+<https://drift-king.org/the-linter/canaries/every-address-opens.ttl>
+    a p-plan:Entity , earl:TestSubject ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <http://www.w3.org/TR/turtle/> ;
+    p-plan:correspondsToVariable <https://drift-king.org/not-ah/the-linter/every-address-opens/var/canary> .
+<https://drift-king.org/not-ah/the-linter/every-address-opens/var/rq> a p-plan:Variable .
+<https://drift-king.org/not-ah/the-linter/every-address-opens/var/canary> a p-plan:Variable .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/the-linter/canaries/every-address-opens.ttl> ;
+  earl:test <https://drift-king.org/the-linter/checks/every-address-opens.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ] ] .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/ah.ttl> ;
+  earl:test <https://drift-king.org/the-linter/checks/every-address-opens.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ] ] .
+<https://drift-king.org/not-ah/the-linter/every-address-opens/canary-step>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/the-linter/procedure-chain/real-step> ;
+    p-plan:hasInputVar <https://drift-king.org/not-ah/the-linter/every-address-opens/var/rq> , <https://drift-king.org/not-ah/the-linter/every-address-opens/var/canary> ;
+    dcterms:title "every address of ours the model names opens: its canary must be caught" .
+<https://drift-king.org/not-ah/the-linter/every-address-opens/real-step>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/the-linter/every-address-opens/canary-step> ;
+    p-plan:hasInputVar <https://drift-king.org/not-ah/the-linter/every-address-opens/var/rq> , <https://drift-king.org/not-ah/the-linter/var/the-model> ;
+    dcterms:title "every address of ours the model names opens: the model must pass" .
+
+# ===========================================================================
+# @apricotter/x-components 0.1.0, as npm published it: the tarball and its
+# attestations, kept once from the registry so a build never reads the
+# network. provenance.ttl is what the attestations say, derived from these two
+# files by the step below and never written by hand; the step derives it again
+# on every build and stops the build if the committed copy differs. The check
+# then holds the kept bytes to the provenance, and the provenance to the
+# commit the audited candidate came from. This is the x-components plan's
+# keep step, and its check that the published tarball is signed and logged.
+# ===========================================================================
+<https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0/x-components-0.1.0.tgz>
+    a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/npm/apricotter-x-components> ;
+    dcterms:identifier "sha256:25551bada8787ce72e0f1f66351ae858a55189a9f1c67d1a2943972cb0c125ac" ,
+        # npm's integrity for the version, as the registry gives it.
+        "sha512-O76sSZcof2rlnllQftA7pHNGB1M71OhleDRJGBJzVAiQeXcdysE/Qir6hvCDXCawBDY3V3yRzereBO0eSQ3xhw==" ;
+    prov:wasDerivedFrom <https://registry.npmjs.org/@apricotter/x-components/-/x-components-0.1.0.tgz> .
+<https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0/attestations.json>
+    a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/npm/apricotter-x-components> ;
+    dcterms:conformsTo <https://www.rfc-editor.org/rfc/rfc8259> ;
+    dcterms:identifier "sha256:410991ca1e6a4cf7d37580ab2d3e5c515b1703eb7fa9dff65f2b83bb3aa33026" ;
+    prov:wasDerivedFrom <https://registry.npmjs.org/-/npm/v1/attestations/@apricotter%2fx-components@0.1.0> .
+<https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0/provenance.ttl>
+    dcterms:isPartOf <https://drift-king.org/not-ah/npm/apricotter-x-components> ;
+    dcterms:conformsTo <http://www.w3.org/TR/turtle/> .
+
+<https://drift-king.org/not-ah/the-linter/var/kept-x-components> a p-plan:Variable ;
+    rdfs:label "the kept x-components tarball, its attestations, and what they say" .
+<https://drift-king.org/not-ah/the-linter/derive-provenance>
+    a sd:SoftwareConfiguration , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasOutputVar <https://drift-king.org/not-ah/the-linter/var/kept-x-components> ;
+    dcterms:title "derive what the kept x-components 0.1.0 attestations say, from the committed bytes, and compare it with the committed provenance.ttl" ;
+    sd:hasExecutionCommand """cd vendor/npm/apricotter-x-components/0.1.0 && d=$(mktemp -d) && git show HEAD:./x-components-0.1.0.tgz > "$d/x-components-0.1.0.tgz" && git show HEAD:./attestations.json > "$d/attestations.json" && git show HEAD:./provenance.ttl > "$d/committed.ttl" && (cd "$d" && node -e 'const fs=require("fs"),c=require("crypto"),Q=String.fromCharCode(34),N=String.fromCharCode(10);const [tgz,att]=process.argv.slice(1);const B="https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0/";const I=x=>"<"+x+">";const S=x=>Q+x+Q;const L=["@prefix owl:     <http://www.w3.org/2002/07/owl#> .","@prefix prov:    <http://www.w3.org/ns/prov#> .","@prefix dcterms: <http://purl.org/dc/terms/> .","",I(B+"provenance.ttl")+" a owl:Ontology , prov:Entity ;","    prov:wasDerivedFrom "+I(B+tgz)+" , "+I(B+att)+" .",I(B+tgz)+" dcterms:identifier "+S("sha512-"+c.createHash("sha512").update(fs.readFileSync(tgz)).digest("base64"))+" ."];JSON.parse(fs.readFileSync(att,"utf8")).attestations.forEach((a,i)=>{const s=JSON.parse(Buffer.from(a.bundle.dsseEnvelope.payload,"base64").toString("utf8"));const n=I(B+att+"#"+(i+1));L.push("",n+" a prov:Entity ;","    dcterms:conformsTo "+I(s.predicateType)+" ;","    dcterms:subject "+S("sha512-"+Buffer.from(s.subject[0].digest.sha512,"hex").toString("base64"))+" ;");a.bundle.verificationMaterial.tlogEntries.forEach(t=>L.push("    dcterms:identifier "+S("rekor:"+t.logIndex)+" ;"));const d=s.predicate&&s.predicate.buildDefinition;if(d){L.push("    prov:wasGeneratedBy "+I(B+att+"#"+(i+1)+"-build")+" .",I(B+att+"#"+(i+1)+"-build")+" a prov:Activity ;","    prov:used "+I(d.externalParameters.workflow.repository+"/commit/"+d.resolvedDependencies[0].digest.gitCommit)+" .")}else{L[L.length-1]=L[L.length-1].replace(/ ;$/," .")}});process.stdout.write(L.join(N)+N);' x-components-0.1.0.tgz attestations.json > derived.ttl) && cmp "$d/derived.ttl" "$d/committed.ttl"; r=$?; rm -rf "$d"; exit $r""" ;
+    dcterms:requires <https://drift-king.org/not-ah/node> .
+
+<https://drift-king.org/the-linter/checks/provenance-matches.rq>
+    a dcat:Resource , p-plan:Entity , earl:TestCriterion ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/> ;
+    dcterms:title "a kept tarball is the one its provenance is about, built from the audited candidate's commit and logged in Rekor" ;
+    dcterms:references <https://drift-king.org/ah/site/x-components/check-provenance> ;
+    p-plan:correspondsToVariable <https://drift-king.org/not-ah/the-linter/provenance-matches/var/rq> .
+<https://drift-king.org/the-linter/canaries/provenance-matches.ttl>
+    a p-plan:Entity , earl:TestSubject ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <http://www.w3.org/TR/turtle/> ;
+    p-plan:correspondsToVariable <https://drift-king.org/not-ah/the-linter/provenance-matches/var/canary> .
+<https://drift-king.org/not-ah/the-linter/provenance-matches/var/rq> a p-plan:Variable .
+<https://drift-king.org/not-ah/the-linter/provenance-matches/var/canary> a p-plan:Variable .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/the-linter/canaries/provenance-matches.ttl> ;
+  earl:test <https://drift-king.org/the-linter/checks/provenance-matches.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ] ] .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/ah.ttl> ;
+  earl:test <https://drift-king.org/the-linter/checks/provenance-matches.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ] ] .
+<https://drift-king.org/not-ah/the-linter/provenance-matches/canary-step>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/the-linter/every-address-opens/real-step> ;
+    p-plan:hasInputVar <https://drift-king.org/not-ah/the-linter/provenance-matches/var/rq> , <https://drift-king.org/not-ah/the-linter/provenance-matches/var/canary> ;
+    dcterms:title "a kept tarball matches its provenance and the audited commit: its canary must be caught" .
+<https://drift-king.org/not-ah/the-linter/provenance-matches/real-step>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/the-linter/provenance-matches/canary-step> ,
+        <https://drift-king.org/not-ah/the-linter/derive-provenance> ;
+    p-plan:hasInputVar <https://drift-king.org/not-ah/the-linter/provenance-matches/var/rq> , <https://drift-king.org/not-ah/the-linter/var/the-model> ;
+    dcterms:title "a kept tarball matches its provenance and the audited commit: the model must pass" .
+
+# Each canary makes up its own addresses, under a folder named for its check.
+# Those addresses are never in the model, so nothing defines them there. The
+# canary is what describes them, so the site sends the whole folder to the
+# published canary with a 303. A made-up file name outside a canary's folder
+# stays a 404: the file does not exist, and saying so is the canary's point.
+<https://drift-king.org/the-linter/canaries/approvals-are-documents.ttl> a prov:Entity ;
+    vann:preferredNamespaceUri "https://drift-king.org/not-ah/canary/approvals-are-documents/" .
+<https://drift-king.org/the-linter/canaries/canary-isolation.ttl> a prov:Entity ;
+    vann:preferredNamespaceUri "https://drift-king.org/not-ah/canary/canary-isolation/" .
+<https://drift-king.org/the-linter/canaries/domain-retypes.ttl> a prov:Entity ;
+    vann:preferredNamespaceUri "https://drift-king.org/not-ah/canary/domain-retypes/" .
+<https://drift-king.org/the-linter/canaries/every-address-opens.ttl> a prov:Entity ;
+    vann:preferredNamespaceUri "https://drift-king.org/not-ah/canary/every-address-opens/" .
+<https://drift-king.org/the-linter/canaries/file-provenance.ttl> a prov:Entity ;
+    vann:preferredNamespaceUri "https://drift-king.org/not-ah/canary/file-provenance/" .
+<https://drift-king.org/the-linter/canaries/iri-names-not-values.ttl> a prov:Entity ;
+    vann:preferredNamespaceUri "https://drift-king.org/not-ah/canary/iri-names-not-values/" .
+<https://drift-king.org/the-linter/canaries/known-gap-unsigned.ttl> a prov:Entity ;
+    vann:preferredNamespaceUri "https://drift-king.org/not-ah/canary/known-gap-unsigned/" .
+<https://drift-king.org/the-linter/canaries/named-by-nobody.ttl> a prov:Entity ;
+    vann:preferredNamespaceUri "https://drift-king.org/not-ah/canary/named-by-nobody/" .
+<https://drift-king.org/the-linter/canaries/namespace-terms-defined.ttl> a prov:Entity ;
+    vann:preferredNamespaceUri "https://drift-king.org/not-ah/canary/namespace-terms-defined/" .
+<https://drift-king.org/the-linter/canaries/plan-cycle.ttl> a prov:Entity ;
+    vann:preferredNamespaceUri "https://drift-king.org/not-ah/canary/plan-cycle/" .
+<https://drift-king.org/the-linter/canaries/procedure-chain.ttl>
+    vann:preferredNamespaceUri "https://drift-king.org/not-ah/canary/procedure-chain/" .
+<https://drift-king.org/the-linter/canaries/provenance-matches.ttl> a prov:Entity ;
+    vann:preferredNamespaceUri "https://drift-king.org/not-ah/canary/provenance-matches/" .
+<https://drift-king.org/the-linter/canaries/range-retypes.ttl> a prov:Entity ;
+    vann:preferredNamespaceUri "https://drift-king.org/not-ah/canary/range-retypes/" .
+<https://drift-king.org/the-linter/canaries/ship-steps-marked.ttl> a prov:Entity ;
+    vann:preferredNamespaceUri "https://drift-king.org/not-ah/canary/ship-steps-marked/" .
+<https://drift-king.org/the-linter/canaries/terms-defined-in-vocab.ttl> a prov:Entity ;
+    vann:preferredNamespaceUri "https://drift-king.org/not-ah/canary/terms-defined-in-vocab/" .
+
+# Every command that runs a pinned tool through npx names the version its pin
+# gives, so a run takes the release seen to work and not whichever is newest.
+<https://drift-king.org/the-linter/checks/tool-version-pinned.rq>
+    a dcat:Resource , p-plan:Entity , earl:TestCriterion ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/> ;
+    dcterms:title "every command that runs a pinned tool through npx names the version the model pins" ;
+    p-plan:correspondsToVariable <https://drift-king.org/not-ah/the-linter/tool-version-pinned/var/rq> .
+<https://drift-king.org/the-linter/canaries/tool-version-pinned.ttl>
+    a p-plan:Entity , earl:TestSubject ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <http://www.w3.org/TR/turtle/> ;
+    p-plan:correspondsToVariable <https://drift-king.org/not-ah/the-linter/tool-version-pinned/var/canary> .
+<https://drift-king.org/not-ah/the-linter/tool-version-pinned/var/rq> a p-plan:Variable .
+<https://drift-king.org/not-ah/the-linter/tool-version-pinned/var/canary> a p-plan:Variable .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/the-linter/canaries/tool-version-pinned.ttl> ;
+  earl:test <https://drift-king.org/the-linter/checks/tool-version-pinned.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ] ] .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/ah.ttl> ;
+  earl:test <https://drift-king.org/the-linter/checks/tool-version-pinned.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ] ] .
+<https://drift-king.org/not-ah/the-linter/tool-version-pinned/canary-step>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/the-linter/provenance-matches/real-step> ;
+    p-plan:hasInputVar <https://drift-king.org/not-ah/the-linter/tool-version-pinned/var/rq> , <https://drift-king.org/not-ah/the-linter/tool-version-pinned/var/canary> ;
+    dcterms:title "every command that runs a pinned tool through npx names its pinned version: its canary must be caught" .
+<https://drift-king.org/not-ah/the-linter/tool-version-pinned/real-step>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/the-linter/tool-version-pinned/canary-step> ;
+    p-plan:hasInputVar <https://drift-king.org/not-ah/the-linter/tool-version-pinned/var/rq> , <https://drift-king.org/not-ah/the-linter/var/the-model> ;
+    dcterms:title "every command that runs a pinned tool through npx names its pinned version: the model must pass" .
+<https://drift-king.org/the-linter/canaries/tool-version-pinned.ttl> a prov:Entity ;
+    vann:preferredNamespaceUri "https://drift-king.org/not-ah/canary/tool-version-pinned/" .
+
+# The Cloudflare account, named by the setting it is read from and never by
+# its value: the value lives only in the environment of whoever ships, so no
+# file of ours, and nothing drift-king.org publishes, holds it. A step that
+# needs it fails before it runs when the setting is empty.
+<https://drift-king.org/not-ah/setting/user-profile>
+    rdfs:label "USERPROFILE" ;
+    rdfs:comment "The folder of the user who builds, read from the environment by name. It goes into the cargo config the build writes, and into nothing that is committed or published." .
+<https://drift-king.org/not-ah/setting/cloudflare-account-id>
+    rdfs:label "CLOUDFLARE_ACCOUNT_ID" ;
+    rdfs:comment "The Cloudflare account the registry and the Worker belong to. Read from the environment by name; wrangler reads the same variable itself." .
+
+# ===========================================================================
+# @apricotter/x-components 0.2.0, the candidate: the files its tarball holds, kept
+# here exactly as packed. Nothing is published: they come from a dry run, a
+# projection of microsites' commit a6734655c0a14970a7e3dfb678154d39115a5a27 into a clone of the
+# public repository with no line-ending conversion, packed by npm pack. The
+# tarball is named below and not kept; its files are, as the 0.1.0 candidate's are.
+# ===========================================================================
+<https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/x-components-0.2.0.tgz>
+    a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/npm/apricotter-x-components> ;
+    dcterms:identifier "sha256:1ec0b4855a310615821c7b3a1e9e7d30ae2d034703d1ad92d1597b3060d14bde" , "sha512-eazVnv9hCBjdMC229KQrAlWGjx6WxYeYZhAgzrLs3cBh5xSuNQz1cnik4V+O1OE5/n4tJsPwzGIXFI72DHWgsg==" ;
+    rdfs:comment "The tarball of 0.2.0 as npm pack wrote it from x-components 6cf506e4bc23ddd825c31cc27aacc1068747f138. Not kept: its nine files are, each with its sha256. npm's integrity above is the sha512 of these bytes." .
+<https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/LICENSE>
+    a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/npm/apricotter-x-components> ;
+    dcterms:identifier "sha256:c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4" ;
+    prov:wasDerivedFrom <https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/x-components-0.2.0.tgz> .
+<https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/NOTICE>
+    a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/npm/apricotter-x-components> ;
+    dcterms:identifier "sha256:0160e5a552d5eaa44863878679f6907cc127bda9aabb13cf4676caa4d236785e" ;
+    prov:wasDerivedFrom <https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/x-components-0.2.0.tgz> .
+<https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/README.md>
+    a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/npm/apricotter-x-components> ;
+    dcterms:conformsTo <https://spec.commonmark.org/> ;
+    dcterms:identifier "sha256:243cd5658d3f1ce298a43b261acef29f4a99b7ffbec8c29272fee961b2b0417e" ;
+    prov:wasDerivedFrom <https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/x-components-0.2.0.tgz> .
+<https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/package.json>
+    a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/npm/apricotter-x-components> ;
+    dcterms:conformsTo <https://www.rfc-editor.org/rfc/rfc8259> ;
+    dcterms:identifier "sha256:ffe8ad77fee803f232f6c08a9f8482faca091b405e2211abcba9b64eb38dcdba" ;
+    prov:wasDerivedFrom <https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/x-components-0.2.0.tgz> .
+<https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/component.ttl>
+    a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/npm/apricotter-x-components> ;
+    dcterms:conformsTo <http://www.w3.org/TR/turtle/> ;
+    dcterms:identifier "sha256:4ee45f78781bdb1895a1ac645fc1c27d705a329d052db99441bfd83eaa7e4403" ;
+    prov:wasDerivedFrom <https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/x-components-0.2.0.tgz> .
+<https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/wai-aria.ttl>
+    a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/npm/apricotter-x-components> ;
+    dcterms:conformsTo <http://www.w3.org/TR/turtle/> ;
+    dcterms:identifier "sha256:d68deb932b1e5b4df041832daa75a8802804d191560de1a1ceeab60836c24bd6" ;
+    prov:wasDerivedFrom <https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/x-components-0.2.0.tgz> .
+<https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/component-attributes.generated.mjs>
+    a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/npm/apricotter-x-components> ;
+    dcterms:identifier "sha256:a3e2ae24f09d065375e5c91204de8d9f26a36c52d7ad0bdc3ffec6f103d243f8" ;
+    prov:wasDerivedFrom <https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/x-components-0.2.0.tgz> .
+<https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/expand.mjs>
+    a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/npm/apricotter-x-components> ;
+    dcterms:identifier "sha256:2cbb759aa82b9f783edd0b21c0e43a5d83adbbbb34d4f48370847966d051d675" ;
+    prov:wasDerivedFrom <https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/x-components-0.2.0.tgz> .
+<https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/static.mjs>
+    a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/npm/apricotter-x-components> ;
+    dcterms:identifier "sha256:550974d9b2a57f57924ab9b130d831e9995cc7d37e56e9ec928441bb9289a21c" ;
+    prov:wasDerivedFrom <https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/x-components-0.2.0.tgz> .
+
+# ---------------------------------------------------------------------------
+# The expander's one dependency, cheerio, and everything it pulls in, each at the
+# exact version that was audited and with the integrity npm gives it. It is a
+# lockfile (site/expander/package-lock.json) that installs them, and an install
+# that gets any other bytes stops: npm ci checks every integrity below.
+# ---------------------------------------------------------------------------
+<https://drift-king.org/not-ah/npm/boolbase/1.0.0>
+    a sd:SoftwareVersion ;
+    sd:name "boolbase" ;
+    sd:hasVersionId "1.0.0" ;
+    sd:hasDownloadURL "https://registry.npmjs.org/boolbase/-/boolbase-1.0.0.tgz"^^xsd:anyURI ;
+    dcterms:identifier "sha512-JZOSA7Mo9sNGB8+UjSgzdLtokWAky1zbztM3WRLCbZ70/3cTANmQmOdR7y2g+J0e2WXywy1yS468tY+IruqEww==" .
+<https://drift-king.org/not-ah/npm/cheerio-select/2.1.0>
+    a sd:SoftwareVersion ;
+    sd:name "cheerio-select" ;
+    sd:hasVersionId "2.1.0" ;
+    sd:hasDownloadURL "https://registry.npmjs.org/cheerio-select/-/cheerio-select-2.1.0.tgz"^^xsd:anyURI ;
+    dcterms:identifier "sha512-9v9kG0LvzrlcungtnJtpGNxY+fzECQKhK4EGJX2vByejiMX84MFNQw4UxPJl3bFbTMw+Dfs37XaIkCwTZfLh4g==" .
+<https://drift-king.org/not-ah/npm/cheerio/1.2.0>
+    a sd:SoftwareVersion ;
+    sd:name "cheerio" ;
+    sd:hasVersionId "1.2.0" ;
+    sd:hasDownloadURL "https://registry.npmjs.org/cheerio/-/cheerio-1.2.0.tgz"^^xsd:anyURI ;
+    dcterms:identifier "sha512-WDrybc/gKFpTYQutKIK6UvfcuxijIZfMfXaYm8NMsPQxSYvf+13fXUJ4rztGGbJcBQ/GF55gvrZ0Bc0bj/mqvg==" .
+<https://drift-king.org/not-ah/npm/css-select/5.2.2>
+    a sd:SoftwareVersion ;
+    sd:name "css-select" ;
+    sd:hasVersionId "5.2.2" ;
+    sd:hasDownloadURL "https://registry.npmjs.org/css-select/-/css-select-5.2.2.tgz"^^xsd:anyURI ;
+    dcterms:identifier "sha512-TizTzUddG/xYLA3NXodFM0fSbNizXjOKhqiQQwvhlspadZokn1KDy0NZFS0wuEubIYAV5/c1/lAr0TaaFXEXzw==" .
+<https://drift-king.org/not-ah/npm/css-what/6.2.2>
+    a sd:SoftwareVersion ;
+    sd:name "css-what" ;
+    sd:hasVersionId "6.2.2" ;
+    sd:hasDownloadURL "https://registry.npmjs.org/css-what/-/css-what-6.2.2.tgz"^^xsd:anyURI ;
+    dcterms:identifier "sha512-u/O3vwbptzhMs3L1fQE82ZSLHQQfto5gyZzwteVIEyeaY5Fc7R4dapF/BvRoSYFeqfBk4m0V1Vafq5Pjv25wvA==" .
+<https://drift-king.org/not-ah/npm/dom-serializer/2.0.0>
+    a sd:SoftwareVersion ;
+    sd:name "dom-serializer" ;
+    sd:hasVersionId "2.0.0" ;
+    sd:hasDownloadURL "https://registry.npmjs.org/dom-serializer/-/dom-serializer-2.0.0.tgz"^^xsd:anyURI ;
+    dcterms:identifier "sha512-wIkAryiqt/nV5EQKqQpo3SToSOV9J0DnbJqwK7Wv/Trc92zIAYZ4FlMu+JPFW1DfGFt81ZTCGgDEabffXeLyJg==" .
+<https://drift-king.org/not-ah/npm/domelementtype/2.3.0>
+    a sd:SoftwareVersion ;
+    sd:name "domelementtype" ;
+    sd:hasVersionId "2.3.0" ;
+    sd:hasDownloadURL "https://registry.npmjs.org/domelementtype/-/domelementtype-2.3.0.tgz"^^xsd:anyURI ;
+    dcterms:identifier "sha512-OLETBj6w0OsagBwdXnPdN0cnMfF9opN69co+7ZrbfPGrdpPVNBUj02spi6B1N7wChLQiPn4CSH/zJvXw56gmHw==" .
+<https://drift-king.org/not-ah/npm/domhandler/5.0.3>
+    a sd:SoftwareVersion ;
+    sd:name "domhandler" ;
+    sd:hasVersionId "5.0.3" ;
+    sd:hasDownloadURL "https://registry.npmjs.org/domhandler/-/domhandler-5.0.3.tgz"^^xsd:anyURI ;
+    dcterms:identifier "sha512-cgwlv/1iFQiFnU96XXgROh8xTeetsnJiDsTc7TYCLFd9+/WNkIqPTxiM/8pSd8VIrhXGTf1Ny1q1hquVqDJB5w==" .
+<https://drift-king.org/not-ah/npm/domutils/3.2.2>
+    a sd:SoftwareVersion ;
+    sd:name "domutils" ;
+    sd:hasVersionId "3.2.2" ;
+    sd:hasDownloadURL "https://registry.npmjs.org/domutils/-/domutils-3.2.2.tgz"^^xsd:anyURI ;
+    dcterms:identifier "sha512-6kZKyUajlDuqlHKVX1w7gyslj9MPIXzIFiz/rGu35uC1wMi+kMhQwGhl4lt9unC9Vb9INnY9Z3/ZA3+FhASLaw==" .
+<https://drift-king.org/not-ah/npm/encoding-sniffer/0.2.1>
+    a sd:SoftwareVersion ;
+    sd:name "encoding-sniffer" ;
+    sd:hasVersionId "0.2.1" ;
+    sd:hasDownloadURL "https://registry.npmjs.org/encoding-sniffer/-/encoding-sniffer-0.2.1.tgz"^^xsd:anyURI ;
+    dcterms:identifier "sha512-5gvq20T6vfpekVtqrYQsSCFZ1wEg5+wW0/QaZMWkFr6BqD3NfKs0rLCx4rrVlSWJeZb5NBJgVLswK/w2MWU+Gw==" .
+<https://drift-king.org/not-ah/npm/entities/4.5.0>
+    a sd:SoftwareVersion ;
+    sd:name "entities" ;
+    sd:hasVersionId "4.5.0" ;
+    sd:hasDownloadURL "https://registry.npmjs.org/entities/-/entities-4.5.0.tgz"^^xsd:anyURI ;
+    dcterms:identifier "sha512-V0hjH4dGPh9Ao5p0MoRY6BVqtwCjhz6vI5LT8AJ55H+4g9/4vbHx1I54fS0XuclLhDHArPQCiMjDxjaL8fPxhw==" .
+<https://drift-king.org/not-ah/npm/entities/6.0.1>
+    a sd:SoftwareVersion ;
+    sd:name "entities" ;
+    sd:hasVersionId "6.0.1" ;
+    sd:hasDownloadURL "https://registry.npmjs.org/entities/-/entities-6.0.1.tgz"^^xsd:anyURI ;
+    dcterms:identifier "sha512-aN97NXWF6AWBTahfVOIrB/NShkzi5H7F9r1s9mD3cDj4Ko5f2qhhVoYMibXF7GlLveb/D2ioWay8lxI97Ven3g==" .
+<https://drift-king.org/not-ah/npm/entities/7.0.1>
+    a sd:SoftwareVersion ;
+    sd:name "entities" ;
+    sd:hasVersionId "7.0.1" ;
+    sd:hasDownloadURL "https://registry.npmjs.org/entities/-/entities-7.0.1.tgz"^^xsd:anyURI ;
+    dcterms:identifier "sha512-TWrgLOFUQTH994YUyl1yT4uyavY5nNB5muff+RtWaqNVCAK408b5ZnnbNAUEWLTCpum9w6arT70i1XdQ4UeOPA==" .
+<https://drift-king.org/not-ah/npm/htmlparser2/10.1.0>
+    a sd:SoftwareVersion ;
+    sd:name "htmlparser2" ;
+    sd:hasVersionId "10.1.0" ;
+    sd:hasDownloadURL "https://registry.npmjs.org/htmlparser2/-/htmlparser2-10.1.0.tgz"^^xsd:anyURI ;
+    dcterms:identifier "sha512-VTZkM9GWRAtEpveh7MSF6SjjrpNVNNVJfFup7xTY3UpFtm67foy9HDVXneLtFVt4pMz5kZtgNcvCniNFb1hlEQ==" .
+<https://drift-king.org/not-ah/npm/iconv-lite/0.6.3>
+    a sd:SoftwareVersion ;
+    sd:name "iconv-lite" ;
+    sd:hasVersionId "0.6.3" ;
+    sd:hasDownloadURL "https://registry.npmjs.org/iconv-lite/-/iconv-lite-0.6.3.tgz"^^xsd:anyURI ;
+    dcterms:identifier "sha512-4fCk79wshMdzMp2rH06qWrJE4iolqLhCUH+OiuIgU++RB0+94NlDL81atO7GX55uUKueo0txHNtvEyI6D7WdMw==" .
+<https://drift-king.org/not-ah/npm/nth-check/2.1.1>
+    a sd:SoftwareVersion ;
+    sd:name "nth-check" ;
+    sd:hasVersionId "2.1.1" ;
+    sd:hasDownloadURL "https://registry.npmjs.org/nth-check/-/nth-check-2.1.1.tgz"^^xsd:anyURI ;
+    dcterms:identifier "sha512-lqjrjmaOoAnWfMmBPL+XNnynZh2+swxiX3WUE0s4yEHI6m+AwrK2UZOimIRl3X/4QctVqS8AiZjFqyOGrMXb/w==" .
+<https://drift-king.org/not-ah/npm/parse5-htmlparser2-tree-adapter/7.1.0>
+    a sd:SoftwareVersion ;
+    sd:name "parse5-htmlparser2-tree-adapter" ;
+    sd:hasVersionId "7.1.0" ;
+    sd:hasDownloadURL "https://registry.npmjs.org/parse5-htmlparser2-tree-adapter/-/parse5-htmlparser2-tree-adapter-7.1.0.tgz"^^xsd:anyURI ;
+    dcterms:identifier "sha512-ruw5xyKs6lrpo9x9rCZqZZnIUntICjQAd0Wsmp396Ul9lN/h+ifgVV1x1gZHi8euej6wTfpqX8j+BFQxF0NS/g==" .
+<https://drift-king.org/not-ah/npm/parse5-parser-stream/7.1.2>
+    a sd:SoftwareVersion ;
+    sd:name "parse5-parser-stream" ;
+    sd:hasVersionId "7.1.2" ;
+    sd:hasDownloadURL "https://registry.npmjs.org/parse5-parser-stream/-/parse5-parser-stream-7.1.2.tgz"^^xsd:anyURI ;
+    dcterms:identifier "sha512-JyeQc9iwFLn5TbvvqACIF/VXG6abODeB3Fwmv/TGdLk2LfbWkaySGY72at4+Ty7EkPZj854u4CrICqNk2qIbow==" .
+<https://drift-king.org/not-ah/npm/parse5/7.3.0>
+    a sd:SoftwareVersion ;
+    sd:name "parse5" ;
+    sd:hasVersionId "7.3.0" ;
+    sd:hasDownloadURL "https://registry.npmjs.org/parse5/-/parse5-7.3.0.tgz"^^xsd:anyURI ;
+    dcterms:identifier "sha512-IInvU7fabl34qmi9gY8XOVxhYyMyuH2xUNpb2q8/Y+7552KlejkRvqvD19nMoUW/uQGGbqNpA6Tufu5FL5BZgw==" .
+<https://drift-king.org/not-ah/npm/safer-buffer/2.1.2>
+    a sd:SoftwareVersion ;
+    sd:name "safer-buffer" ;
+    sd:hasVersionId "2.1.2" ;
+    sd:hasDownloadURL "https://registry.npmjs.org/safer-buffer/-/safer-buffer-2.1.2.tgz"^^xsd:anyURI ;
+    dcterms:identifier "sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==" .
+<https://drift-king.org/not-ah/npm/undici/7.29.0>
+    a sd:SoftwareVersion ;
+    sd:name "undici" ;
+    sd:hasVersionId "7.29.0" ;
+    sd:hasDownloadURL "https://registry.npmjs.org/undici/-/undici-7.29.0.tgz"^^xsd:anyURI ;
+    dcterms:identifier "sha512-IDxfleLmmbSskfWSUATiN1nfn2rDuvnMOqb5CWR92iIfojA0Ud+ulOAAEQ57LPr9rWmsreUyf5lwyao+7GNNVw==" .
+<https://drift-king.org/not-ah/npm/whatwg-encoding/3.1.1>
+    a sd:SoftwareVersion ;
+    sd:name "whatwg-encoding" ;
+    sd:hasVersionId "3.1.1" ;
+    sd:hasDownloadURL "https://registry.npmjs.org/whatwg-encoding/-/whatwg-encoding-3.1.1.tgz"^^xsd:anyURI ;
+    dcterms:identifier "sha512-6qN4hJdMwfYBtE3YBTTHhoeuUrDBPZmbQaxWAqSALV/MeEnR5z1xd8UKud2RAkFoPkmB+hli1TZSnyi84xz1vQ==" .
+<https://drift-king.org/not-ah/npm/whatwg-mimetype/4.0.0>
+    a sd:SoftwareVersion ;
+    sd:name "whatwg-mimetype" ;
+    sd:hasVersionId "4.0.0" ;
+    sd:hasDownloadURL "https://registry.npmjs.org/whatwg-mimetype/-/whatwg-mimetype-4.0.0.tgz"^^xsd:anyURI ;
+    dcterms:identifier "sha512-QaKxh0eNIi2mE9p2vEdzfagOKHCcj1pJ56EEHGQOVxp8r9/iszLUUV7v89x9O1p/T+NlTM5W7jW6+cz4Fq1YVg==" .
+<https://drift-king.org/not-ah/npm/cheerio/1.2.0>
+    dcterms:requires <https://drift-king.org/not-ah/npm/boolbase/1.0.0> , 
+        <https://drift-king.org/not-ah/npm/cheerio-select/2.1.0> , 
+        <https://drift-king.org/not-ah/npm/css-select/5.2.2> , 
+        <https://drift-king.org/not-ah/npm/css-what/6.2.2> , 
+        <https://drift-king.org/not-ah/npm/dom-serializer/2.0.0> , 
+        <https://drift-king.org/not-ah/npm/domelementtype/2.3.0> , 
+        <https://drift-king.org/not-ah/npm/domhandler/5.0.3> , 
+        <https://drift-king.org/not-ah/npm/domutils/3.2.2> , 
+        <https://drift-king.org/not-ah/npm/encoding-sniffer/0.2.1> , 
+        <https://drift-king.org/not-ah/npm/entities/4.5.0> , 
+        <https://drift-king.org/not-ah/npm/entities/6.0.1> , 
+        <https://drift-king.org/not-ah/npm/entities/7.0.1> , 
+        <https://drift-king.org/not-ah/npm/htmlparser2/10.1.0> , 
+        <https://drift-king.org/not-ah/npm/iconv-lite/0.6.3> , 
+        <https://drift-king.org/not-ah/npm/nth-check/2.1.1> , 
+        <https://drift-king.org/not-ah/npm/parse5-htmlparser2-tree-adapter/7.1.0> , 
+        <https://drift-king.org/not-ah/npm/parse5-parser-stream/7.1.2> , 
+        <https://drift-king.org/not-ah/npm/parse5/7.3.0> , 
+        <https://drift-king.org/not-ah/npm/safer-buffer/2.1.2> , 
+        <https://drift-king.org/not-ah/npm/undici/7.29.0> , 
+        <https://drift-king.org/not-ah/npm/whatwg-encoding/3.1.1> , 
+        <https://drift-king.org/not-ah/npm/whatwg-mimetype/4.0.0> .
+
+<https://drift-king.org/not-ah/unzip>
+    a sd:SoftwareVersion ;
+    sd:name "unzip" ;
+    rdfs:comment "Info-ZIP unzip, as Git for Windows ships it at /usr/bin/unzip. Not pinned yet: its version is the next thing to record." .
+
+# Playwright, for the checks that run the home page in a real browser. The two
+# packages are the ones the microsites repo's lockfile pins, at their integrity.
+<https://drift-king.org/not-ah/npm/playwright-core/1.61.1>
+    a sd:SoftwareVersion ;
+    sd:name "playwright-core" ;
+    sd:hasVersionId "1.61.1" ;
+    sd:hasDownloadURL "https://registry.npmjs.org/playwright-core/-/playwright-core-1.61.1.tgz"^^xsd:anyURI ;
+    dcterms:identifier "sha512-h7Qlt6m4REp25qvIdvbDtVmD4LqVXfpRxhORv9L0jzETM05p4fuPJ3dKyuSXQxDSbXnmS79HAgi9589lGSpLkg==" .
+<https://drift-king.org/not-ah/npm/playwright/1.61.1>
+    a sd:SoftwareVersion ;
+    sd:name "playwright" ;
+    sd:hasVersionId "1.61.1" ;
+    sd:hasDownloadURL "https://registry.npmjs.org/playwright/-/playwright-1.61.1.tgz"^^xsd:anyURI ;
+    dcterms:identifier "sha512-DWnY5o3YbLWK4GovuAVwpqL+1VwGNdUGrRr++8j8PtQQzvAVZUIMjKQ90fY689sEJZJBbZVw1rXaOKSTitkzPQ==" ;
+    dcterms:requires <https://drift-king.org/not-ah/npm/playwright-core/1.61.1> .
+
+# The audit's checks, run again on the 0.2.0 candidate's own model. Each check's
+# canary is caught once, as before; the candidate's model has its own variable and
+# its own step for each check, and its own expected outcome.
+<https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/component.ttl>
+    a earl:TestSubject ;
+    p-plan:correspondsToVariable <https://drift-king.org/not-ah/the-linter/var/x-components-model-0-2-0> .
+<https://drift-king.org/not-ah/the-linter/var/x-components-model-0-2-0> a p-plan:Variable ; rdfs:label "the x-components 0.2.0 candidate's own model" .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/component.ttl> ;
+  earl:test <https://drift-king.org/the-linter/checks/x-components-components-whole.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ] ] .
+<https://drift-king.org/not-ah/the-linter/x-components-components-whole/real-step-0-2-0>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/the-linter/x-components-words-clean/real-step> ;
+    p-plan:hasInputVar <https://drift-king.org/not-ah/the-linter/x-components-components-whole/var/rq> , <https://drift-king.org/not-ah/the-linter/var/x-components-model-0-2-0> ;
+    dcterms:title "x-components-components-whole: the 0.2.0 candidate must pass" .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/component.ttl> ;
+  earl:test <https://drift-king.org/the-linter/checks/x-components-roles-resolve.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ] ] .
+<https://drift-king.org/not-ah/the-linter/x-components-roles-resolve/real-step-0-2-0>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/the-linter/x-components-components-whole/real-step-0-2-0> ;
+    p-plan:hasInputVar <https://drift-king.org/not-ah/the-linter/x-components-roles-resolve/var/rq> , <https://drift-king.org/not-ah/the-linter/var/x-components-model-0-2-0> ;
+    dcterms:title "x-components-roles-resolve: the 0.2.0 candidate must pass" .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/component.ttl> ;
+  earl:test <https://drift-king.org/the-linter/checks/x-components-words-clean.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ] ] .
+<https://drift-king.org/not-ah/the-linter/x-components-words-clean/real-step-0-2-0>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/the-linter/x-components-roles-resolve/real-step-0-2-0> ;
+    p-plan:hasInputVar <https://drift-king.org/not-ah/the-linter/x-components-words-clean/var/rq> , <https://drift-king.org/not-ah/the-linter/var/x-components-model-0-2-0> ;
+    dcterms:title "x-components-words-clean: the 0.2.0 candidate must pass" .
+
+# The candidate as a version: what the new home page waits to have taken. It is not
+# published, and Drift King uses only a version it has taken.
+<https://drift-king.org/not-ah/npm/apricotter-x-components/0.2.0>
+    a sd:SoftwareVersion ;
+    sd:name "@apricotter/x-components" ;
+    sd:hasVersionId "0.2.0" ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/npm/apricotter-x-components> ;
+    rdfs:comment "The release candidate the home page is built on. Not published and not taken." .
+
+# A step that waits for a taking is held until a taking of its version is signed. The
+# check is the query the builder asks, run on small graphs of its own: a step whose
+# taking is not signed is found; a taking of another version leaves it found; a taking
+# of its version, signed, leaves nothing.
+<https://drift-king.org/the-builder/queries/untaken.rq>
+    a dcat:Resource , p-plan:Entity , earl:TestCriterion ;
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/> ;
+    dcterms:title "a step that waits for a version to be taken is held until a taking of that version is signed" ;
+    p-plan:correspondsToVariable <https://drift-king.org/not-ah/the-linter/held-until-taken/var/rq> .
+<https://drift-king.org/not-ah/the-linter/held-until-taken/var/rq> a p-plan:Variable .
+<https://drift-king.org/the-linter/canaries/held-until-taken-untaken.ttl>
+    a p-plan:Entity , earl:TestSubject ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <http://www.w3.org/TR/turtle/> ;
+    vann:preferredNamespaceUri "https://drift-king.org/not-ah/canary/held-until-taken-untaken/" ;
+    p-plan:correspondsToVariable <https://drift-king.org/not-ah/the-linter/held-until-taken/var/untaken> .
+<https://drift-king.org/not-ah/the-linter/held-until-taken/var/untaken> a p-plan:Variable .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/the-linter/canaries/held-until-taken-untaken.ttl> ;
+  earl:test <https://drift-king.org/the-builder/queries/untaken.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ] ] .
+<https://drift-king.org/not-ah/the-linter/held-until-taken/untaken-step>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/the-linter/ship-steps-marked/real-step> ;
+    p-plan:hasInputVar <https://drift-king.org/not-ah/the-linter/held-until-taken/var/rq> , <https://drift-king.org/not-ah/the-linter/held-until-taken/var/untaken> ;
+    dcterms:title "a step that waits for a version to be taken: with no taking it is held, and found" .
+<https://drift-king.org/the-linter/canaries/held-until-taken-wrong-version.ttl>
+    a p-plan:Entity , earl:TestSubject ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <http://www.w3.org/TR/turtle/> ;
+    vann:preferredNamespaceUri "https://drift-king.org/not-ah/canary/held-until-taken-wrong-version/" ;
+    p-plan:correspondsToVariable <https://drift-king.org/not-ah/the-linter/held-until-taken/var/wrong-version> .
+<https://drift-king.org/not-ah/the-linter/held-until-taken/var/wrong-version> a p-plan:Variable .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/the-linter/canaries/held-until-taken-wrong-version.ttl> ;
+  earl:test <https://drift-king.org/the-builder/queries/untaken.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ] ] .
+<https://drift-king.org/not-ah/the-linter/held-until-taken/wrong-version-step>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/the-linter/ship-steps-marked/real-step> ;
+    p-plan:hasInputVar <https://drift-king.org/not-ah/the-linter/held-until-taken/var/rq> , <https://drift-king.org/not-ah/the-linter/held-until-taken/var/wrong-version> ;
+    dcterms:title "a step that waits for a version to be taken: with a taking of another version it is still held, and found" .
+<https://drift-king.org/the-linter/canaries/held-until-taken-taken.ttl>
+    a p-plan:Entity , earl:TestSubject ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <http://www.w3.org/TR/turtle/> ;
+    vann:preferredNamespaceUri "https://drift-king.org/not-ah/canary/held-until-taken-taken/" ;
+    p-plan:correspondsToVariable <https://drift-king.org/not-ah/the-linter/held-until-taken/var/taken> .
+<https://drift-king.org/not-ah/the-linter/held-until-taken/var/taken> a p-plan:Variable .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/the-linter/canaries/held-until-taken-taken.ttl> ;
+  earl:test <https://drift-king.org/the-builder/queries/untaken.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ] ] .
+<https://drift-king.org/not-ah/the-linter/held-until-taken/taken-step>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/the-linter/ship-steps-marked/real-step> ;
+    p-plan:hasInputVar <https://drift-king.org/not-ah/the-linter/held-until-taken/var/rq> , <https://drift-king.org/not-ah/the-linter/held-until-taken/var/taken> ;
+    dcterms:title "a step that waits for a version to be taken: with a signed taking of its version it is not held" .
+<https://drift-king.org/the-linter/canaries/named-by-nobody-intake-only.ttl>
+    a p-plan:Entity , earl:TestSubject ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <http://www.w3.org/TR/turtle/> ;
+    vann:preferredNamespaceUri "https://drift-king.org/not-ah/canary/named-by-nobody-intake-only/" ;
+    p-plan:correspondsToVariable <https://drift-king.org/not-ah/the-linter/named-by-nobody/var/intake-only> .
+<https://drift-king.org/not-ah/the-linter/named-by-nobody/var/intake-only> a p-plan:Variable .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/the-linter/canaries/named-by-nobody-intake-only.ttl> ;
+  earl:test <https://drift-king.org/the-linter/checks/named-by-nobody.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ] ] .
+<https://drift-king.org/not-ah/the-linter/named-by-nobody/intake-only-step>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/the-linter/named-by-nobody/canary-step> ;
+    p-plan:hasInputVar <https://drift-king.org/not-ah/the-linter/var/named-by-nobody-rq> , <https://drift-king.org/not-ah/the-linter/named-by-nobody/var/intake-only> ;
+    dcterms:title "named-by-nobody: a file in an intake folder, unnamed, is expected" .
+<https://drift-king.org/the-linter/canaries/named-by-nobody-intake-and-elsewhere.ttl>
+    a p-plan:Entity , earl:TestSubject ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <http://www.w3.org/TR/turtle/> ;
+    vann:preferredNamespaceUri "https://drift-king.org/not-ah/canary/named-by-nobody-intake-and-elsewhere/" ;
+    p-plan:correspondsToVariable <https://drift-king.org/not-ah/the-linter/named-by-nobody/var/intake-and-elsewhere> .
+<https://drift-king.org/not-ah/the-linter/named-by-nobody/var/intake-and-elsewhere> a p-plan:Variable .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/the-linter/canaries/named-by-nobody-intake-and-elsewhere.ttl> ;
+  earl:test <https://drift-king.org/the-linter/checks/named-by-nobody.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ] ] .
+<https://drift-king.org/not-ah/the-linter/named-by-nobody/intake-and-elsewhere-step>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/the-linter/named-by-nobody/canary-step> ;
+    p-plan:hasInputVar <https://drift-king.org/not-ah/the-linter/var/named-by-nobody-rq> , <https://drift-king.org/not-ah/the-linter/named-by-nobody/var/intake-and-elsewhere> ;
+    dcterms:title "named-by-nobody: a file in an intake folder is expected, and a file anywhere else still fails" .
+
+# ===========================================================================
+# The repository is clean: every tracked file, every file the site publishes, and every
+# commit message and author passes the named rules below. A rule is either a format (a local
+# path, an account ID's shape, a key or token's shape, a private host) or the private values
+# themselves, which are not written here: they are read at run time from one file outside the
+# repository, named by a setting, and the model holds only the setting's name and the file's
+# sha256. Nothing that names a private value, or looks like a secret, is written down in order
+# to look for it: each canary is built when the check runs, in a scratch folder, and removed.
+# ===========================================================================
+<https://drift-king.org/not-ah/the-linter/clean-rules> a prov:Collection ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:title "the clean rules" ;
+    rdfs:comment "What may not appear in anything Drift King publishes: local paths, personal addresses, account IDs, keys and tokens, private hosts, and the private values. Role addresses at drift-king.org are allowed." .
+<https://drift-king.org/not-ah/setting/private-values> a prov:Entity ;
+    rdfs:label "DRIFT_KING_PRIVATE_VALUES" ;
+    rdfs:comment "The path of the file that holds the private values (names, a personal subdomain, anything personal), one to a line. Read from the environment by name. If it is missing, or the file is not the one the model holds the sha256 of, the clean check cannot run: it exits 2, never a pass." .
+<https://drift-king.org/not-ah/private/private-values> a prov:Entity , <https://drift-king.org/not-ah/PrivateItem> ;
+    dcterms:identifier "sha256:836a898ed1947619c5603c8605c3b28cc4dc7683eaa138ac906afd9aefcf06f8" ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/lead-architect> ;
+    rdfs:label "the private values" ;
+    rdfs:comment "The file of values nothing published may hold. Kept beside the moved evidence on the lead architect's machine; named and hashed here and never published." .
+<https://drift-king.org/not-ah/the-linter/clean/personal-values> a earl:TestCriterion ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter/clean-rules> ;
+    skos:prefLabel "personal-values" ;
+    dcterms:title "no private value: a name or a personal subdomain, read at run time from the file the setting names" ;
+    dcterms:requires <https://drift-king.org/not-ah/setting/private-values> ;
+    dcterms:source <https://drift-king.org/not-ah/private/private-values> .
+<https://drift-king.org/not-ah/the-linter/clean/local-path> a earl:TestCriterion ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter/clean-rules> ;
+    skos:prefLabel "local-path" ;
+    dcterms:title "no local path" ;
+    sh:pattern "[C]:[\\\\/]+[U]sers|/[U]sers/|/[h]ome/" ;
+    skos:example "C:||\\Users\\||someone\\project" .
+<https://drift-king.org/not-ah/the-linter/clean/personal-email> a earl:TestCriterion ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter/clean-rules> ;
+    skos:prefLabel "personal-email" ;
+    dcterms:title "no personal email address: role addresses at drift-king.org are allowed, and so are the W3C's public lists" ;
+    sh:pattern "[A-Za-z0-9._%+-]+@(?!(drift-king|w3)\\.org\\b)[A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*\\.[A-Za-z]{2,}" ;
+    skos:example "someone.personal||@||example.com" .
+<https://drift-king.org/not-ah/the-linter/clean/account-id> a earl:TestCriterion ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter/clean-rules> ;
+    skos:prefLabel "account-id" ;
+    dcterms:title "no account ID: a Cloudflare account ID is 32 hexadecimal digits" ;
+    sh:pattern "(?<![0-9a-f])[0-9a-f]{32}(?![0-9a-f])" ;
+    skos:example "0123456789abcdef||0123456789abcdef" .
+<https://drift-king.org/not-ah/the-linter/clean/secret-key-block> a earl:TestCriterion ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter/clean-rules> ;
+    skos:prefLabel "secret-key-block" ;
+    dcterms:title "no private key block" ;
+    sh:pattern "-----BEGIN [A-Z ]*PRIVATE KEY" ;
+    skos:example "-----BEGIN RSA PRIV||ATE KEY-----" .
+<https://drift-king.org/not-ah/the-linter/clean/secret-token> a earl:TestCriterion ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter/clean-rules> ;
+    skos:prefLabel "secret-token" ;
+    dcterms:title "no token of a known kind" ;
+    sh:pattern "\\bghp_[A-Za-z0-9]{20,}|\\bcfut_[A-Za-z0-9]{10,}|\\bAKIA[0-9A-Z]{16}\\b|\\bsk-[A-Za-z0-9]{20,}" ;
+    skos:example "gh||p_abcdefghijklmnopqrstuvwxyz0123456789" .
+<https://drift-king.org/not-ah/the-linter/clean/secret-assignment> a earl:TestCriterion ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter/clean-rules> ;
+    skos:prefLabel "secret-assignment" ;
+    dcterms:title "no secret, key, token or password given a value" ;
+    sh:pattern "(api[_-]?key|secret|token|password)[\"\\']?\\s*[:=]\\s*[\"\\'][^\"\\'\\s]{12,}[\"\\']" ;
+    skos:example "pass||word = \"not-a-real-password-value\"" .
+<https://drift-king.org/not-ah/the-linter/clean/private-host> a earl:TestCriterion ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter/clean-rules> ;
+    skos:prefLabel "private-host" ;
+    dcterms:title "no private host, and no workers.dev host: a personal subdomain is one" ;
+    sh:pattern "[p]rivate\\.drift-king\\.org|\\.workers\\.dev\\b" ;
+    skos:example "see the-name.example-subdomain.work||ers.dev for it" .
+<https://drift-king.org/the-linter/checks/clean.mjs> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    rdfs:comment "Reads the rules the model names and scans every tracked file, every published file and every commit message and author. With --canaries it builds each rule's canary in a scratch folder, scans it, removes it, and exits 1 only if every one was found." .
+
+# ===========================================================================
+# What Drift King keeps and does not publish. Each is named, hashed and attributed here, held
+# on the lead architect's machine outside this repository, and never published. The address of
+# each says so, instead of breaking: see the page it is sent to. Evidence is never edited.
+# ===========================================================================
+<https://drift-king.org/not-ah/PrivateItem> a owl:Class ;
+    rdfs:label "private item" ;
+    rdfs:comment "Something Drift King keeps and does not publish." .
+<https://drift-king.org/cloudflare-pid-rs/proof/M3-push.txt> a prov:Entity , <https://drift-king.org/not-ah/PrivateItem> ;
+    dcterms:identifier "sha256:0de7eb27e37a212efa875652bf19ba450109455a10205193975372f146f9417d" ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/lead-architect> ;
+    rdfs:label "M3-push.txt" ;
+    rdfs:comment "Evidence: the push, the digest, the image config, and the known leftover. It holds an account ID, a personal workers.dev subdomain or a name, so it is kept on the lead architect's machine, named and hashed here, and never published. Not edited." .
+<https://drift-king.org/cloudflare-pid-rs/proof/M4-deploy.txt> a prov:Entity , <https://drift-king.org/not-ah/PrivateItem> ;
+    dcterms:identifier "sha256:ccc56c8c6e8de2eab45e808a48ed00afbe4bb49f2eb079f1a1454fd988fdaeb6" ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/lead-architect> ;
+    rdfs:label "M4-deploy.txt" ;
+    rdfs:comment "Evidence: the wrangler deploy output. It holds an account ID, a personal workers.dev subdomain or a name, so it is kept on the lead architect's machine, named and hashed here, and never published. Not edited." .
+<https://drift-king.org/cloudflare-pid-rs/proof/M7-custom-domain.txt> a prov:Entity , <https://drift-king.org/not-ah/PrivateItem> ;
+    dcterms:identifier "sha256:4654914af741b5776f86ec294b153d0d9afc9d4f439e5ca4cb7add2819d08612" ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/lead-architect> ;
+    rdfs:label "M7-custom-domain.txt" ;
+    rdfs:comment "Evidence: the move from workers.dev to pid1.drift-king.org. It holds an account ID, a personal workers.dev subdomain or a name, so it is kept on the lead architect's machine, named and hashed here, and never published. Not edited." .
+<https://drift-king.org/the-builder/proof/B2-dry-run.txt> a prov:Entity , <https://drift-king.org/not-ah/PrivateItem> ;
+    dcterms:identifier "sha256:056ecb5cf46732191f47ff5081cb65eb8105e32b1be65c567d2dd0e8b66ec80f" ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/lead-architect> ;
+    rdfs:label "B2-dry-run.txt" ;
+    rdfs:comment "Evidence: --dry-run's printed step order, lint first and deploy last, read from the requires graph. It holds an account ID, a personal workers.dev subdomain or a name, so it is kept on the lead architect's machine, named and hashed here, and never published. Not edited." .
+<https://drift-king.org/not-ah/private/docusign-approval-skill-as-signed> a prov:Entity , <https://drift-king.org/not-ah/PrivateItem> ;
+    dcterms:identifier "sha256:bd1f491b6c698ffd0897c752ac607eb886acb69fddd34611dec6db743708694f" ;
+    prov:wasAttributedTo <https://drift-king.org/not-ah/agent/reviewer> ;
+    rdfs:label "docusign-approval-skill-as-signed" ;
+    rdfs:comment "The skill file exactly as the signing-plan-v2 packet names it. It points at a folder on the lead architect's machine, so those bytes are kept there, named and hashed here, and never published. The skill in the repository is its successor with that path taken out: a new file, to be signed." ;
+    dcterms:isReplacedBy <https://drift-king.org/.claude/skills/docusign-approval/SKILL.md> .
+
+# Where the source is public. The repository's address is one fact, here; the redirects are
+# written from it.
+<https://drift-king.org/not-ah/repository> a dcat:Resource ;
+    dcterms:title "the drift-king repository on GitHub" ;
+    dcterms:source <https://github.com/drift-king-org/ah> ;
+    rdfs:comment "Where the source of Drift King is public. The lead architect named it: the repository ah, in the organization drift-king-org. It is one node to change." .
+
+# Private history. Drift King's public repository starts from one root commit of the clean tree. The
+# commits before it stay on the lead architect's machine, on a branch that is never pushed. Each old
+# commit the model or its evidence names is listed here, so its address says that it is private
+# history rather than breaking.
+<https://drift-king.org/not-ah/private-history/m3-the-plan-is-p-plan> a prov:Entity , <https://drift-king.org/not-ah/PrivateItem> ;
+    dcterms:identifier "git:commit:f9a785550c584ac7973b19a35f12ba8fdee4591a" ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/lead-architect> ;
+    rdfs:label "M3: the plan is P-Plan, checks run for real, no SPARQL in main.rs" ;
+    rdfs:comment "A commit of the history before the public repository. Private history: ah/signings.ttl names it as the version of ah.ttl that had a finding." .
+<https://drift-king.org/not-ah/private-history/initial-commit> a prov:Entity , <https://drift-king.org/not-ah/PrivateItem> ;
+    dcterms:identifier "git:commit:fb106fd6c3f0544c5f5c2a6caf6419cb9025d779" ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/lead-architect> ;
+    rdfs:label "Initial commit: cloudflare-pid-rs PID1 proof, the-builder scaffold, model" ;
+    rdfs:comment "A commit of the history before the public repository. Private history: the-builder/proof/H0-first-commit.txt and H1-byte-exact.txt name it." .

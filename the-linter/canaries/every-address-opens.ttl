@@ -1,0 +1,14 @@
+# The canary for every-address-opens.rq: a file of ours that names one
+# address no published file defines and drift-king.org does not serve. A
+# canary is read alone, so it carries what the check reads from the model:
+# the rdfs:isDefinedBy the-builder records, and the folder drift-king.org is
+# served from. The check must find the address.
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix dcat:    <http://www.w3.org/ns/dcat#> .
+
+<https://drift-king.org/site/public/> a dcat:Distribution ;
+    dcat:accessURL <https://drift-king.org/> .
+<https://drift-king.org/not-ah/canary/every-address-opens/step>
+    rdfs:isDefinedBy <https://drift-king.org/the-linter/canaries/every-address-opens.ttl> ;
+    dcterms:references <https://drift-king.org/not-ah/canary/every-address-opens/nowhere> .

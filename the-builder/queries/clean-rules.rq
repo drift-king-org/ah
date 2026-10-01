@@ -1,0 +1,22 @@
+# The clean rules the model names. A format rule has a pattern and the parts its canary is built
+# from at run time. The rule for the private values has neither: it has the setting that names the
+# file they are read from, and the sha256 the model holds for that file. ?base is bound by the caller.
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:    <http://www.w3.org/2004/02/skos/core#>
+PREFIX sh:      <http://www.w3.org/ns/shacl#>
+
+SELECT ?base ?name ?pattern ?example ?setting ?sha256 WHERE {
+  ?rule dcterms:isPartOf <https://drift-king.org/not-ah/the-linter/clean-rules> ;
+    skos:prefLabel ?name .
+  OPTIONAL { ?rule sh:pattern ?pattern }
+  OPTIONAL { ?rule skos:example ?example }
+  OPTIONAL {
+    ?rule dcterms:requires ?settingNode ;
+      dcterms:source ?file .
+    ?settingNode rdfs:label ?setting .
+    ?file dcterms:identifier ?id .
+    BIND (strafter(?id, "sha256:") AS ?sha256)
+  }
+}
+ORDER BY ?name

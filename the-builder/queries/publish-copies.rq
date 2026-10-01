@@ -1,0 +1,22 @@
+# What a copy step publishes: for each of the step's output copies, the file
+# it is copied from, where the copy goes, and the sha256 it must have. The
+# model holds only these pointers; the bytes come from the commit. ?step and
+# ?base are bound by the caller (?base is ah.ttl's vann:preferredNamespaceUri),
+# so both are projected. A copy with no source or no sha256 is not returned
+# here, and named-by-nobody or file-provenance reports it instead.
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX prov:    <http://www.w3.org/ns/prov#>
+PREFIX p-plan:  <http://purl.org/net/p-plan#>
+
+SELECT ?step ?base ?source ?target ?sha256 WHERE {
+  ?step p-plan:hasOutputVar ?var .
+  ?copy p-plan:correspondsToVariable ?var ;
+    prov:wasDerivedFrom ?from ;
+    dcterms:identifier ?id .
+  FILTER (strstarts(?id, "sha256:"))
+  FILTER (strstarts(str(?from), str(?base)) && strstarts(str(?copy), str(?base)))
+  BIND (strafter(str(?from), str(?base)) AS ?source)
+  BIND (strafter(str(?copy), str(?base)) AS ?target)
+  BIND (strafter(?id, "sha256:") AS ?sha256)
+}
+ORDER BY ?target

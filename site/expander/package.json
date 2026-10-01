@@ -1,0 +1,13 @@
+{
+  "name": "drift-king-expander",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "The packages the static expander runs on, each at one exact version.",
+  "dependencies": {
+    "cheerio": "1.2.0"
+  },
+  "overrides": {
+    "undici": "7.29.0"
+  }
+}

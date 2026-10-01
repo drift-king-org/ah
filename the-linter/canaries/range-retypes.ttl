@@ -1,0 +1,18 @@
+# Must be found: a Distribution used as the OBJECT of dcat:distribution,
+# whose range is dcat:Distribution -- but typed dcat:Dataset instead.
+# Must stay clean: the same shape, but typed correctly.
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix vann: <http://purl.org/vocab/vann/> .
+
+# Stands in for the model, so the check knows whose names are ours.
+<https://drift-king.org/not-ah/canary/range-retypes.ttl> vann:preferredNamespaceUri "https://drift-king.org/" .
+
+<https://drift-king.org/not-ah/canary/range-retypes/wrong>
+    a dcat:Dataset .
+<https://drift-king.org/not-ah/canary/range-retypes/holder-a>
+    dcat:distribution <https://drift-king.org/not-ah/canary/range-retypes/wrong> .
+
+<https://drift-king.org/not-ah/canary/range-retypes/right>
+    a dcat:Distribution .
+<https://drift-king.org/not-ah/canary/range-retypes/holder-b>
+    dcat:distribution <https://drift-king.org/not-ah/canary/range-retypes/right> .

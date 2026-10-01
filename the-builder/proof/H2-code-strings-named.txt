@@ -1,0 +1,62 @@
+ast-grep-cli 0.45.3 installed (matches ah-workbench's own pin exactly).
+
+Ported from ah-workbench/src/the-linter/:
+  checks/code-strings-named.rq  -> rescoped lakehouse.apricotter.com to
+                                    drift-king.org, generalized via UNION
+                                    over py:Constant / rs:StringLiteral /
+                                    js:String (was Python-only)
+  checks/namespace-terms-defined.rq -> rescoped the py: PREFIX line only;
+                                    the query itself named no project and
+                                    needed no change. Currently inert here:
+                                    nothing records Python code as py:
+                                    triples yet (make-layer.py isn't parsed
+                                    that way), so it finds 0 either way.
+
+New, grounded in real grammars (not invented):
+  rules/strings-rust.yml, rules/strings-js.yml -- ast-grep rules, same
+    shape as strings.yml. Node kinds (string_literal/string,
+    binary_expression, expression_statement) and field names (left/right)
+    verified empirically against ast-grep 0.45.3 itself, not guessed --
+    see the probe commands in this session. Rust has no implicit adjacent-
+    literal join like Python's concatenated_string; "a" + "b" is a
+    binary_expression over two separate string_literal nodes instead, so
+    the rule treats a whole +-join of two string literals as one match,
+    same effect as Python's rule, different mechanism.
+  not-ah.ttl: rust/ast# and javascript/ast# as owl:NamedIndividual
+    vocabularies, rdfs:isDefinedBy tree-sitter-rust v0.24.0 and
+    tree-sitter-javascript v0.23.1's real grammar.js files (fetched,
+    confirmed to exist, not assumed).
+
+Canaries, the four that apply outside Python plus one new case:
+  bare-string, joined-words, others-label (sosa:Sensor rdfs:label
+  "Sensor"@en, verified by fetching SOSA directly), unnamed-string,
+  and copied-value (1.98.1 -- fails because sd:hasVersionId isn't among
+  the check's naming properties, exactly the bug both rust-toolchain.toml
+  files actually have; H3's job to fix, not H2's).
+
+Verified (ad hoc harness: ast-grep run -> RDF triples -> code-strings-
+named.rq -> compare to the EARL assertion each canary names):
+  all 9 canaries: expected outcome == actual outcome, in both Rust and JS.
+  The joined-words canaries specifically confirm the concatenated VALUE is
+  computed correctly ("name" + "step" -> "namestep"), not just that the
+  expression as a whole gets flagged.
+
+Real bug caught and fixed before this was clean: naming rust/ast# and
+javascript/ast# with their own vann:preferredNamespaceUri broke
+named-by-nobody.rq, which read *any* node with that property instead of
+pinning to ah.ttl specifically (unlike code-strings-named.rq, which
+already pinned it). Every file on disk was briefly reported unnamed,
+twice over, under the wrong bases. Fixed by pinning named-by-nobody.rq to
+<https://drift-king.org/ah.ttl> explicitly. Both checks reconfirmed clean
+after the fix: domain-retypes 1/0, named-by-nobody 0 unnamed across 62
+files.
+
+Run against the real codebase (informational, not a gate yet -- H4's job
+to triage each finding, per the directive's table): 37 findings across
+pid1/src/main.rs, worker/src/index.js, and the-builder/src/main.rs. Not
+fixed here. Includes the extern "C" ABI string in main.rs (a case ah-
+workbench's Python port never had to consider -- Rust syntax itself, not
+"our word"; a finding H4 will need a rule for, not a name).
+
+Not done in H2, by scope: the ast-grep-to-RDF recording step doesn't live
+in the-builder yet (still my own ad hoc harness) -- that's part of B3/H5.

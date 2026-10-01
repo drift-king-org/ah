@@ -1,0 +1,28 @@
+# Ported from ah-workbench's src/the-linter/checks/namespace-terms-defined.rq.
+# Nothing about this query names lakehouse.apricotter.com or drift-king.org
+# directly -- it works from whichever vocabulary's preferred prefix matches
+# the code's own alias, generically. Only the py: PREFIX line pointed at the
+# old project; rescoped to drift-king's own Python AST namespace, unused so
+# far since nothing here records Python code the way make-layer.py could.
+# A term built from a name in code (PY.Constant, DCAT.distribution) must be
+# defined by the model. rdflib only warns on an unknown term, so a typo would
+# otherwise pass silently. Which namespace a code name means: the one whose
+# preferred prefix is that name, lower-cased (PY is py, DCAT is dcat).
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX vann:    <http://purl.org/vocab/vann/>
+PREFIX py:      <https://drift-king.org/python/3.13/ast#>
+
+SELECT ?found ?line ?name ?term WHERE {
+  ?use a py:Attribute ;
+    py:Attribute.attr ?term ;
+    py:Attribute.value [ a py:Name ; py:Name.id ?name ] ;
+    py:expr.lineno ?line ;
+    dcterms:isPartOf ?file .
+  ?vocabulary vann:preferredNamespacePrefix ?prefix ;
+    vann:preferredNamespaceUri ?uri .
+  FILTER (lcase(?name) = str(?prefix))
+  BIND (IRI(concat(str(?uri), ?term)) AS ?address)
+  FILTER NOT EXISTS { ?address ?p ?o }
+  BIND (str(?file) AS ?found)
+}
+ORDER BY ?file ?line

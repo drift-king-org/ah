@@ -1,0 +1,140 @@
+# How a directive is carried out on the drift-king repository: from a patch
+# to a report. The steps and what each one does live here, and nowhere else:
+# .claude/skills/patch-and-verify/SKILL.md only says to walk the current
+# plan. If a step's description here and anything written elsewhere
+# disagree, this file wins.
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
+@prefix p-plan:  <http://purl.org/net/p-plan#> .
+@prefix pv:      <https://drift-king.org/ah/patch-and-verify/> .
+
+<https://drift-king.org/plans/patch-and-verify.ttl>
+    a owl:Ontology , prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    dcterms:title "the patch-and-verify plan" .
+
+pv:plan
+    a p-plan:Plan ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    dcterms:title "carry out a directive: apply its patch, verify it, report" ;
+    dcterms:description "A directive names a patch, the sha256 it must have and the commit it applies to. Everything is checked against those three, never against a description of them. When a hash, a base or a count differs from the directive, stop at that step and say which one and what it found; never work round it. Never push, tag, publish or ship unless the directive says the lead architect OKs that one action. Never print a secret, only its name. When a tool refuses, stop and say what the step was trying to do. The coder commits as Drift King <compliance@drift-king.org>, with the directive's message and no trailer, and never amends." .
+
+pv:var-directive a p-plan:Variable ; dcterms:title "the patch's name, its sha256 and its base commit" .
+pv:var-base      a p-plan:Variable ; dcterms:title "a clean tree at the base commit" .
+pv:var-patch     a p-plan:Variable ; dcterms:title "the patch file, its sha256 checked" .
+pv:var-applies   a p-plan:Variable ; dcterms:title "the patch, known to apply" .
+pv:var-read      a p-plan:Variable ; dcterms:title "what the patch adds, read, with every recorded sha256 recomputed" .
+pv:var-commit    a p-plan:Variable ; dcterms:title "the new commit" .
+pv:var-built     a p-plan:Variable ; dcterms:title "the-builder, built from the commit" .
+pv:var-verified  a p-plan:Variable ; dcterms:title "a verify run's counts and page hashes" .
+pv:var-shipped   a p-plan:Variable ; dcterms:title "a ship run's counts and page hashes, or none" .
+pv:var-live      a p-plan:Variable ; dcterms:title "each published file's sha256, fetched" .
+pv:var-clean     a p-plan:Variable ; dcterms:title "the machine as it was, less the new commit" .
+
+pv:read-directive
+    a p-plan:Step ;
+    p-plan:isStepOfPlan pv:plan ;
+    p-plan:hasOutputVar pv:var-directive ;
+    dcterms:title "read the directive" ;
+    dcterms:description "Take from the directive the patch's file name, its sha256 and its base. A base is a commit id; a description of a commit is not a base, so ask for the id. When a directive names several patches, it lists them in the order they apply, each with its own base, and each is carried out by this plan in that order." .
+
+pv:check-base
+    a p-plan:Step ;
+    p-plan:isStepOfPlan pv:plan ;
+    p-plan:isPrecededBy pv:read-directive ;
+    p-plan:hasInputVar pv:var-directive ;
+    p-plan:hasOutputVar pv:var-base ;
+    dcterms:title "check the base" ;
+    dcterms:description "HEAD must be the base commit, and git status must show no tracked file modified. Stop if either is not so." .
+
+pv:check-hash
+    a p-plan:Step ;
+    p-plan:isStepOfPlan pv:plan ;
+    p-plan:isPrecededBy pv:check-base ;
+    p-plan:hasInputVar pv:var-directive ;
+    p-plan:hasOutputVar pv:var-patch ;
+    dcterms:title "check the patch's hash" ;
+    dcterms:description "sha256 the patch file. It must equal the directive's. If it differs, stop, give both hashes, and never apply that file or any older copy of it: ask for the patch that has the directive's hash." .
+
+pv:check-applies
+    a p-plan:Step ;
+    p-plan:isStepOfPlan pv:plan ;
+    p-plan:isPrecededBy pv:check-hash ;
+    p-plan:hasInputVar pv:var-patch , pv:var-base ;
+    p-plan:hasOutputVar pv:var-applies ;
+    dcterms:title "check the patch applies" ;
+    dcterms:description "git apply --check. If it fails, say what the patch expected that is not here; a missing earlier patch is a finding. Never --3way, never --reject." .
+
+pv:read-adds
+    a p-plan:Step ;
+    p-plan:isStepOfPlan pv:plan ;
+    p-plan:isPrecededBy pv:check-applies ;
+    p-plan:hasInputVar pv:var-applies ;
+    p-plan:hasOutputVar pv:var-read ;
+    dcterms:title "read what it adds" ;
+    dcterms:description "Read the patch. A document that will go to signing is read in full. Every sha256 the patch records in the model for a file is recomputed from that file's bytes in the patch." .
+
+pv:apply
+    a p-plan:Step ;
+    p-plan:isStepOfPlan pv:plan ;
+    p-plan:isPrecededBy pv:read-adds ;
+    p-plan:hasInputVar pv:var-read ;
+    p-plan:hasOutputVar pv:var-commit ;
+    dcterms:title "apply and commit" ;
+    dcterms:description "git apply --index. Stage only the paths the patch names, never git add -A. Commit with the directive's message." .
+
+pv:build
+    a p-plan:Step ;
+    p-plan:isStepOfPlan pv:plan ;
+    p-plan:isPrecededBy pv:apply ;
+    p-plan:hasInputVar pv:var-commit ;
+    p-plan:hasOutputVar pv:var-built ;
+    dcterms:title "build the builder" ;
+    dcterms:description "If the commit changed anything under the-builder/src, cargo build --release before any run. Otherwise the built one stands." .
+
+pv:verify
+    a p-plan:Step ;
+    p-plan:isStepOfPlan pv:plan ;
+    p-plan:isPrecededBy pv:build ;
+    p-plan:hasInputVar pv:var-built ;
+    p-plan:hasOutputVar pv:var-verified ;
+    dcterms:title "run a verify run" ;
+    dcterms:description "Run the-builder without --ship. A run that ships is never the default run. Compare the counts the directive gives: (expected), matches and (not shipped...). Look for OPEN GAP, held, skipped and FAILED, and report any. sha256 every approval page the directive names." .
+
+pv:ship
+    a p-plan:Step ;
+    p-plan:isStepOfPlan pv:plan ;
+    p-plan:isPrecededBy pv:verify ;
+    p-plan:hasInputVar pv:var-verified ;
+    p-plan:hasOutputVar pv:var-shipped ;
+    dcterms:title "ship, only when OK'd" ;
+    dcterms:description "Only when the directive says the lead architect OKs shipping: run the-builder once with --ship. Its counts must equal the verify run's, less the (not shipped...) lines, and every approval page's sha256 must equal the verify run's. Otherwise skip this step and say it was not shipped." .
+
+pv:check-live
+    a p-plan:Step ;
+    p-plan:isStepOfPlan pv:plan ;
+    p-plan:isPrecededBy pv:ship ;
+    p-plan:hasInputVar pv:var-shipped ;
+    p-plan:hasOutputVar pv:var-live ;
+    dcterms:title "check what is live" ;
+    dcterms:description "When something shipped, fetch each file the directive names from where it was published, and compare its sha256 with the committed file's. A page at its address without the extension. A mismatch is a finding." .
+
+pv:clean-up
+    a p-plan:Step ;
+    p-plan:isStepOfPlan pv:plan ;
+    p-plan:isPrecededBy pv:check-live ;
+    p-plan:hasInputVar pv:var-live ;
+    p-plan:hasOutputVar pv:var-clean ;
+    dcterms:title "leave the machine as it was" ;
+    dcterms:description "Stop any process this plan started, such as a local server, by its PID, never by name. Scratch files go in cloudflare-pid-rs/.tools, where both the coder and the desktop agent can see them, and are listed in the report so they can be removed." .
+
+pv:report
+    a p-plan:Step ;
+    p-plan:isStepOfPlan pv:plan ;
+    p-plan:isPrecededBy pv:clean-up ;
+    p-plan:hasInputVar pv:var-commit , pv:var-verified , pv:var-shipped , pv:var-live , pv:var-clean ;
+    dcterms:title "report" ;
+    dcterms:description "Report the full and short commit id, each run's counts, every hash the directive asked for, the scratch files left, and anything different from what the directive expected, first." .

@@ -1,0 +1,26 @@
+Deployed Version ID: e034a0e7-1de4-40a4-8b25-b6fb393291b2
+
+Bundled in this deploy:
+- onStop now emits a full sosa:Observation (madeBySensor, hasFeatureOfInterest,
+  observedProperty, hasResult with exitCode/reason, resultTime) instead of
+  free text, every IRI matching a real subject in ah.ttl.
+- Favicons generated from Gemini_Generated_Image_32yn0v32yn0v32yn.jpg via the
+  modeled ffmpeg-favicons command: favicon.ico (32x32), apple-touch-icon.png
+  (180x180), icon-192.png, icon-512.png, wired into the page's <head> and
+  manifest.webmanifest.
+
+Verified live:
+$ curl https://pid1.drift-king.org/
+{"pid": 1, "started": "1790537854", "location": "cmh01", "durable_object": "8d0512be714ce0f87ec80435c1a99e733aa786569e47fead62520056d7a0cbff"}
+HTTP: 200
+
+$ curl -o /dev/null https://pid1.drift-king.org/favicon.ico
+HTTP: 200
+
+Left alone after this single request per instruction, to let the natural
+idle timeout produce the next onStop observation under the new format.
+
+Note: cleared to deploy on the two pre-existing checks (domain-retypes,
+named-by-nobody) per the hard-coded-check directive, which explicitly
+grandfathers this pending deploy in rather than requiring the new check
+first. The hard-coded check itself (H1-H5) is not built yet.

@@ -1,0 +1,26 @@
+Direct proof of a clean SIGTERM exit, via the Container class's onStop hook
+(worker/src/index.js), added specifically because pid1's own stdout is not
+reachable through any tooling available to the coder — only the Durable
+Object side of the log stream is.
+
+  onStop({ exitCode, reason }) {
+    console.log(`pid1 stopped: exitCode=${exitCode} reason=${reason}`);
+  }
+
+Sequence (Workers Logs, durable object 8d0512be714ce0f87ec80435c1a99e733aa786569e47fead62520056d7a0cbff):
+
+  17:57:02Z  GET / -> 200, fresh instance ("started": 1790531828), confirms
+             the redeployed code (with onStop) is what's running
+  ~18:00Z    Activity expired, signalling container to stop
+  ~18:02:08Z pid1 stopped: exitCode=0 reason=exit
+
+exitCode=0 rules out SIGKILL (which surfaces as 137): the process reached
+its own `pid1: SIGTERM received, exiting` -> exit(0) path, not the 15-minute
+drain timeout. This is the direct evidence M5's dashboard search was after;
+combined with the earlier instance's timing (dead well within the drain
+window, recorded in M5-logs.txt), M6 is closed.
+
+This hook is permanent, not test-only: every future container stop, not
+just this one, now logs its exit code and reason where Workers Logs shows
+it — the first real instance of the observer this project is building
+toward.

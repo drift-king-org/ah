@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Drift King: patch-and-verify plan, for approval</title>
+<style>
+body{font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.5;color:#111;margin:0;padding:0}
+h1{font-size:18px;margin:0 0 12px}
+h2{font-size:15px;margin:18px 0 8px}
+p{margin:0 0 10px}
+a{color:#111}
+.doc{border-left:3px solid #999;padding:4px 0 4px 14px;margin:0 0 16px}
+.ref{margin:0 0 12px}
+.ref b{display:block}
+.mono{font-family:"Courier New",monospace;font-size:12px;word-break:break-all;overflow-wrap:anywhere}
+.sign{margin-top:32px}
+.sign p{margin:0 0 34px}
+.anchor{color:#ffffff;font-size:10px}
+</style>
+</head>
+<body>
+<h1>Drift King: patch-and-verify plan, for approval</h1>
+<p>Drift King Compliance presents this for approval. Its full text follows.</p>
+<div class="doc">
+<p>Our signed intent says: &quot;Nothing is built or run unless the model names it.&quot;<br><a class="mono" href="https://drift-king.org/intent/letter-of-intent#:~:text=Nothing%20is%20built%20or%20run%20unless%20the%20model%20names%20it.">https://drift-king.org/intent/letter-of-intent#:~:text=Nothing%20is%20built%20or%20run%20unless%20the%20model%20names%20it.</a></p>
+<p>A directive is how a change reaches this repository: a patch, the hash it must have, and the commit it applies to. How a directive is carried out was only ever written in chat. Now it is three plans in the model: one for a patch, one for checking a published package against what was signed, and one for a push or a tag.</p>
+<p>Each plan is one chain of steps, and every step says what to do. The build checks that on every run, with a canary that forks and leaves a step blank. The skill that walks the plans holds no step of its own: it finds the plan that nothing replaces and walks it, as the signing skill does. The plans and the skill are published, and the build checks their hashes on every run.</p>
+<p>Nothing in the plans pushes, tags, publishes or ships unless a directive says the lead architect OKs that one action.</p>
+<p>What we do not do: we do not let a skill carry a step the model does not hold.</p>
+<p>Signed: Drift King Compliance</p>
+</div>
+<h2>The files</h2>
+<p>Each sha256 is the fingerprint of the file's exact bytes. If one character changes, the fingerprint changes and this approval no longer covers it.</p>
+<div class="ref"><b>The plans, exactly as above</b>
+<a class="mono" href="https://drift-king.org/approvals/patch-and-verify-plan.md">https://drift-king.org/approvals/patch-and-verify-plan.md</a><br>
+<span class="mono">sha256 8c353aaad7bf556f88701ac3d9de9f8fc68ad7c75947ca290c17a9fe98b457d2</span></div>
+<div class="ref"><b>The canary for: every procedure is one chain, exact bytes</b>
+<a class="mono" href="https://drift-king.org/the-linter/canaries/procedure-chain.ttl">https://drift-king.org/the-linter/canaries/procedure-chain.ttl</a><br>
+<span class="mono">sha256 3fb1ae730701c6a54688cf14e7c3d734b26c908ed826c417880589bee6129f7f</span></div>
+<div class="ref"><b>The check that every procedure is one chain, exact bytes</b>
+<a class="mono" href="https://drift-king.org/the-linter/checks/procedure-chain.rq">https://drift-king.org/the-linter/checks/procedure-chain.rq</a><br>
+<span class="mono">sha256 947771df419399dcbe66b18fb1313d81509bf6339b9eda36ec6e3ee304328136</span></div>
+<div class="ref"><b>The letter of intent, exact bytes</b>
+<a class="mono" href="https://drift-king.org/intent/letter-of-intent.md">https://drift-king.org/intent/letter-of-intent.md</a><br>
+<span class="mono">sha256 0c5ede6bce924501a740c2a130c0db8e04f3ff9235994598e798d66cf3cb94a0</span></div>
+<div class="ref"><b>The patch-and-verify plan, exact bytes</b>
+<a class="mono" href="https://drift-king.org/plans/patch-and-verify.ttl">https://drift-king.org/plans/patch-and-verify.ttl</a><br>
+<span class="mono">sha256 586f6a1930b22ed5e159d2b03dd35c9c7da1bb485e8007c113d76dc4a4fbe563</span></div>
+<div class="ref"><b>The push-and-tag plan, exact bytes</b>
+<a class="mono" href="https://drift-king.org/plans/push-and-tag.ttl">https://drift-king.org/plans/push-and-tag.ttl</a><br>
+<span class="mono">sha256 4a46b840ca7619eed9d6c8e7b620f0f0b1a5cfc6555040280cdce7a19208ca1b</span></div>
+<div class="ref"><b>The skill that walks them, exact bytes</b>
+<a class="mono" href="https://drift-king.org/skills/patch-and-verify/SKILL.md">https://drift-king.org/skills/patch-and-verify/SKILL.md</a><br>
+<span class="mono">sha256 1bf33650c8b898571c4a939e5444df12e39ad0a7a2f7603562ef1b6201d57e98</span></div>
+<div class="ref"><b>The verify-published plan, exact bytes</b>
+<a class="mono" href="https://drift-king.org/plans/verify-published.ttl">https://drift-king.org/plans/verify-published.ttl</a><br>
+<span class="mono">sha256 49b5125c81bd7d30b188d80203f6d8f6ff07f852b0d0ed5e53c89a445a19ec78</span></div>
+<h2>What the checks found</h2>
+<p>Drift King ran each check below on the files above, in the build that made this page. A canary is a copy broken on purpose: a check must find something in it first, or finding nothing in the real thing means nothing.</p>
+<div class="ref"><b>every procedure is one chain, and every step says what to do</b>
+Ran on: The canary for: every procedure is one chain, exact bytes<br>
+Found: something. As it must.</div>
+<div class="ref"><b>every procedure is one chain, and every step says what to do</b>
+Ran on: The model: ah.ttl, and everything it imports<br>
+Found: nothing. As it must.</div>
+<div class="sign">
+<p>Signed, Drift King Compliance: <span class="anchor">/sig1/</span></p>
+<p>Date: <span class="anchor">/date1/</span></p>
+<p>Approved: <span class="anchor">/sig2/</span></p>
+<p>Date: <span class="anchor">/date2/</span></p>
+</div>
+</body>
+</html>

@@ -1,0 +1,18 @@
+id: string-literal
+language: js
+rule:
+  any:
+    - kind: binary_expression
+      all:
+        - has: { field: left, kind: string }
+        - has: { field: right, kind: string }
+    - all:
+        - kind: string
+        - not: { inside: { kind: binary_expression } }
+        - not: { inside: { kind: expression_statement } }
+    # A template literal is a string too: one unit, its ${} holes and all,
+    # as its raw text reads.
+    - all:
+        - kind: template_string
+        - not: { inside: { kind: binary_expression } }
+        - not: { inside: { kind: expression_statement } }

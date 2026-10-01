@@ -1,0 +1,39 @@
+Fetched once into the-builder/vocab/, each with explicit content
+negotiation (three needed application/rdf+xml, not text/turtle -- 406 on
+the default Accept header):
+
+  DCAT            dcat3.ttl              text/turtle       1695 triples
+  DCMI Terms      dublin_core_terms.ttl  text/turtle        700 triples
+  PROV-O          prov-o.ttl             text/turtle       1146 triples
+  SD              sd.ttl                 text/turtle        963 triples
+  SOSA            sosa.ttl               text/turtle        345 triples
+  VANN            vann.rdf               application/rdf+xml  49 triples
+  EARL            earl.rdf               application/rdf+xml 162 triples
+  Web Annotation  oa.ttl                 text/turtle        334 triples
+  P-Plan          p-plan.rdf             application/rdf+xml 154 triples
+
+Named in not-ah.ttl: one dcat:Dataset per vocabulary, each dcat:distribution
+pointing at a named dcat:Distribution (the vendored file itself, so it's
+also named for named-by-nobody), with dcat:downloadURL and dcterms:identifier
+"sha256:...". catalog-v001.xml maps each vocabulary's own self-declared
+name (checked via its owl:Ontology triple, not assumed from the fetch URL
+-- e.g. DCAT declares itself http://www.w3.org/ns/dcat, not the dcat3.ttl
+URL it was fetched from) to the local file.
+
+Verified: every sha256 in the model recomputed from the file on disk right
+now and compared byte-for-byte -- all 9 match.
+
+Both checks rerun reading ONLY the local vocab/ copies, no network calls:
+  domain-retypes: 1/0 (canary/model)
+  named-by-nobody: 0 unnamed, 73 files (fresh disk scan)
+
+Two real mistakes caught before this was clean:
+- purl.org/dc/terms/'s actual redirect target, purl.archive.org, was down
+  (real 503, confirmed on a separate occasion earlier this session too --
+  not a one-off). Used DCMI's own direct hosting instead; same bytes.
+- Left a stray the-builder/vocab/vann.ttl on disk from the first (wrong)
+  VANN fetch attempt, which returned an HTML page, not the vocabulary --
+  vocab.org ignores Accept: text/turtle and serves HTML by default at that
+  path. named-by-nobody caught the leftover file immediately. Deleted it;
+  the real copy is vann.rdf, fetched from vocab.org's actual RDF/XML file
+  with Accept: application/rdf+xml.

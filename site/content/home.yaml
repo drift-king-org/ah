@@ -1,0 +1,123 @@
+# Every word on the home page, and the site's words for x-components. The
+# template holds none of its own: it names a place in this file, and the render
+# fills it. A word changes here and nowhere else, and the model holds this file's
+# sha256, so a changed word is a changed file.
+#
+# The three `words` are the ones every page says without being told: what a link
+# that opens a new tab says to a screen reader, and what a table cell says when it
+# has no value or an empty one. The expander is given them as its settings.
+
+words:
+  newTab: "(opens in a new tab)"
+  noValue: no value
+  empty: empty
+
+head:
+  title: Drift King · Stop drift
+  description: Nothing is built or run unless the model names it. When anything disagrees with the model, it does not ship.
+
+header:
+  brand: Drift King
+  console: Console
+
+hero:
+  heading: Stop drift
+  pitch: Nothing is built or run unless the model names it.
+  stickers:
+    - label: Signed
+    - label: Does not ship
+    - label: ah.ttl + not-ah.ttl
+
+tape:
+  control:
+    name: Tape moving
+    pause: Pause
+    play: Play
+  separator: "✦"
+  bands:
+    - items:
+        - text: Stop drift
+        - text: Nothing is built or run unless the model names it
+        - text: Intent comes first
+          href: /intent/letter-of-intent
+        - text: Signed and hashed
+        - text: It does not ship
+    - items:
+        - text: ah.ttl
+        - text: not-ah.ttl
+        - text: Rekor
+        - text: Behavior
+        - text: Tests
+        - text: Code
+        - text: The model
+
+statement:
+  lead: What ships drifts from what you agreed to.
+  follow: We check every change against the intent you signed. A change that disagrees does not ship.
+
+spot:
+  id: spot
+  heading: Spot the drift
+  intro: On the left is what we signed. On the right is what the code says.
+  finding: Line 2 of the code says iad02, where we signed cmh01. The model wins, so this change does not ship.
+  hint: Four lines. One of them drifted.
+  panes_label: What we signed, beside what the code says
+  signed:
+    heading: We signed
+    lines:
+      - text: Run pid 1
+      - text: Run it in cmh01
+      - text: Report when it started
+      - text: Name its Durable Object
+  code:
+    heading: The code says
+    stamp: Does not ship
+    lines:
+      - text: "pid: 1"
+      - text: 'location: "iad02"'
+        mark: Drifted
+      - text: "started: 1790604743"
+      - text: 'durable_object: "8d05…cbff"'
+  caption: Sample data from pid1.drift-king.org.
+
+how:
+  heading: How it works
+  steps:
+    - claim: Write the intent and sign it
+      support: What we intend, in plain language.
+    - claim: Check every projection
+      support: Behavior, tests, code and the model are each checked against the signed intent.
+    - claim: Stop what disagrees
+      support: When anything disagrees with the model, it does not ship.
+    - claim: Hash it to the log
+      support: The hash goes on a public log we cannot edit, starting with Rekor.
+
+never:
+  heading: What we do not do
+  rules:
+    - text: We do not edit a signed intent. A new intent is a new letter, signed again.
+    - text: We do not ship a change that disagrees with the model.
+    - text: We do not add anything the model does not need.
+
+close:
+  heading: Start with the letter
+  prose: Everything Drift King does traces back to one signed page.
+  scene_alt: Drift King kart racer in the orange grove circuit
+  letter: Read the letter
+  console: Open the console
+  seal:
+    line: Signed and hashed
+    subline: Rekor
+
+footer:
+  brand: Drift King
+  blurb: Nothing is built or run unless the model names it.
+  links_heading: Read
+  links:
+    - label: Letter of intent
+      href: /intent/letter-of-intent
+    - label: pid1.drift-king.org
+      href: https://pid1.drift-king.org/
+    - label: Console
+      href: /console
+  copyright: © 2026 Drift King.

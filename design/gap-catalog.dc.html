@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="_ds/drift-king-design-system-611bbe0f-b91b-4c86-ba5b-dcd8c594917d/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/drift-king-design-system-611bbe0f-b91b-4c86-ba5b-dcd8c594917d/tokens/colors.css">
+<link rel="stylesheet" href="_ds/drift-king-design-system-611bbe0f-b91b-4c86-ba5b-dcd8c594917d/tokens/typography.css">
+<link rel="stylesheet" href="_ds/drift-king-design-system-611bbe0f-b91b-4c86-ba5b-dcd8c594917d/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/drift-king-design-system-611bbe0f-b91b-4c86-ba5b-dcd8c594917d/styles.css">
+<script src="_ds/drift-king-design-system-611bbe0f-b91b-4c86-ba5b-dcd8c594917d/_ds_bundle.js"></script>
+<style>body{margin:0;background:#1b1822;font-family:var(--font-body);font-weight:500;color:var(--dk-sticker)}*{box-sizing:border-box}a{color:var(--dk-orange-300)}a:hover{color:var(--dk-gold-500)}</style>
+</helmet>
+
+<section id="t1" style="padding:40px 44px 48px;display:flex;flex-direction:column;gap:28px">
+  <div style="display:flex;align-items:baseline;gap:10px">
+    <a href="#t1" style="font:600 10px var(--font-mono);padding:3px 7px;background:var(--dk-sticker);color:var(--dk-ink);border-radius:4px;text-decoration:none">1</a>
+    <span style="font:700 14px var(--font-body);color:var(--dk-sticker)">/gaps: the gap catalog, as a template</span>
+  </div>
+
+  <div style="max-width:880px;display:flex;flex-direction:column;gap:10px;font-size:15px;line-height:1.55;color:var(--text-secondary)">
+    <p style="margin:0">One gap block, repeated with <span style="font-family:var(--font-mono);color:var(--dk-gold-500)">{{ openTag }}</span>. Every value comes from a row. The fields sit in the same order in every block: status band, title, intent, check, held, closes when, gap document, signed. Empty fields keep their place and say they are empty.</p>
+    <p style="margin:0">Status sets the band and the card edge. Unsigned is red with a red offset. Signed, open is gold with a gold offset and a held list, so it reads as allowed and holding, never as passing. Closed is flat ink. Replaced and invalidated are dashed and dimmed. The status word is always written.</p>
+    <p style="margin:0">I could not read <span style="font-family:var(--font-mono)">site/style.css</span> (the repo was not reachable), so this uses the design system tokens the site was built from. Rows marked Sample data are invented. Tweaks: show the Mustache field names, or fill the five-status page with 30 rows.</p>
+  </div>
+
+  <sc-for list="{{ views }}" as="view" hint-placeholder-count="3">
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div style="font:700 13px var(--font-body);color:var(--dk-sticker)">{{ view.title }}</div>
+      <div style="display:flex;flex-wrap:wrap;gap:32px;align-items:flex-start">
+        <sc-for list="{{ view.frames }}" as="frame" hint-placeholder-count="2">
+          <div id="{{ frame.id }}" style="display:flex;flex-direction:column;gap:9px;flex:none">
+            <div style="display:flex;align-items:baseline;gap:8px;font-size:11px;color:var(--text-secondary)">
+              <a href="#{{ frame.id }}" style="font:600 10.5px var(--font-mono);padding:3px 7px;background:var(--dk-ink-700);color:var(--dk-sticker);border-radius:5px;text-decoration:none">{{ frame.id }}</a>{{ frame.label }}
+            </div>
+
+            <div style="width:{{ frame.width }}px;background:var(--dk-ink);border-radius:12px;overflow:hidden;border:1px solid var(--dk-ink-600)">
+              <sc-if value="{{ frame.page }}" hint-placeholder-val="{{ true }}">
+                <header style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;padding:16px {{ frame.pad }}px;border-bottom:3px solid var(--dk-ink-700)">
+                  <a href="https://drift-king.org" style="display:flex;align-items:center;gap:10px;text-decoration:none">
+                    <img src="assets/drift-king-icon.png" alt="" style="height:38px">
+                    <span style="font-family:var(--font-display);font-size:20px;color:var(--dk-orange-500);transform:skewX(-8deg);text-shadow:3px 3px 0 var(--dk-ink)">Drift King</span>
+                  </a>
+                  <div style="flex:1"></div>
+                  <nav style="display:flex;gap:18px;flex-wrap:wrap;font-weight:700;font-size:15px">
+                    <a href="https://drift-king.org/intent/letter-of-intent" style="color:var(--text-secondary);text-decoration:none">The letter</a>
+                    <a href="#" style="color:var(--dk-orange-300);text-decoration:none">Gaps</a>
+                    <a href="https://pid1.drift-king.org/" style="color:var(--text-secondary);text-decoration:none">pid1</a>
+                  </nav>
+                </header>
+
+                <div style="padding:40px {{ frame.pad }}px 8px;display:flex;flex-direction:column;gap:18px">
+                  <h1 style="margin:0;font-family:var(--font-display);font-weight:400;font-size:{{ frame.h1 }}px;line-height:.95;color:var(--dk-orange-500);-webkit-text-stroke:3px var(--dk-ink);paint-order:stroke fill;text-shadow:5px 5px 0 var(--dk-ink);transform:skewX(-8deg);transform-origin:left">Gaps</h1>
+                  <p style="margin:0;max-width:720px;font-size:18px;line-height:1.55;color:var(--dk-sticker);font-weight:600;text-wrap:pretty">A gap is a place where a check fails and we know it. Its document says which sentence of the intent is not yet met, which check proves it, and what closes it.</p>
+                  <p style="margin:0;max-width:720px;font-size:16px;line-height:1.6;color:var(--text-secondary);text-wrap:pretty">A signed gap lets the build finish. It never lets anything ship: every step that ships stays held until the check returns 0.</p>
+
+                  <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding-top:6px">
+                    <sc-for list="{{ frame.summary }}" as="s" hint-placeholder-count="2">
+                      <span style="display:inline-flex;align-items:center;gap:8px;padding:6px 12px 6px 6px;border-radius:999px;border:2px {{ s.edge }} {{ s.ring }};background:var(--dk-ink-900);font-weight:700;font-size:14px;color:{{ s.fg }}">
+                        <span style="min-width:26px;height:26px;padding:0 7px;border-radius:999px;background:{{ s.bg }};color:{{ s.onBg }};border:2px solid var(--dk-ink);display:grid;place-items:center;font-family:var(--font-display);font-size:13px">{{ s.n }}</span>{{ s.label }}
+                      </span>
+                    </sc-for>
+                  </div>
+                  <sc-if value="{{ showFields }}" hint-placeholder-val="{{ false }}">
+                    <div style="font:500 11px var(--font-mono);color:var(--dk-pink-300)">counts: one per status, computed from rows</div>
+                  </sc-if>
+                </div>
+              </sc-if>
+
+              <div style="padding:28px {{ frame.pad }}px {{ frame.padB }}px;display:flex;flex-direction:column;gap:{{ frame.gap }}px">
+                <sc-for list="{{ frame.rows }}" as="row" hint-placeholder-count="2">
+                  <article style="position:relative;background:{{ row.sm.cardBg }};border:3px {{ row.sm.edge }} {{ row.sm.ring }};border-radius:20px;box-shadow:{{ row.sm.shadow }};overflow:hidden;color:{{ row.sm.text }}">
+
+                    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;padding:12px 20px;background:{{ row.sm.bandBg }};color:{{ row.sm.bandFg }};border-bottom:3px {{ row.sm.edge }} {{ row.sm.ring }}">
+                      <span style="font-family:var(--font-display);font-size:20px;line-height:1;letter-spacing:.01em">{{ row.sm.label }}</span>
+                      <span style="font-weight:700;font-size:15px;line-height:1.35;flex:1 1 240px">{{ row.sm.build }}</span>
+                      <sc-if value="{{ row.sample }}" hint-placeholder-val="{{ false }}">
+                        <x-import component-from-global-scope="DriftKingDesignSystem_611bbe.Badge" tone="ink" hint-size="auto,24px">Sample data</x-import>
+                      </sc-if>
+                    </div>
+                    <sc-if value="{{ showFields }}" hint-placeholder-val="{{ false }}">
+                      <div style="padding:6px 20px 0;font:500 11px var(--font-mono);color:var(--dk-pink-300)">{{ row.fStatus }}</div>
+                    </sc-if>
+
+                    <div style="padding:18px 20px 22px;display:flex;flex-direction:column;gap:16px">
+                      <div style="display:flex;flex-direction:column;gap:6px">
+                        <h2 style="margin:0;font-family:var(--font-body);font-weight:700;font-size:{{ frame.h2 }}px;line-height:1.25;color:{{ row.sm.title }};overflow-wrap:anywhere;text-wrap:pretty">{{ row.title }}</h2>
+                        <sc-if value="{{ showFields }}" hint-placeholder-val="{{ false }}"><div style="font:500 11px var(--font-mono);color:var(--dk-pink-300)">{{ row.fTitle }}</div></sc-if>
+                        <sc-if value="{{ row.replaced_by }}" hint-placeholder-val="{{ false }}">
+                          <div style="font-size:15px;line-height:1.45;color:var(--text-secondary)">Replaced by <span style="color:var(--dk-sticker);font-weight:700">{{ row.replaced_by }}</span></div>
+                          <sc-if value="{{ showFields }}" hint-placeholder-val="{{ false }}"><div style="font:500 11px var(--font-mono);color:var(--dk-pink-300)">{{ row.fReplaced }}</div></sc-if>
+                        </sc-if>
+                      </div>
+
+                      <div style="display:flex;flex-wrap:wrap;gap:6px 20px">
+                        <div style="flex:0 0 150px;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text-secondary);padding-top:4px">Intent</div>
+                        <div style="flex:1 1 300px;min-width:0;display:flex;flex-direction:column;gap:6px">
+                          <a href="{{ row.intent.url }}" style="display:block;text-decoration:none;background:{{ row.sm.quoteBg }};color:{{ row.sm.quoteFg }};border:2px solid var(--dk-ink);border-radius:12px;padding:12px 16px;font-family:var(--font-mono);font-size:15px;line-height:1.55;text-wrap:pretty">“{{ row.intent.quote }}”</a>
+                          <a href="{{ row.intent.url }}" style="font-size:14px;font-weight:700">Open the letter on this sentence</a>
+                          <sc-if value="{{ showFields }}" hint-placeholder-val="{{ false }}"><div style="font:500 11px var(--font-mono);color:var(--dk-pink-300)">{{ row.fIntent }}</div></sc-if>
+                        </div>
+                      </div>
+
+                      <div style="display:flex;flex-wrap:wrap;gap:6px 20px">
+                        <div style="flex:0 0 150px;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text-secondary);padding-top:4px">Check</div>
+                        <div style="flex:1 1 300px;min-width:0;display:flex;flex-direction:column;gap:4px">
+                          <a href="{{ row.check.url }}" style="font-family:var(--font-mono);font-size:15px;font-weight:600;overflow-wrap:anywhere">{{ row.check.name }}</a>
+                          <div style="font-family:var(--font-mono);font-size:13px;line-height:1.5;color:var(--text-secondary);word-break:break-all">sha256 {{ row.check.sha256 }}</div>
+                          <sc-if value="{{ showFields }}" hint-placeholder-val="{{ false }}"><div style="font:500 11px var(--font-mono);color:var(--dk-pink-300)">{{ row.fCheck }}</div></sc-if>
+                        </div>
+                      </div>
+
+                      <div style="display:flex;flex-wrap:wrap;gap:6px 20px">
+                        <div style="flex:0 0 150px;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text-secondary);padding-top:4px">Held</div>
+                        <div style="flex:1 1 300px;min-width:0;display:flex;flex-direction:column;gap:8px">
+                          <sc-if value="{{ row.hasHeld }}" hint-placeholder-val="{{ false }}">
+                            <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px">
+                              <sc-for list="{{ row.held }}" as="step" hint-placeholder-count="3">
+                                <li style="display:flex;align-items:flex-start;gap:10px;padding:8px 12px 8px 8px;border:2px solid var(--dk-gold-500);border-radius:12px;background:var(--dk-ink-900)">
+                                  <span style="flex:none;padding:3px 8px;border-radius:6px;background:var(--dk-gold-500);color:var(--dk-ink);border:2px solid var(--dk-ink);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase">Held</span>
+                                  <span style="font-size:15px;line-height:1.45;padding-top:2px;overflow-wrap:anywhere">{{ step }}</span>
+                                </li>
+                              </sc-for>
+                            </ul>
+                          </sc-if>
+                          <sc-if value="{{ row.noHeld }}" hint-placeholder-val="{{ false }}">
+                            <div style="font-size:15px;line-height:1.45;color:var(--text-secondary)">{{ row.sm.heldEmpty }}</div>
+                          </sc-if>
+                          <sc-if value="{{ showFields }}" hint-placeholder-val="{{ false }}"><div style="font:500 11px var(--font-mono);color:var(--dk-pink-300)">{{ row.fHeld }}</div></sc-if>
+                        </div>
+                      </div>
+
+                      <div style="display:flex;flex-wrap:wrap;gap:6px 20px">
+                        <div style="flex:0 0 150px;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text-secondary);padding-top:4px">Closes when</div>
+                        <div style="flex:1 1 300px;min-width:0;display:flex;flex-direction:column;gap:4px">
+                          <sc-if value="{{ row.closes_when }}" hint-placeholder-val="{{ false }}">
+                            <div style="font-size:16px;line-height:1.5;font-weight:600;text-wrap:pretty">{{ row.closes_when }}</div>
+                          </sc-if>
+                          <sc-if value="{{ row.noCloses }}" hint-placeholder-val="{{ false }}">
+                            <div style="font-size:15px;color:var(--text-secondary)">Not written yet.</div>
+                          </sc-if>
+                          <sc-if value="{{ showFields }}" hint-placeholder-val="{{ false }}"><div style="font:500 11px var(--font-mono);color:var(--dk-pink-300)">{{ row.fCloses }}</div></sc-if>
+                        </div>
+                      </div>
+
+                      <div style="display:flex;flex-wrap:wrap;gap:6px 20px">
+                        <div style="flex:0 0 150px;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text-secondary);padding-top:4px">Gap document</div>
+                        <div style="flex:1 1 300px;min-width:0;display:flex;flex-direction:column;gap:4px">
+                          <sc-if value="{{ row.document }}" hint-placeholder-val="{{ false }}">
+                            <a href="{{ row.document.url }}" style="font-family:var(--font-mono);font-size:14px;font-weight:600;overflow-wrap:anywhere">{{ row.document.url }}</a>
+                            <div style="font-family:var(--font-mono);font-size:13px;line-height:1.5;color:var(--text-secondary);word-break:break-all">sha256 {{ row.document.sha256 }}</div>
+                            <a href="{{ row.document.approval_page }}" style="font-size:14px;font-weight:700;padding-top:4px">The page that was signed</a>
+                          </sc-if>
+                          <sc-if value="{{ row.noDoc }}" hint-placeholder-val="{{ false }}">
+                            <div style="font-size:15px;color:var(--text-secondary)">No gap document yet.</div>
+                          </sc-if>
+                          <sc-if value="{{ showFields }}" hint-placeholder-val="{{ false }}"><div style="font:500 11px var(--font-mono);color:var(--dk-pink-300)">{{ row.fDoc }}</div></sc-if>
+                        </div>
+                      </div>
+
+                      <div style="display:flex;flex-wrap:wrap;gap:6px 20px">
+                        <div style="flex:0 0 150px;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text-secondary);padding-top:4px">Signed</div>
+                        <div style="flex:1 1 300px;min-width:0;display:flex;flex-direction:column;gap:6px">
+                          <sc-if value="{{ row.signed }}" hint-placeholder-val="{{ false }}">
+                            <div style="font-size:15px;line-height:1.5"><span style="font-weight:700">{{ row.signed.on }}</span>, DocuSign envelope <span style="font-family:var(--font-mono);font-size:13px;word-break:break-all;color:var(--text-secondary)">{{ row.signed.envelope }}</span></div>
+                            <ol style="list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px">
+                              <sc-for list="{{ row.signers }}" as="sg" hint-placeholder-count="2">
+                                <li style="display:inline-flex;align-items:center;gap:8px;padding:4px 12px 4px 4px;border:2px solid var(--dk-ink-600);border-radius:999px;font-size:14px;font-weight:700">
+                                  <span style="width:22px;height:22px;border-radius:999px;background:var(--dk-sticker);color:var(--dk-ink);display:grid;place-items:center;font-family:var(--font-display);font-size:11px">{{ sg.n }}</span>{{ sg.role }}
+                                </li>
+                              </sc-for>
+                            </ol>
+                          </sc-if>
+                          <sc-if value="{{ row.noSigned }}" hint-placeholder-val="{{ false }}">
+                            <div style="font-size:15px;color:var(--text-secondary)">Not signed.</div>
+                          </sc-if>
+                          <sc-if value="{{ showFields }}" hint-placeholder-val="{{ false }}"><div style="font:500 11px var(--font-mono);color:var(--dk-pink-300)">{{ row.fSigned }}</div></sc-if>
+                        </div>
+                      </div>
+                    </div>
+                  </article>
+                </sc-for>
+              </div>
+
+              <sc-if value="{{ frame.page }}" hint-placeholder-val="{{ true }}">
+                <footer style="border-top:3px solid var(--dk-ink-700);padding:22px {{ frame.pad }}px;display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;font-size:14px;color:var(--text-secondary)">
+                  <img src="assets/drift-king-icon.png" alt="" style="height:26px">
+                  <span>Drift King</span><span>·</span>
+                  <a href="https://drift-king.org/intent/letter-of-intent">Letter of intent</a><span>·</span>
+                  <a href="https://pid1.drift-king.org/">pid1.drift-king.org</a>
+                </footer>
+              </sc-if>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </sc-for>
+
+  <p style="margin:8px 0 0;font-size:12px;line-height:1.5;color:var(--text-secondary)">Try next: "hand back gaps.html and the style.css additions" · "make <a href="#1c" style="color:var(--dk-orange-300)">1c</a> a denser table view for 30 rows" · "anchor each gap so Replaced by links to it"</p>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;showFields&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;label&quot;:&quot;Show Mustache field names&quot;},&quot;stress30&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;label&quot;:&quot;30 rows in view 2&quot;}}">
+const LOI = "https://drift-king.org/intent/letter-of-intent";
+const frag = q => LOI + "#:~:text=" + encodeURIComponent(q);
+const Q1 = "Nothing is built or run unless the model names it.";
+const CHK = "https://drift-king.org/the-linter/checks/";
+function fakeHash(seed) { let x = seed * 2654435761 >>> 0, s = ""; while (s.length < 64) { x = (x * 1103515245 + 12345) >>> 0; s += (x >>> 8).toString(16).padStart(6, "0"); } return s.slice(0, 64); }
+function fakeUuid(seed) { const h = fakeHash(seed); return [h.slice(0,8),h.slice(8,12),h.slice(12,16),h.slice(16,20),h.slice(20,32)].join("-"); }
+
+const REAL = [
+  { title: "code-strings-named: unnamed strings in the code", status: "signed-open",
+    intent: { quote: Q1, url: "https://drift-king.org/intent/letter-of-intent#:~:text=Nothing%20is%20built%20or%20run%20unless%20the%20model%20names%20it." },
+    check: { name: "code-strings-named.rq", url: CHK + "code-strings-named.rq", sha256: "7b661ee179fe80f6a30ade93fcde9bcce6a498bf2b8bec6c460c47d1827fc457" },
+    held: ["push pid1: append the layer to an empty base", "push pid1: set entrypoint and exposed port", "deploy the Worker"],
+    closes_when: "pid1 does not ship until the check returns 0.",
+    document: { url: "https://drift-king.org/approvals/gap-code-strings.md", sha256: "41371d68b1f602a1f8c75c4d9f3250707bbe3fed4b13b1b3711e55c84488858e", approval_page: "https://drift-king.org/approvals/gap-code-strings-approval" },
+    signed: { on: "2026-09-29", envelope: "172422ea-2599-8f10-81dd-3a650a991c0f", signers: ["Drift King Compliance", "Lead architect (approved)"] },
+    replaced_by: null },
+  { title: "code-strings-named: the-builder/src", status: "replaced",
+    intent: { quote: Q1, url: "https://drift-king.org/intent/letter-of-intent#:~:text=Nothing%20is%20built%20or%20run%20unless%20the%20model%20names%20it." },
+    check: { name: "code-strings-named.rq", url: CHK + "code-strings-named.rq", sha256: "7b661ee179fe80f6a30ade93fcde9bcce6a498bf2b8bec6c460c47d1827fc457" },
+    held: [], closes_when: null, document: null, signed: null,
+    replaced_by: "code-strings-named: unnamed strings in the code" }
+];
+
+const Q2 = "When anything disagrees with the model, it does not ship.";
+const Q3 = "The model is the only place facts live: ah.ttl, and the not-ah.ttl it requires.";
+const Q4 = "Every change is signed and hashed.";
+const SAMPLE = [
+  { sample: true, title: "named-by-nobody: files on disk the model does not name", status: "unsigned",
+    intent: { quote: Q1, url: frag(Q1) },
+    check: { name: "named-by-nobody.rq", url: CHK + "named-by-nobody.rq", sha256: fakeHash(11) },
+    held: [], closes_when: "Every file on disk is named in the model and the check returns 0.",
+    document: { url: "https://drift-king.org/approvals/gap-named-by-nobody.md", sha256: fakeHash(12), approval_page: "https://drift-king.org/approvals/gap-named-by-nobody-approval" },
+    signed: null, replaced_by: null },
+  { sample: true, title: "domain-retypes: the endpoint typed as a distribution", status: "closed",
+    intent: { quote: Q2, url: frag(Q2) },
+    check: { name: "domain-retypes.rq", url: CHK + "domain-retypes.rq", sha256: fakeHash(21) },
+    held: [], closes_when: "The endpoint is a data service and the check returns 0.",
+    document: { url: "https://drift-king.org/approvals/gap-domain-retypes.md", sha256: fakeHash(22), approval_page: "https://drift-king.org/approvals/gap-domain-retypes-approval" },
+    signed: { on: "2026-09-20", envelope: fakeUuid(23), signers: ["Drift King Compliance", "Lead architect (approved)"] },
+    replaced_by: null },
+  { sample: true, title: "range-retypes: an exit code read as text", status: "invalidated",
+    intent: { quote: Q3, url: frag(Q3) },
+    check: { name: "range-retypes.rq", url: CHK + "range-retypes.rq", sha256: fakeHash(31) },
+    held: [], closes_when: null,
+    document: { url: "https://drift-king.org/approvals/gap-range-retypes.md", sha256: fakeHash(32), approval_page: "https://drift-king.org/approvals/gap-range-retypes-approval" },
+    signed: null, replaced_by: null }
+];
+const EMPTY = { sample: true, title: "approvals-are-documents: a plain-text file in approvals/", status: "unsigned",
+  intent: { quote: Q4, url: frag(Q4) },
+  check: { name: "approvals-are-documents.rq", url: CHK + "approvals-are-documents.rq", sha256: fakeHash(41) },
+  held: [], closes_when: null, document: null, signed: null, replaced_by: null };
+
+const ORDER = ["unsigned", "signed-open", "closed", "replaced", "invalidated"];
+const SM = {
+  "unsigned": { label: "Unsigned", build: "Build fails. No signing covers this check.", bandBg: "var(--dk-danger)", bandFg: "var(--dk-ink)", edge: "solid", ring: "var(--dk-ink)", shadow: "7px 7px 0 var(--dk-danger)", cardBg: "var(--dk-ink-800)", text: "var(--dk-sticker)", title: "var(--dk-sticker)", quoteBg: "var(--dk-sticker)", quoteFg: "var(--dk-ink)", heldEmpty: "None. The build fails, so nothing ships.", chipBg: "var(--dk-danger)", chipOn: "var(--dk-ink)", chipFg: "var(--dk-sticker)" },
+  "signed-open": { label: "Signed, open", build: "Build passes. Everything behind it that ships is held.", bandBg: "var(--dk-gold-500)", bandFg: "var(--dk-ink)", edge: "solid", ring: "var(--dk-ink)", shadow: "7px 7px 0 var(--dk-gold-500)", cardBg: "var(--dk-ink-800)", text: "var(--dk-sticker)", title: "var(--dk-sticker)", quoteBg: "var(--dk-sticker)", quoteFg: "var(--dk-ink)", heldEmpty: "None.", chipBg: "var(--dk-gold-500)", chipOn: "var(--dk-ink)", chipFg: "var(--dk-sticker)" },
+  "closed": { label: "Closed", build: "The check returns 0. Nothing held.", bandBg: "var(--dk-ink-700)", bandFg: "var(--dk-sticker)", edge: "solid", ring: "var(--dk-ink-600)", shadow: "none", cardBg: "var(--dk-ink-800)", text: "var(--dk-sticker)", title: "var(--dk-sticker)", quoteBg: "var(--dk-ink-700)", quoteFg: "var(--dk-sticker)", heldEmpty: "None.", chipBg: "var(--dk-ink-700)", chipOn: "var(--dk-sticker)", chipFg: "var(--dk-sticker)" },
+  "replaced": { label: "Replaced", build: "Another gap took its place. Not counted.", bandBg: "var(--dk-ink)", bandFg: "var(--text-secondary)", edge: "dashed", ring: "var(--dk-ink-600)", shadow: "none", cardBg: "var(--dk-ink)", text: "var(--text-secondary)", title: "var(--text-secondary)", quoteBg: "var(--dk-ink-900)", quoteFg: "var(--text-secondary)", heldEmpty: "None. Not counted.", chipBg: "var(--dk-ink)", chipOn: "var(--text-secondary)", chipFg: "var(--text-secondary)" },
+  "invalidated": { label: "Invalidated", build: "Withdrawn. Not counted.", bandBg: "var(--dk-ink)", bandFg: "var(--text-secondary)", edge: "dashed", ring: "var(--dk-ink-600)", shadow: "none", cardBg: "var(--dk-ink)", text: "var(--text-secondary)", title: "var(--text-secondary)", quoteBg: "var(--dk-ink-900)", quoteFg: "var(--text-secondary)", heldEmpty: "None. Not counted.", chipBg: "var(--dk-ink)", chipOn: "var(--text-secondary)", chipFg: "var(--text-secondary)" }
+};
+
+function prep(rows) {
+  return rows.slice().sort((a, b) => ORDER.indexOf(a.status) - ORDER.indexOf(b.status)).map(r => ({
+    ...r, sm: SM[r.status],
+    hasHeld: r.held.length > 0, noHeld: r.held.length === 0,
+    noCloses: !r.closes_when, noDoc: !r.document, noSigned: !r.signed,
+    signers: r.signed ? r.signed.signers.map((role, i) => ({ n: i + 1, role })) : [],
+    fStatus: "{{status}}  one of: unsigned, signed-open, closed, replaced, invalidated",
+    fTitle: "{{title}}", fReplaced: "{{#replaced_by}}{{replaced_by}}{{/replaced_by}}",
+    fIntent: "{{intent.quote}}  →  {{intent.url}}",
+    fCheck: "{{check.name}}  →  {{check.url}}  ·  {{check.sha256}}",
+    fHeld: "{{#held}}{{.}}{{/held}}  ·  {{^held}}empty state{{/held}}",
+    fCloses: "{{closes_when}}  ·  {{^closes_when}}empty state{{/closes_when}}",
+    fDoc: "{{#document}}{{url}} · {{sha256}} · {{approval_page}}{{/document}}",
+    fSigned: "{{#signed}}{{on}} · {{envelope}} · {{#signers}}{{.}}{{/signers}}{{/signed}}"
+  }));
+}
+function summary(rows) {
+  return ORDER.map(st => ({ st, n: rows.filter(r => r.status === st).length })).filter(x => x.n).map(x => {
+    const s = SM[x.st];
+    return { n: x.n, label: s.label, bg: s.chipBg, onBg: s.chipOn, fg: s.chipFg, ring: s.edge === "dashed" ? "var(--dk-ink-600)" : "var(--dk-ink-600)", edge: s.edge };
+  });
+}
+function stress() {
+  const base = [...REAL, ...SAMPLE], out = [];
+  for (let i = 0; i < 30; i++) { const b = base[i % base.length]; out.push({ ...b, sample: true, title: b.title + " (" + (i + 1) + ")" }); }
+  return out;
+}
+function frame(id, label, width, rows, page = true) {
+  const narrow = width < 600, p = prep(rows);
+  return { id, label, width, page, rows: p, summary: summary(rows), pad: narrow ? 18 : 48, padB: page ? (narrow ? 32 : 56) : (narrow ? 22 : 32), gap: narrow ? 24 : 32, h1: narrow ? 56 : 88, h2: narrow ? 19 : 23 };
+}
+
+class Component extends DCLogic {
+  renderVals() {
+    const all = this.props.stress30 ? stress() : [...REAL, ...SAMPLE];
+    return {
+      openTag: "{{#rows}}",
+      showFields: !!this.props.showFields,
+      views: [
+        { title: "View 1: the page with today's two real rows", frames: [frame("1a", "Desktop, 1200", 1200, REAL), frame("1b", "Phone, 390", 390, REAL)] },
+        { title: this.props.stress30 ? "View 2: 30 rows (stress test, sample data)" : "View 2: one row of every status (three are sample data)", frames: [frame("1c", "Desktop, 1200", 1200, all), frame("1d", "Phone, 390", 390, all)] },
+        { title: "View 3: one unsigned gap with every optional field empty (sample data)", frames: [frame("1e", "Block only, desktop", 900, [EMPTY], false), frame("1f", "Block only, phone", 390, [EMPTY], false)] }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+# The canary for tool-version-pinned.rq: a pinned tool, a command that runs it
+# through npx with the version the pin names, and a command that runs it bare.
+# The check must find the bare one, and only that one.
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix sd:      <https://w3id.org/okn/o/sd#> .
+
+<https://drift-king.org/not-ah/canary/tool-version-pinned/tool>
+    a sd:SoftwareVersion ;
+    sd:name "wrangler" ;
+    sd:hasVersionId "4.145.0" .
+<https://drift-king.org/not-ah/canary/tool-version-pinned/pinned-step>
+    sd:hasExecutionCommand "cd site && npx --yes wrangler@4.145.0 deploy" .
+<https://drift-king.org/not-ah/canary/tool-version-pinned/bare-step>
+    sd:hasExecutionCommand "cd site && npx wrangler deploy" .

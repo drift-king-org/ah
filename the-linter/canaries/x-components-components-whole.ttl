@@ -1,0 +1,6 @@
+@prefix cmp: <https://apricotter.com/ns/components#> .
+
+# Must be found: a component with a tag but no element it becomes.
+cmp:x-canary a cmp:LeafComponent ; cmp:tagName "x-canary" .
+# Must stay clean: a whole one.
+cmp:x-whole a cmp:LeafComponent ; cmp:tagName "x-whole" ; cmp:outputElement "div" .

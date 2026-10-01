@@ -1,0 +1,25 @@
+{
+  "name": "cloudflare-pid-rs",
+  "main": "src/index.js",
+  "compatibility_date": "2026-09-27",
+  "workers_dev": false,
+  "routes": [{ "pattern": "pid1.drift-king.org", "custom_domain": true }],
+  "assets": { "directory": "./public", "binding": "ASSETS" },
+  "containers": [
+    {
+      "class_name": "Pid1",
+      "image": "registry.cloudflare.com/CLOUDFLARE_ACCOUNT_ID/cloudflare-pid-rs@sha256:2c0a8cae7dea4943d408233e6c9d19b8781a1da71fc4ae9b6e97d60e64978459",
+      "instance_type": "lite",
+      "max_instances": 1
+    }
+  ],
+  "durable_objects": {
+    "bindings": [
+      { "name": "PID1", "class_name": "Pid1" }
+    ]
+  },
+  "migrations": [
+    { "tag": "v1", "new_sqlite_classes": ["Pid1"] }
+  ],
+  "observability": { "enabled": true }
+}

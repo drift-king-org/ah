@@ -1,0 +1,9 @@
+# Audits @apricotter/x-components' own model, loaded on its own: every
+# component names the tag it is written as and the element it becomes.
+PREFIX cmp: <https://apricotter.com/ns/components#>
+
+SELECT ?component WHERE {
+  { ?component a cmp:LeafComponent } UNION { ?component a cmp:WrapperComponent }
+  FILTER NOT EXISTS { ?component cmp:tagName ?tag ; cmp:outputElement ?element }
+}
+ORDER BY ?component

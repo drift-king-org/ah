@@ -1,0 +1,3 @@
+SHA256 hash of pid1.bin:
+8163ce1cdb728a12c5b3bcaf40a0d5251ba40a8439aa55870b2956b57c2b8d08
+CertUtil: -hashfile command completed successfully.

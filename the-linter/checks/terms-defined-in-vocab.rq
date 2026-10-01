@@ -1,0 +1,20 @@
+# Any predicate or type we use from a vendored vocabulary must be a term
+# that vocabulary actually defines. Oxigraph and rdflib both accept an
+# unknown term silently, so a typo would otherwise pass. Written after one
+# happened for real: a project doc claimed p-plan:isPreceededBy (double e),
+# copied from a summarised web page rather than checked against the
+# vendored p-plan.rdf, which declares isPrecededBy. The vendored copy is
+# the authority; this check holds the model to it, not to any doc.
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX vann: <http://purl.org/vocab/vann/>
+
+SELECT DISTINCT ?term WHERE {
+  { ?s ?term ?o } UNION { ?s rdf:type ?term }
+  FILTER (isIRI(?term))
+  ?vocabulary vann:preferredNamespaceUri ?base .
+  FILTER (STRSTARTS(STR(?term), STR(?base)))
+  # Ours only: a foreign vocabulary's own slips are its authors' to fix.
+  FILTER (STR(?base) != "https://drift-king.org/")
+  FILTER NOT EXISTS { ?term rdf:type ?anyType }
+}
+ORDER BY ?term

@@ -1,0 +1,18 @@
+# Which source folders the string check reads, and with which ast-grep rule.
+# The folders are the extract-strings step's inputs in the model, so adding a
+# folder to the check is a model change, never a code change. Each rule's
+# dcterms:subject is the AST class its matches are recorded as. ?step and
+# ?base are bound by the caller, so both are projected.
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX p-plan:  <http://purl.org/net/p-plan#>
+
+SELECT ?step ?base ?folder ?rule ?class WHERE {
+  ?step p-plan:hasInputVar ?var .
+  ?source p-plan:correspondsToVariable ?var ;
+    dcterms:requires ?ruleFile .
+  ?ruleFile dcterms:subject ?class .
+  FILTER (strstarts(str(?source), str(?base)) && strstarts(str(?ruleFile), str(?base)))
+  BIND (strafter(str(?source), str(?base)) AS ?folder)
+  BIND (strafter(str(?ruleFile), str(?base)) AS ?rule)
+}
+ORDER BY ?folder

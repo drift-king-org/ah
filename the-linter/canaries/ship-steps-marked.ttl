@@ -1,0 +1,8 @@
+@prefix sd: <https://w3id.org/okn/o/sd#> .
+@prefix ex: <https://drift-king.org/not-ah/canary/ship-steps-marked/> .
+
+# Must be found: a deploy nobody marked as a ship step.
+ex:unmarked sd:hasExecutionCommand "cd site && npx wrangler deploy" .
+# Must stay clean: the same deploy, marked.
+ex:marked a <https://drift-king.org/ah/the-builder/ShipStep> ;
+    sd:hasExecutionCommand "cd site && npx wrangler deploy" .

@@ -1,0 +1,34 @@
+id: string-literal
+language: js
+rule:
+  any:
+    - kind: binary_expression
+      all:
+        - has: { field: left, kind: string }
+        - has: { field: right, kind: string }
+    - all:
+        - kind: string
+        # Inside a binary_expression only when it is one side of a join the
+        # first branch already caught as one unit. A comparison like
+        # a == "x" is not a join, and its literal is caught on its own.
+        - not:
+            inside:
+              kind: binary_expression
+              all:
+                - has: { field: left, kind: string }
+                - has: { field: right, kind: string }
+        - not: { inside: { kind: expression_statement } }
+    # A template literal is a string too: one unit, its ${} holes and all,
+    # as its raw text reads.
+    - all:
+        - kind: template_string
+        # Inside a binary_expression only when it is one side of a join the
+        # first branch already caught as one unit. A comparison like
+        # a == "x" is not a join, and its literal is caught on its own.
+        - not:
+            inside:
+              kind: binary_expression
+              all:
+                - has: { field: left, kind: string }
+                - has: { field: right, kind: string }
+        - not: { inside: { kind: expression_statement } }

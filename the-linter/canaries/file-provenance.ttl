@@ -1,0 +1,92 @@
+# Canary for file-provenance.rq. Its own namespace and its own disk scan, so
+# nothing here can be mistaken for a real file.
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix vann:    <http://purl.org/vocab/vann/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix dcat:    <http://www.w3.org/ns/dcat#> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
+@prefix p-plan:  <http://purl.org/net/p-plan#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix f:       <https://drift-king.org/not-ah/canary/file-provenance/> .
+
+<https://drift-king.org/ah.ttl> a owl:Ontology ;
+    vann:preferredNamespaceUri "https://drift-king.org/not-ah/canary/file-provenance/" .
+
+f:coder    a prov:SoftwareAgent .
+f:approver a prov:Person .
+f:step     a p-plan:Step ; p-plan:hasOutputVar f:out .
+
+# The fake disk scan: path and sha256 now, one per file.
+f:scan-a a prov:Entity ; dcterms:isPartOf <https://drift-king.org/not-ah/the-linter/disk-scan> ; dcterms:identifier "a.txt" .
+[ prov:specializationOf f:scan-a ; dcterms:identifier "sha256:aa" ] .
+f:scan-b a prov:Entity ; dcterms:isPartOf <https://drift-king.org/not-ah/the-linter/disk-scan> ; dcterms:identifier "b.txt" .
+[ prov:specializationOf f:scan-b ; dcterms:identifier "sha256:bb" ] .
+f:scan-c a prov:Entity ; dcterms:isPartOf <https://drift-king.org/not-ah/the-linter/disk-scan> ; dcterms:identifier "c.txt" .
+[ prov:specializationOf f:scan-c ; dcterms:identifier "sha256:cc" ] .
+f:scan-d a prov:Entity ; dcterms:isPartOf <https://drift-king.org/not-ah/the-linter/disk-scan> ; dcterms:identifier "d.txt" .
+[ prov:specializationOf f:scan-d ; dcterms:identifier "sha256:dd-now" ] .
+f:scan-e a prov:Entity ; dcterms:isPartOf <https://drift-king.org/not-ah/the-linter/disk-scan> ; dcterms:identifier "e.txt" .
+[ prov:specializationOf f:scan-e ; dcterms:identifier "sha256:ee" ] .
+f:scan-f a prov:Entity ; dcterms:isPartOf <https://drift-king.org/not-ah/the-linter/disk-scan> ; dcterms:identifier "f.txt" .
+[ prov:specializationOf f:scan-f ; dcterms:identifier "sha256:ff-now" ] .
+f:scan-g a prov:Entity ; dcterms:isPartOf <https://drift-king.org/not-ah/the-linter/disk-scan> ; dcterms:identifier "g.txt" .
+[ prov:specializationOf f:scan-g ; dcterms:identifier "sha256:gg" ] .
+f:scan-h a prov:Entity ; dcterms:isPartOf <https://drift-king.org/not-ah/the-linter/disk-scan> ; dcterms:identifier "h.txt" .
+[ prov:specializationOf f:scan-h ; dcterms:identifier "sha256:hh" ] .
+f:scan-i a prov:Entity ; dcterms:isPartOf <https://drift-king.org/not-ah/the-linter/disk-scan> ; dcterms:identifier "i.txt" .
+[ prov:specializationOf f:scan-i ; dcterms:identifier "sha256:ii" ] .
+f:scan-j a prov:Entity ; dcterms:isPartOf <https://drift-king.org/not-ah/the-linter/disk-scan> ; dcterms:identifier "j.txt" .
+f:scan-p a prov:Entity ; dcterms:isPartOf <https://drift-king.org/not-ah/the-linter/disk-scan> ; dcterms:identifier "packet-1.ttl" .
+[ prov:specializationOf f:scan-p ; dcterms:identifier "sha256:p1" ] .
+f:scan-m a prov:Entity ; dcterms:isPartOf <https://drift-king.org/not-ah/the-linter/disk-scan> ; dcterms:identifier "model.ttl" .
+[ prov:specializationOf f:scan-m ; dcterms:identifier "sha256:mm" ] .
+f:scan-r a prov:Entity ; dcterms:isPartOf <https://drift-king.org/not-ah/the-linter/disk-scan> ; dcterms:identifier "root.ttl" .
+[ prov:specializationOf f:scan-r ; dcterms:identifier "sha256:rr" ] .
+f:scan-q a prov:Entity ; dcterms:isPartOf <https://drift-king.org/not-ah/the-linter/disk-scan> ; dcterms:identifier "packet-2.ttl" .
+[ prov:specializationOf f:scan-q ; dcterms:identifier "sha256:p2" ] .
+
+# Must be caught.
+# a.txt: nothing says where it came from.
+# b.txt: generated and agent-written at once.
+f:b.txt p-plan:correspondsToVariable f:out ; prov:wasAttributedTo f:coder .
+# c.txt: agent-written, in no packet.
+f:c.txt prov:wasAttributedTo f:coder .
+# d.txt: agent-written, signed at older bytes.
+f:d.txt prov:wasAttributedTo f:coder .
+# e.txt: agent-written, in a packet whose envelope never completed.
+f:e.txt prov:wasAttributedTo f:coder .
+# f.txt: fetched, and its bytes changed since.
+f:f.txt dcat:downloadURL "https://example.org/f.txt"^^xsd:anyURI ; dcterms:identifier "sha256:ff-then" .
+# j.txt: scanned without a sha256.
+f:j.txt prov:wasAttributedTo f:coder .
+# packet-2.ttl: its own signing never completed, so it is unsigned too.
+
+# model.ttl: an ontology (a plan file, say), agent-written, unsigned. Being
+# an ontology does not exempt it.
+f:model.ttl a owl:Ontology ; prov:wasAttributedTo f:coder .
+
+# Must stay clean.
+# root.ttl: the root model, which declares the namespace. Its approval is
+# the golden, so it needs no packet.
+f:root.ttl a owl:Ontology ; vann:preferredNamespaceUri "https://example.org/" ;
+    prov:wasAttributedTo f:coder .
+# g.txt: agent-written, a member of a completed packet at its current bytes.
+f:g.txt prov:wasAttributedTo f:coder .
+# h.txt: generated.
+f:h.txt p-plan:correspondsToVariable f:out .
+# i.txt: fetched, bytes unchanged.
+f:i.txt dcat:downloadURL "https://example.org/i.txt"^^xsd:anyURI ; dcterms:identifier "sha256:ii" .
+# packet-1.ttl: agent-written, and itself the thing signed at its current bytes.
+f:packet-1.ttl prov:wasAttributedTo f:coder ;
+    prov:hadMember [ prov:specializationOf f:g.txt ; dcterms:identifier "sha256:gg" ] ,
+                   [ prov:specializationOf f:d.txt ; dcterms:identifier "sha256:dd-then" ] .
+f:packet-2.ttl prov:wasAttributedTo f:coder ;
+    prov:hadMember [ prov:specializationOf f:e.txt ; dcterms:identifier "sha256:ee" ] .
+
+f:signing-1 a prov:Activity ;
+    prov:used [ prov:specializationOf f:packet-1.ttl ; dcterms:identifier "sha256:p1" ] ;
+    prov:wasAssociatedWith f:approver ;
+    prov:endedAtTime "2026-09-28T00:00:00Z"^^xsd:dateTime .
+f:signing-2 a prov:Activity ;
+    prov:used [ prov:specializationOf f:packet-2.ttl ; dcterms:identifier "sha256:p2" ] ;
+    prov:wasAssociatedWith f:approver .

@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>{{title}}, for approval</title>
+<style>
+body{font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.5;color:#111;margin:0;padding:0}
+h1{font-size:18px;margin:0 0 12px}
+h2{font-size:15px;margin:18px 0 8px}
+p{margin:0 0 10px}
+a{color:#111}
+.doc{border-left:3px solid #999;padding:4px 0 4px 14px;margin:0 0 16px}
+.ref{margin:0 0 12px}
+.ref b{display:block}
+.mono{font-family:"Courier New",monospace;font-size:12px;word-break:break-all;overflow-wrap:anywhere}
+.sign{margin-top:32px}
+.sign p{margin:0 0 34px}
+.anchor{color:#ffffff;font-size:10px}
+</style>
+</head>
+<body>
+<h1>{{title}}, for approval</h1>
+<p>Drift King Compliance presents this for approval. Its full text follows.</p>
+<div class="doc">
+{{#paragraphs}}<p>{{text}}{{#link}}<br><a class="mono" href="{{link}}">{{link}}</a>{{/link}}</p>
+{{/paragraphs}}</div>
+<h2>The files</h2>
+<p>Each sha256 is the fingerprint of the file's exact bytes. If one character changes, the fingerprint changes and this approval no longer covers it.</p>
+{{#rows}}<div class="ref"><b>{{label}}</b>
+{{^access}}<a class="mono" href="{{url}}">{{url}}</a><br>
+<span class="mono">sha256 {{sha256}}</span>{{/access}}{{access}}</div>
+{{/rows}}<h2>The packages it brings</h2>
+<p>Each package below is one an install of the release runs, with the exact version that was checked and the integrity npm gave it.</p>
+{{#packages}}<div class="ref"><b>{{name}} {{version}}</b>
+<span class="mono">integrity {{integrity}}</span></div>
+{{/packages}}<h2>What was wanted, and what went</h2>
+<p>Each wanted line is quoted as signed, from the signed list (what good looks like, version 2) and from the signed document that asks for the next version. Beside it, each check that proves it, with what the check found on the committed bytes of the candidate and what it found in its own canary. A line no check proves says so; it is never counted as met.</p>
+{{#wanted}}{{#first}}<div class="ref"><b>{{label}}</b>
+Wanted: {{quote}}{{#note}}<br>{{note}}{{/note}}</div>
+{{/first}}{{#missing}}<div class="ref"><b>Not checked.</b> No check proves this line.</div>
+{{/missing}}{{#check}}<div class="ref"><b>{{check}}</b>
+{{^realFound}}On the candidate: not run. It is not counted as passed.<br>{{/realFound}}{{#realFound}}On the candidate: it found {{realFound}}. {{realVerdict}}<br>{{/realFound}}{{#detail}}<span class="mono">{{detail}}</span><br>{{/detail}}{{^canaryFound}}In its canary: not run.{{/canaryFound}}{{#canaryFound}}In its canary: it found {{canaryFound}}. {{canaryVerdict}}{{/canaryFound}}</div>
+{{/check}}{{/wanted}}<p>Checks that no wanted line names:</p>
+{{#unnamed}}<div class="ref"><b>{{check}}</b>
+On the candidate: it found {{realFound}}. {{realVerdict}}<br>{{#detail}}<span class="mono">{{detail}}</span><br>{{/detail}}{{#canaryFound}}In its canary: it found {{canaryFound}}. {{canaryVerdict}}{{/canaryFound}}</div>
+{{/unnamed}}<h2>What the checks found</h2>
+<p>Drift King ran each check below on the files above, in the build that made this page. A canary is a copy broken on purpose: a check must find something in it first, or finding nothing in the real thing means nothing.</p>
+{{#results}}<div class="ref"><b>{{check}}</b>
+Ran on: {{on}}<br>
+Found: {{found}}. {{verdict}}</div>
+{{/results}}<div class="sign">
+<p>Signed, Drift King Compliance: <span class="anchor">/sig1/</span></p>
+<p>Date: <span class="anchor">/date1/</span></p>
+<p>Approved: <span class="anchor">/sig2/</span></p>
+<p>Date: <span class="anchor">/date2/</span></p>
+</div>
+</body>
+</html>

@@ -1,0 +1,17 @@
+# An IRI in our namespace is a name, and a name must not carry a value. A
+# digest, a hash or any long hex run in the path turns a fact into part of the
+# name: every new value then needs a new name, the value is written twice (in
+# the name and in the data), and the IRI stops being something that can route
+# to one stable page. Name the thing; store the value as data on it.
+PREFIX vann: <http://purl.org/vocab/vann/>
+
+SELECT DISTINCT ?found WHERE {
+  <https://drift-king.org/ah.ttl> vann:preferredNamespaceUri ?base .
+  { ?iri ?p ?o } UNION { ?s ?p ?iri }
+  FILTER (isIRI(?iri))
+  FILTER (strstarts(str(?iri), str(?base)))
+  # 32 or more hex characters in a row: md5 and longer, sha1, sha256.
+  FILTER (regex(str(?iri), "[0-9a-fA-F]{32,}"))
+  BIND (str(?iri) AS ?found)
+}
+ORDER BY ?found

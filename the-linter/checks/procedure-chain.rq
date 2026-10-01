@@ -1,0 +1,47 @@
+# A procedure is a plan a person or an agent walks, one step after another,
+# from what a skill finds in the model. So each is one chain: exactly one
+# first step, no step with two before it or two after it, every step reached
+# from the first, none that waits on a step of another plan, and every step
+# says what to do. Anything else is a finding, named with the step and why.
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX p-plan:  <http://purl.org/net/p-plan#>
+
+SELECT ?plan ?step ?finding WHERE {
+  ?plan a <https://drift-king.org/ah/Procedure> .
+  {
+    ?step p-plan:isStepOfPlan ?plan .
+    FILTER NOT EXISTS { ?step dcterms:description ?description }
+    BIND ("says nothing of what to do" AS ?finding)
+  } UNION {
+    ?step p-plan:isStepOfPlan ?plan ; p-plan:isPrecededBy ?one , ?other .
+    FILTER (str(?one) < str(?other))
+    BIND ("has two steps before it" AS ?finding)
+  } UNION {
+    ?step p-plan:isStepOfPlan ?plan .
+    ?one p-plan:isPrecededBy ?step . ?other p-plan:isPrecededBy ?step .
+    FILTER (str(?one) < str(?other))
+    BIND ("has two steps after it" AS ?finding)
+  } UNION {
+    ?step p-plan:isStepOfPlan ?plan ; p-plan:isPrecededBy ?before .
+    FILTER NOT EXISTS { ?before p-plan:isStepOfPlan ?plan }
+    BIND ("waits on a step of another plan" AS ?finding)
+  } UNION {
+    ?step p-plan:isStepOfPlan ?plan .
+    ?first p-plan:isStepOfPlan ?plan .
+    FILTER NOT EXISTS { ?first p-plan:isPrecededBy ?anything }
+    FILTER NOT EXISTS { ?step p-plan:isPrecededBy* ?first }
+    BIND ("is not reached from a first step" AS ?finding)
+  } UNION {
+    { SELECT ?plan (COUNT(DISTINCT ?first) AS ?firsts) WHERE {
+        ?plan a <https://drift-king.org/ah/Procedure> .
+        OPTIONAL {
+          ?first p-plan:isStepOfPlan ?plan .
+          FILTER NOT EXISTS { ?first p-plan:isPrecededBy ?anything }
+        }
+      } GROUP BY ?plan }
+    FILTER (?firsts != 1)
+    BIND (?plan AS ?step)
+    BIND (concat("has ", str(?firsts), " first steps, not one") AS ?finding)
+  }
+}
+ORDER BY ?plan ?step ?finding

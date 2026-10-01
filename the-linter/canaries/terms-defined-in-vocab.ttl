@@ -1,0 +1,10 @@
+# Must be found: p-plan:isPreceededBy (double e) -- the exact misspelling
+# this check exists because of. purl.org/net/p-plan# does not define it.
+# Must stay clean: p-plan:isPrecededBy, the real, vendored term.
+@prefix p-plan: <http://purl.org/net/p-plan#> .
+
+<https://drift-king.org/not-ah/canary/terms-defined-in-vocab/a>
+    p-plan:isPreceededBy <https://drift-king.org/not-ah/canary/terms-defined-in-vocab/b> .
+
+<https://drift-king.org/not-ah/canary/terms-defined-in-vocab/c>
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/canary/terms-defined-in-vocab/d> .

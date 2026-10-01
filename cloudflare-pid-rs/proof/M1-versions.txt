@@ -1,0 +1,24 @@
+$ rustc -Vv   (run from cloudflare-pid-rs/pid1, pinned via rust-toolchain.toml)
+rustc 1.98.1 (48a229cea 2026-09-01)
+binary: rustc
+commit-hash: 48a229ceaefd4985c50990b14116b6d856af0985
+commit-date: 2026-09-01
+host: x86_64-pc-windows-msvc
+release: 1.98.1
+LLVM version: 22.1.8
+
+$ cargo-zigbuild --version
+cargo-zigbuild 0.23.0
+
+$ python -m ziglang version
+0.16.0
+
+$ crane version   (cloudflare-pid-rs/.tools/crane/crane.exe)
+0.22.1
+
+$ npx wrangler --version   (run from cloudflare-pid-rs/worker, pinned in package.json)
+4.142.0
+
+docker version: not run. This project builds without a local Docker daemon —
+see claude/cloudflare-containers-pid1.md — using crane to push a pre-built
+OCI image instead of a local Dockerfile build.

@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Drift King · Stop drift</title>
+<meta name="description" content="Nothing is built or run unless the model names it. When anything disagrees with the model, it does not ship.">
+<link rel="stylesheet" href="/style.css">
+<link rel="icon" href="https://pid1.drift-king.org/favicon.ico">
+</head>
+<body>
+<nav class="nav"><span class="wm">Drift King</span><span class="sp"></span><a class="l" href="#spot">Spot the drift</a><a class="l" href="#letter">The letter</a><a class="l" href="https://pid1.drift-king.org/">pid1</a></nav>
+<header class="hero">
+<img class="racer" src="/images/racer.webp" alt="">
+<div class="stk s1">Signed</div><div class="stk s2">Does not ship</div><div class="stk s3">ah.ttl + not-ah.ttl</div>
+<h1 class="disp h1">Stop<span>drift</span></h1>
+<p class="pitch">Nothing is built or run unless the model names it. When anything disagrees with the model, it does not ship.</p>
+<div class="ctas"><a class="btn" href="#spot">Spot the drift</a><a class="btn white" href="/intent/letter-of-intent">Read the letter</a></div>
+</header>
+<div class="tick"><div class="row"><span>Stop drift</span><span>✦</span><span><b>Nothing is built or run unless the model names it</b></span><span>✦</span><span>Intent comes first</span><span>✦</span><span><b>Signed and hashed</b></span><span>✦</span><span>It does not ship</span><span>✦</span><span>Stop drift</span><span>✦</span><span><b>Nothing is built or run unless the model names it</b></span><span>✦</span><span>Intent comes first</span><span>✦</span><span><b>Signed and hashed</b></span><span>✦</span><span>It does not ship</span><span>✦</span></div></div>
+<div class="tick alt"><div class="row"><span>ah.ttl</span><span>✦</span><span><b>not-ah.ttl</b></span><span>✦</span><span>Rekor</span><span>✦</span><span><b>Behavior</b></span><span>✦</span><span>Tests</span><span>✦</span><span><b>Code</b></span><span>✦</span><span>The model</span><span>✦</span><span>ah.ttl</span><span>✦</span><span><b>not-ah.ttl</b></span><span>✦</span><span>Rekor</span><span>✦</span><span><b>Behavior</b></span><span>✦</span><span>Tests</span><span>✦</span><span><b>Code</b></span><span>✦</span><span>The model</span><span>✦</span></div></div>
+
+<section class="sec" id="spot">
+<h2 class="disp">Spot the drift</h2>
+<p class="sub">An example. The intent says one thing and the code says another. Line 2 of the code says iad02, where the intent says cmh01, so this change does not ship.</p>
+<div class="game">
+<div class="pane"><h3>Intent <span class="eg">Example</span></h3>
+<div class="ln"><span class="n">1</span>Run pid 1.</div>
+<div class="ln"><span class="n">2</span>Run it in cmh01.</div>
+<div class="ln"><span class="n">3</span>Report when it started.</div>
+<div class="ln"><span class="n">4</span>Name its Durable Object.</div></div>
+<div class="pane"><h3>Code <span class="eg">Example</span></h3>
+<div class="ln"><span class="n">1</span>pid: 1</div>
+<div class="ln hit"><span class="n">2</span>location: "iad02"</div>
+<div class="ln"><span class="n">3</span>started: 1790604743</div>
+<div class="ln"><span class="n">4</span>durable_object: "8d05…cbff"</div>
+<div class="stamp on">Does not ship</div></div>
+</div>
+</section>
+
+<section class="sec" style="padding-top:20px">
+<h2 class="disp">How it works</h2>
+<div class="steps">
+<div class="step"><div class="num">1</div><h3>Write the intent</h3><p>Say what you intend in plain language, and sign it.</p></div>
+<div class="step"><div class="num">2</div><h3>Check every projection</h3><p>Behavior, tests, code and the model are each checked against the signed intent.</p></div>
+<div class="step"><div class="num">3</div><h3>Stop what disagrees</h3><p>When anything disagrees with the model, it does not ship.</p></div>
+<div class="step"><div class="num">4</div><h3>Hash it to the log</h3><p>Every change is signed and hashed. The hash goes on a public log we cannot edit, starting with Rekor.</p></div>
+</div></section>
+
+<section class="sec" id="letter">
+<h2 class="disp">One signed page</h2>
+<div class="letterwrap">
+<div class="letter">
+{{#paragraphs}}<p>{{text}}</p>
+{{/paragraphs}}</div>
+<div class="seal"><div class="in"><div class="big">Signed<br>and hashed</div><div class="hash">Envelope {{#rows}}{{envelope}}{{/rows}}</div></div></div>
+</div>
+{{#rows}}<p class="proof">Signed by the lead architect on {{signed_on}}, DocuSign envelope {{envelope}}.<br>
+<a href="/intent/letter-of-intent">Read the letter</a> · <a href="{{signed_url}}">As signed in DocuSign</a> (PDF), sha256 {{signed_sha256}}</p>
+{{/rows}}</section>
+
+<section class="never"><div class="in">
+<h2 class="disp">What we do not do</h2>
+<ul><li>We do not edit a signed intent. A new intent is a new letter, signed again.</li><li>When anything disagrees with the model, it does not ship.</li><li>If the model does not need it, we do not add it.</li></ul>
+</div></section>
+
+<section class="fin">
+<img class="kart" src="/images/kart.webp" alt="Drift King kart racer in the orange grove circuit">
+<h2 class="disp">Hold the line</h2>
+<p class="sub" style="margin:26px auto 0">Everything Drift King does traces back to one signed page. Start there.</p>
+<div class="ctas"><a class="btn" href="/intent/letter-of-intent">Read the letter</a></div>
+</section>
+<footer><span>Drift King</span><span>·</span><a href="/intent/letter-of-intent">Letter of intent</a><span>·</span><a href="https://pid1.drift-king.org/">pid1.drift-king.org</a></footer>
+</body>
+</html>

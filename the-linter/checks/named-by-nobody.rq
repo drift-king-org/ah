@@ -1,0 +1,34 @@
+# A file on disk is named when its address -- the namespace plus its path
+# from the repo root -- is the subject of some statement. Whatever runs this
+# scans the disk fresh, every time, and injects one observation per real
+# file: dcterms:isPartOf the disk-scan marker, dcterms:identifier its
+# relative path. This is a check on those observations, not on the disk
+# itself -- a hand-kept list of files would be exactly the bug this exists
+# to catch (it happened once: a new file sat unnamed for a full turn
+# because the audit re-used yesterday's list instead of scanning again).
+PREFIX dcterms: <http://purl.org/dc/terms/>
+
+SELECT ?base ?found WHERE {
+  # ?base is bound by the caller, ah.ttl's own vann:preferredNamespaceUri --
+  # not any node with one. rust/ast# and javascript/ast# have one too (their
+  # own AST-recording namespace), and looking it up here instead of taking
+  # it as given would check every file against those bases as well, finding
+  # everything unnamed. Caught by the checks it broke, not guessed.
+  ?observed dcterms:isPartOf <https://drift-king.org/not-ah/the-linter/disk-scan> ;
+    dcterms:identifier ?found .
+  # A path that is not a valid IRI (a space, a quote) makes IRI() fail and
+  # leaves ?address unbound, and NOT EXISTS over an unbound variable matches
+  # anything, so the file would pass as named. COALESCE makes it false, and
+  # nothing has the subject false, so the file is reported. Same hole as
+  # code-strings-named in M3.1.
+  BIND (COALESCE(IRI(concat(str(?base), ?found)), false) AS ?address)
+  FILTER NOT EXISTS { ?address ?p ?o }
+  # A folder the model says is an intake folder holds files that are expected to be
+  # unnamed until they are first read: Compliance leaves a directive there, and it
+  # is named, with its sha256, when the coder reads it. Only a file in such a folder.
+  FILTER NOT EXISTS {
+    ?folder a <https://drift-king.org/ah/IntakeFolder> .
+    FILTER (STRSTARTS(?found, STRAFTER(STR(?folder), STR(?base))))
+  }
+}
+ORDER BY ?found

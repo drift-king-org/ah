@@ -1,0 +1,14 @@
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix oa:      <http://www.w3.org/ns/oa#> .
+
+<https://drift-king.org/ah/x-components/0.2.0/want/L05> a prov:Entity , oa:Annotation ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    rdfs:label "What good looks like, version 2, line 5" ;
+    skos:notation "L05" ;
+    rdf:value "Every action the release workflow runs is tagged to the commit its tag names. The workflow may write an identity token and read the repository, nothing more, and runs in the npm environment." ;
+    oa:hasTarget [ a oa:SpecificResource ; oa:hasSource <https://drift-king.org/intent/x-components-what-good-looks-like-v2.md> ; oa:hasSelector [ a oa:TextPositionSelector ; oa:start 639 ; oa:end 829 ] ] ;
+    dcterms:references <https://drift-king.org/ah/x-components/0.2.0/check/xc-05> .

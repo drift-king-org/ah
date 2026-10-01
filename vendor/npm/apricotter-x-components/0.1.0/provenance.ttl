@@ -1,0 +1,20 @@
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+<https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0/provenance.ttl> a owl:Ontology , prov:Entity ;
+    prov:wasDerivedFrom <https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0/x-components-0.1.0.tgz> , <https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0/attestations.json> .
+<https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0/x-components-0.1.0.tgz> dcterms:identifier "sha512-O76sSZcof2rlnllQftA7pHNGB1M71OhleDRJGBJzVAiQeXcdysE/Qir6hvCDXCawBDY3V3yRzereBO0eSQ3xhw==" .
+
+<https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0/attestations.json#1> a prov:Entity ;
+    dcterms:conformsTo <https://github.com/npm/attestation/tree/main/specs/publish/v0.1> ;
+    dcterms:subject "sha512-O76sSZcof2rlnllQftA7pHNGB1M71OhleDRJGBJzVAiQeXcdysE/Qir6hvCDXCawBDY3V3yRzereBO0eSQ3xhw==" ;
+    dcterms:identifier "rekor:3018131054" .
+
+<https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0/attestations.json#2> a prov:Entity ;
+    dcterms:conformsTo <https://slsa.dev/provenance/v1> ;
+    dcterms:subject "sha512-O76sSZcof2rlnllQftA7pHNGB1M71OhleDRJGBJzVAiQeXcdysE/Qir6hvCDXCawBDY3V3yRzereBO0eSQ3xhw==" ;
+    dcterms:identifier "rekor:3018127412" ;
+    prov:wasGeneratedBy <https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0/attestations.json#2-build> .
+<https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0/attestations.json#2-build> a prov:Activity ;
+    prov:used <https://github.com/Apricotter/x-components/commit/b1a6b38e4e0edabe68a1e8972eb641095a04440f> .

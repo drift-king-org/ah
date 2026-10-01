@@ -1,0 +1,110 @@
+
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
+@prefix aria:    <https://apricotter.com/ns/wai-aria#> .
+
+<https://apricotter.com/ns/wai-aria> a owl:Ontology ;
+    rdfs:label "WAI-ARIA role vocabulary" ;
+    rdfs:comment "Role characteristics quoted from the W3C WAI-ARIA 1.2 Recommendation: whether a role is abstract, where its name comes from, which states and properties it supports or requires, and what it requires of its context and owned elements." .
+
+aria:spec a prov:Entity ;
+    dcterms:title "Accessible Rich Internet Applications (WAI-ARIA) 1.2" ;
+    prov:atLocation <https://www.w3.org/TR/wai-aria-1.2/> .
+
+aria:local-copy a prov:Entity ;
+    dcterms:identifier "local snapshot of the W3C WAI-ARIA 1.2 Recommendation" ;
+    prov:wasDerivedFrom aria:spec .
+
+aria:Role a owl:Class ;
+    rdfs:label "Role" ;
+    prov:wasQuotedFrom aria:local-copy ;
+    rdfs:comment "Values" .
+
+aria:isAbstractRole a owl:DatatypeProperty ;
+    rdfs:label "isAbstractRole" ;
+    rdfs:domain aria:Role ;
+    rdfs:range xsd:boolean ;
+    prov:wasQuotedFrom aria:local-copy ;
+    dcterms:source "5.2.1 Abstract Roles" ;
+    rdfs:comment "Values" .
+
+aria:requiredState a owl:DatatypeProperty ;
+    rdfs:label "requiredState" ;
+    rdfs:domain aria:Role ;
+    rdfs:range xsd:string ;
+    prov:wasQuotedFrom aria:local-copy ;
+    dcterms:source "5.2.2 Required States and Properties" ;
+    rdfs:comment "States and properties specifically required for the role and subclass roles. Content authors MUST provide a non-empty value for required states and properties. Content authors _MUST NOT_ use the value undefined for required states and properties, unless undefined is an explicitly-supported value of that state or property." .
+
+aria:supportedState a owl:DatatypeProperty ;
+    rdfs:label "supportedState" ;
+    rdfs:domain aria:Role ;
+    rdfs:range xsd:string ;
+    prov:wasQuotedFrom aria:local-copy ;
+    dcterms:source "5.2.3 Supported States and Properties" ;
+    rdfs:comment "States and properties specifically applicable to the role and child roles. Content authors _MAY_ provide values for supported states and properties, but need not in cases where default values are sufficient. User agents MUST map all supported states and properties for the role to an accessibility API. If the state or property is undefined and it has a default value for the role, user agents _SHOULD_ expose the default value." .
+
+aria:requiresOwnedRole a owl:ObjectProperty ;
+    rdfs:label "requiresOwnedRole" ;
+    rdfs:domain aria:Role ;
+    prov:wasQuotedFrom aria:local-copy ;
+    dcterms:source "5.2.6 Required Owned Elements" ;
+    rdfs:comment "Any element that will be owned by the element with this role. For example, an element with the role list will own at least one element with the role listitem." .
+
+aria:requiresContextRole a owl:ObjectProperty ;
+    rdfs:label "requiresContextRole" ;
+    rdfs:domain aria:Role ;
+    prov:wasQuotedFrom aria:local-copy ;
+    dcterms:source "5.2.7 Required Context Role" ;
+    rdfs:comment "The required context role defines the owning container where this role is allowed. If a role has a required context, authors MUST ensure that an element with the role is contained inside (or owned by) an element with the required context role. For example, an element with role listitem is only meaningful when contained inside (or owned by) an element with role list." .
+
+aria:nameFrom a owl:DatatypeProperty ;
+    rdfs:label "nameFrom" ;
+    rdfs:domain aria:Role ;
+    rdfs:range xsd:string ;
+    prov:wasQuotedFrom aria:local-copy ;
+    dcterms:source "5.2.8 Accessible Name Calculation" ;
+    rdfs:comment "Values" .
+
+aria:childrenPresentational a owl:DatatypeProperty ;
+    rdfs:label "childrenPresentational" ;
+    rdfs:domain aria:Role ;
+    rdfs:range xsd:boolean ;
+    prov:wasQuotedFrom aria:local-copy ;
+    dcterms:source "5.2.9 Presentational Children" ;
+    rdfs:comment "Values" .
+
+aria:nameRequired a owl:DatatypeProperty ;
+    rdfs:label "nameRequired" ;
+    rdfs:domain aria:Role ;
+    rdfs:range xsd:boolean ;
+    prov:wasQuotedFrom aria:local-copy ;
+    dcterms:source "5.2.8 Accessible Name Calculation" ;
+    rdfs:comment "Values" .
+
+aria:broaderRole a owl:ObjectProperty ;
+    rdfs:label "broaderRole" ;
+    rdfs:domain aria:Role ;
+    rdfs:range aria:Role ;
+    prov:wasQuotedFrom aria:local-copy ;
+    dcterms:source "5.1.1 Superclass Role" ;
+    rdfs:comment "The role that the current subclassed role extends in the Roles Model. This extension causes all the properties and constraints of the superclass role to propagate to the subclass role. Other than well known stable specifications, inheritance may be restricted to items defined inside this specification, so that external items cannot be changed and affect inherited classes." .
+
+aria:relatedConceptElement a owl:DatatypeProperty ;
+    rdfs:label "relatedConceptElement" ;
+    rdfs:domain aria:Role ;
+    rdfs:range xsd:string ;
+    prov:wasQuotedFrom aria:local-copy ;
+    dcterms:source "5.1.3 Related Concepts" ;
+    rdfs:comment "Informative data about a similar or related idea from other specifications. Concepts that are related are not necessarily identical. Related concepts do not inherit properties from each other. Hence if the definition of one concept changes, the properties, behavior, and definition of its related concept is not affected." .
+
+aria:baseConceptElement a owl:DatatypeProperty ;
+    rdfs:label "baseConceptElement" ;
+    rdfs:domain aria:Role ;
+    rdfs:range xsd:string ;
+    prov:wasQuotedFrom aria:local-copy ;
+    dcterms:source "5.1.4 Base Concept" ;
+    rdfs:comment "Informative data about objects that are considered prototypes for the role. Base concept is similar to type, but without inheritance of limitations and properties. Base concepts are designed as a substitute for inheritance for external concepts. A base concept is like a related concept except that the base concept is almost identical to the role definition." .

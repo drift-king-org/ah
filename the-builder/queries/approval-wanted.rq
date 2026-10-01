@@ -1,0 +1,70 @@
+# What was wanted, beside what went. For a release approval: each wanted item the
+# document names (dcterms:references), quoted as signed, in the order the model
+# gives: the signed document it is part of (dcterms:isPartOf) by that document's
+# position, then its own position in that document. Then each check that proves it
+# (named by dcterms:references) with its result on the candidate and its canary's
+# result, as the model holds them (EARL, from the-builder's own run or from the
+# release checker's). An item no check is named for comes back once, with ?missing
+# true: it is not checked, never passed. ?first is true on the first row of an
+# item, and ?missing and ?first are booleans. A check with no assertion has not
+# run, and says so. No name is read for meaning and no string is built to sort.
+# ?step is bound by the caller.
+PREFIX earl:    <http://www.w3.org/ns/earl#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX p-plan:  <http://purl.org/net/p-plan#>
+PREFIX skos:    <http://www.w3.org/2004/02/skos/core#>
+PREFIX xc:      <https://drift-king.org/ah/x-components/0.2.0/>
+
+SELECT ?step ?documentPosition ?position ?label ?quote ?note ?first ?missing ?check ?realFound ?realVerdict ?detail ?canaryFound ?canaryVerdict WHERE {
+  ?step p-plan:hasInputVar ?var .
+  ?doc p-plan:correspondsToVariable ?var ;
+    dcterms:conformsTo <https://spec.commonmark.org/> ;
+    dcterms:references ?want .
+  ?want rdf:value ?quote ;
+    rdfs:label ?label ;
+    dcterms:isPartOf ?source ;
+    xc:position ?position .
+  ?source xc:position ?documentPosition .
+  OPTIONAL { ?want skos:note ?note }
+  OPTIONAL {
+    ?want dcterms:references ?test .
+    ?test dcterms:title ?check .
+  }
+  OPTIONAL {
+    SELECT ?want (MIN(?each) AS ?firstTest) WHERE {
+      ?want dcterms:references ?each .
+      ?each dcterms:title ?anyTitle .
+    } GROUP BY ?want
+  }
+  BIND (!bound(?test) AS ?missing)
+  BIND (!bound(?test) || ?test = ?firstTest AS ?first)
+  BIND (COALESCE(?test, xc:no-check) AS ?proof)
+  OPTIONAL {
+    ?doc dcterms:references ?realSubject .
+    ?real a earl:Assertion ;
+      earl:assertedBy ?realBy ;
+      earl:subject ?realSubject ;
+      earl:test ?proof ;
+      earl:result ?realResult .
+    ?realResult earl:outcome ?realOutcome .
+    FILTER (?realBy IN (<https://drift-king.org/ah/the-builder>, xc:release-checker))
+    FILTER NOT EXISTS { ?proof dcterms:relation ?realSubject }
+    OPTIONAL { ?realResult dcterms:description ?detail }
+    BIND (IF(?realOutcome = earl:failed, "something", "nothing") AS ?realFound)
+    BIND (IF(?realOutcome = earl:passed, "As it must.", "Not as it must.") AS ?realVerdict)
+  }
+  OPTIONAL {
+    ?proof dcterms:relation ?canarySubjectOf .
+    ?canary a earl:Assertion ;
+      earl:assertedBy ?canaryBy ;
+      earl:subject ?canarySubjectOf ;
+      earl:test ?proof ;
+      earl:result [ earl:outcome ?canaryOutcome ] .
+    FILTER (?canaryBy IN (<https://drift-king.org/ah/the-builder>, xc:release-checker))
+    BIND (IF(?canaryOutcome = earl:failed, "something", "nothing") AS ?canaryFound)
+    BIND (IF(?canaryOutcome = earl:failed, "As it must.", "Not as it must.") AS ?canaryVerdict)
+  }
+}
+ORDER BY ?documentPosition ?position ?check

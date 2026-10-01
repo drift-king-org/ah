@@ -1,0 +1,14 @@
+# A step's input entities (files), by way of its Variables, with whatever
+# dcterms:conformsTo each one has, if any. ?step is bound by the caller. Which
+# entity is the query and which is the thing being checked is decided in
+# Rust by comparing ?conformsTo to the one fixed IRI for SPARQL 1.1 Query --
+# a constant, not a query, the same way AH_TTL already is.
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX p-plan:  <http://purl.org/net/p-plan#>
+
+SELECT ?step ?entity ?conformsTo WHERE {
+  ?step p-plan:hasInputVar ?var .
+  ?entity p-plan:correspondsToVariable ?var .
+  OPTIONAL { ?entity dcterms:conformsTo ?conformsTo }
+}
+ORDER BY ?entity

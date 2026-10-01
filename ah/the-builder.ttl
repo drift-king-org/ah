@@ -1,0 +1,940 @@
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix dcat:    <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
+@prefix sd:      <https://w3id.org/okn/o/sd#> .
+@prefix vann:    <http://purl.org/vocab/vann/> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix earl:    <http://www.w3.org/ns/earl#> .
+@prefix sosa:    <http://www.w3.org/ns/sosa/> .
+@prefix p-plan:  <http://purl.org/net/p-plan#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix oa:      <http://www.w3.org/ns/oa#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+
+# A part of ah.ttl, imported by it. ah.ttl is the root: its namespace,
+# its imports and its agents. The checks run on all the parts together.
+<https://drift-king.org/ah/the-builder.ttl>
+    a owl:Ontology , prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    dcterms:title "the-builder: its plan, names, messages and commands" .
+
+# ---------------------------------------------------------------------------
+# The plan. The old single "lint" step is gone -- each check is now its own
+# pair of steps (not-ah.ttl), and the build steps below are preceded by the
+# last of that chain, transitively covering all of them. the-builder/build
+# is deliberately not a member: building the builder is a separate job.
+# ---------------------------------------------------------------------------
+<https://drift-king.org/ah/the-builder/plan>
+    a p-plan:Plan ;
+    dcterms:title "build and deploy cloudflare-pid-rs" .
+
+# A copy step (added by the reviewer): publishes files from the commit. The
+# model holds only pointers: each output copy says which file it comes from
+# (prov:wasDerivedFrom), where it goes (its own IRI) and the sha256 it must
+# have (dcterms:identifier). the-builder reads them with publish-copies.rq,
+# takes the bytes from the commit and exits 1 on any mismatch.
+<https://drift-king.org/ah/the-builder/CopyStep>
+    a owl:Class ;
+    rdfs:subClassOf p-plan:Step ;
+    rdfs:label "copy step" ;
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcterms:references <https://drift-king.org/the-builder/queries/publish-copies.rq> .
+
+# ---------------------------------------------------------------------------
+# the-builder: the one command that builds drift-king from its own model.
+# No dcterms:source yet, same reason as cloudflare-pid-rs: no remote chosen.
+# ---------------------------------------------------------------------------
+<https://drift-king.org/ah/the-builder>
+    a prov:SoftwareAgent ;
+    dcterms:requires <https://drift-king.org/ah/the-builder/build> .
+
+<https://drift-king.org/ah/the-builder/build>
+    a sd:SoftwareConfiguration ;
+    dcterms:title "run the-builder" ;
+    # Not "cd the-builder && ...": catalog-v001.xml's paths are relative to
+    # where the catalog itself lives (drift-king root), same convention as
+    # ah-workbench's own CATALOG_FILE. cargo run --manifest-path builds and
+    # runs the binary without changing the caller's cwd (verified: it isn't
+    # the manifest's directory), so the-builder sees the repo root as cwd.
+    sd:hasExecutionCommand "cargo run --release --manifest-path the-builder/Cargo.toml -- --catalog catalog-v001.xml" ;
+    dcterms:requires <https://drift-king.org/not-ah/rustc> .
+
+<https://drift-king.org/the-builder/Cargo.toml> dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcterms:conformsTo <https://doc.rust-lang.org/cargo/reference/manifest.html> .
+<https://drift-king.org/the-builder/rust-toolchain.toml> dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcterms:conformsTo <https://rust-lang.github.io/rustup/overrides.html#the-toolchain-file> .
+<https://drift-king.org/the-builder/src/main.rs> dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcterms:conformsTo <https://doc.rust-lang.org/reference/> .
+
+<https://drift-king.org/the-builder/proof/B1-domain-retypes.txt>
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    rdfs:comment "Evidence: domain-retypes findings, canary and real model, with the vocab schemas actually loaded." .
+<https://drift-king.org/the-builder/proof/H0-first-commit.txt>
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    rdfs:comment "Evidence: repo-local git identity, pre-commit checks, and the tree hash of the first commit." .
+<https://drift-king.org/the-builder/proof/H1-named-by-nobody.txt>
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    rdfs:comment "Evidence: named-by-nobody moved into the-linter/checks/ as a real recursive-scan check, with a canary; both verified clean." .
+<https://drift-king.org/the-builder/proof/H1-byte-exact.txt>
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    rdfs:comment "Evidence: git's autocrlf had altered M2-sha256.txt's committed bytes; fixed with core.autocrlf=false and a whole-repo .gitattributes, git ls-files --eol pasted in full." .
+<https://drift-king.org/the-builder/proof/H2-code-strings-named.txt>
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    rdfs:comment "Evidence: code-strings-named and namespace-terms-defined ported from ah-workbench; Rust/JS ast-grep rules verified empirically; all 9 canaries pass; a real cross-check bug (named-by-nobody's multi-base regression) caught and fixed. Superseded/labelled informational by M0-close-h2.txt." .
+<https://drift-king.org/the-builder/proof/M0-close-h2.txt>
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    rdfs:comment "Evidence: Rust rule now catches concat!/format! as one joined unit and excludes extern \"C\"; joined-words canary rewritten in valid Rust; H2's ad hoc-harness results labelled informational." .
+<https://drift-king.org/the-builder/proof/M1-vendored-vocab.txt>
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    rdfs:comment "Evidence: nine vocabularies vendored into the-builder/vocab/ with sha256-verified copies; both checks pass reading only the local copies, no network." .
+<https://drift-king.org/the-builder/proof/M2-catalog-loading.txt>
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    rdfs:comment "Evidence: the-builder loads ah.ttl and every owl:imports it reaches, transitively, only through catalog-v001.xml; a real gap (SKOS and PROV-O's other name) surfaced by running it, not by re-reading the imports by hand." .
+<https://drift-king.org/the-builder/proof/M3-p-plan-checks.txt>
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    rdfs:comment "Evidence: the plan is P-Plan; every check is a canary-step and a real-step, no SPARQL in main.rs; real bugs found and fixed (earl.rdf's xml:base, p-plan:Entity/earl:TestCriterion/earl:TestSubject typing, ?base bound by the caller); full real run, all checks pass or open-gap." .
+<https://drift-king.org/the-builder/proof/M3-code-strings-named-gap.txt>
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcterms:isReplacedBy <https://drift-king.org/the-builder/proof/M3.1-code-strings-named-gap.txt> ;
+    rdfs:comment "Superseded (M3.1): undercounted at 23, all in cloudflare-pid-rs/worker/src/index.js. code-strings-named.rq's address check silently accepted any string with a colon and a space or brace as a matched address (IRI() errors, the unbound ?address then matches every triple), hiding the 7 in cloudflare-pid-rs/pid1/src/main.rs. Found by the reviewer, verified in pyoxigraph 0.5.11." .
+<https://drift-king.org/the-builder/proof/M3.1-code-strings-named-gap.txt>
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcterms:isReplacedBy <https://drift-king.org/the-builder/proof/code-strings-named-all.txt> ;
+    rdfs:comment "Superseded (M3.7): scoped to cloudflare-pid-rs only, 30 rows. M3.7 put the-builder/src in scope, adding 127 more." .
+<https://drift-king.org/the-builder/proof/code-strings-named-all.txt>
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    rdfs:comment "Evidence: the-builder's own itemized code-strings-named output across every folder in scope -- 157 rows: 7 in cloudflare-pid-rs/pid1/src/main.rs, 23 in cloudflare-pid-rs/worker/src/index.js, 127 in the-builder/src/main.rs." .
+<https://drift-king.org/the-builder/proof/M3.1-two-holes-fixed.txt>
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    rdfs:comment "Evidence: the COALESCE fix to code-strings-named.rq's address check, its canary, and the signed-gap redesign (known-gap.rq requires a real prov:Activity, not just an attributed node); the canary-isolation collision the gap node caused, and the reviewer's fix to canary-isolation.rq; full run, only code-strings-named fails, unsigned, as intended." .
+<https://drift-king.org/the-builder/src/main.rs> a earl:TestSubject , prov:Entity .
+
+<https://drift-king.org/the-builder/Cargo.lock> dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    rdfs:comment "Written by cargo, never by hand; committed so builds are --locked." .
+
+# A render step: fills a Mustache template. Its inputs' roles come from what
+# each conforms to (render-inputs.rq): the template, a SPARQL query whose first
+# row is the data, and a CommonMark text split into a title and paragraphs.
+<https://drift-king.org/ah/the-builder/RenderStep>
+    a owl:Class ;
+    rdfs:subClassOf p-plan:Step ;
+    rdfs:label "render step" ;
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcterms:references <https://drift-king.org/the-builder/queries/render-inputs.rq> .
+
+<https://drift-king.org/the-builder/queries/letter-signing.rq> a p-plan:Entity ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/letter-signing> .
+<https://drift-king.org/the-builder/queries/approval-files.rq>
+    a p-plan:Entity ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/approval-files> .
+<https://drift-king.org/the-builder/queries/canary-approval-files.rq>
+    a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/> ;
+    prov:wasAttributedTo <https://drift-king.org/not-ah/agent/reviewer> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/render-canary-rows> .
+<https://drift-king.org/the-builder/target/render-check/approval.html>
+    a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcterms:identifier "sha256:1cb85e07c9ed93cbfd3a801bc20d7a9fba682b40492ef50f4ab45af89e50f1d3" ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/approval.mustache> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/render-canary-html> .
+
+# Render checks for the letter and home templates (reviewer, M3.13). M3.8
+# changed how query rows reach a template, and these two pages went live with
+# an empty date, envelope and sha256 because nothing rendered them from fixed
+# inputs. Now each is rendered from the same canary text and fixed rows, and
+# its output must match the pinned sha256, before the real page is rendered.
+<https://drift-king.org/the-builder/queries/canary-letter-signing.rq>
+    a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/> ;
+    prov:wasAttributedTo <https://drift-king.org/not-ah/agent/reviewer> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/render-canary-signing> .
+<https://drift-king.org/the-builder/target/render-check/letter.html>
+    a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcterms:identifier "sha256:ae86d276604d766677650f8c0f9b9089ccb479b22dc99dd7ffed6de355892d15" ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/letter.mustache> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/render-canary-letter-html> .
+<https://drift-king.org/the-builder/target/render-check/index.html>
+    a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcterms:identifier "sha256:ea0d84098f909a3eab7386d2d351afbe5f8d6b1e78f6d85a05d31439e2922749" ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/index.mustache> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/render-canary-index-html> .
+
+# ---------------------------------------------------------------------------
+# Ready to deploy (Compliance, from the signed model review responses: "The
+# site deploy waits for every check"). A ready step runs after every check.
+# A failed check stops it, and everything after it. A signed gap does not:
+# the step names each one it proceeds with, and a gap's hold ends here, so the
+# gap holds only what comes after its own check, not the site.
+# ---------------------------------------------------------------------------
+<https://drift-king.org/ah/the-builder/ReadyStep>
+    a owl:Class ;
+    rdfs:subClassOf p-plan:Step ;
+    rdfs:label "ready step" ;
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcterms:references <https://drift-king.org/the-builder/queries/plan-steps.rq> ;
+    rdfs:comment "Runs after every check step of its plan. Fails if any check failed; otherwise passes, naming each open signed gap it proceeds with." .
+
+# ---------------------------------------------------------------------------
+# The names the code shares with the model (string gap, group 1). Each is a
+# word the code has to spell because something in the model already uses
+# it: a variable a query selects, a key a template reads, a field of
+# ast-grep's JSON output, or an attribute of the OASIS catalog. Each names
+# where it is defined, so none is a word added only so a string passes.
+# ---------------------------------------------------------------------------
+<https://drift-king.org/the-builder/names>
+    a skos:ConceptScheme ;
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    skos:prefLabel "the names the code shares with the model"@en .
+<https://drift-king.org/the-builder/name/base>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "base" ;
+    dcterms:references <https://drift-king.org/the-builder/queries/approval-files.rq> ,
+        <https://drift-king.org/the-builder/queries/code-scope.rq> ,
+        <https://drift-king.org/the-builder/queries/letter-signing.rq> ,
+        <https://drift-king.org/the-builder/queries/publish-copies.rq> ,
+        <https://drift-king.org/the-builder/queries/render-inputs.rq> ,
+        <https://drift-king.org/the-linter/checks/approvals-are-documents.rq> ,
+        <https://drift-king.org/the-linter/checks/canary-isolation.rq> ,
+        <https://drift-king.org/the-linter/checks/code-strings-named.rq> ,
+        <https://drift-king.org/the-linter/checks/domain-retypes.rq> ,
+        <https://drift-king.org/the-linter/checks/file-provenance.rq> ,
+        <https://drift-king.org/the-linter/checks/iri-names-not-values.rq> ,
+        <https://drift-king.org/the-linter/checks/named-by-nobody.rq> ,
+        <https://drift-king.org/the-linter/checks/range-retypes.rq> ,
+        <https://drift-king.org/the-linter/checks/terms-defined-in-vocab.rq> .
+<https://drift-king.org/the-builder/name/before>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "before" ;
+    dcterms:references <https://drift-king.org/the-builder/queries/step-precedes.rq> .
+<https://drift-king.org/the-builder/name/byteOffset>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "byteOffset" ;
+    dcterms:references <https://drift-king.org/not-ah/ast-grep> .
+<https://drift-king.org/the-builder/name/class>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "class" ;
+    dcterms:references <https://drift-king.org/the-builder/queries/code-scope.rq> .
+<https://drift-king.org/the-builder/name/command>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "command" ;
+    dcterms:references <https://drift-king.org/the-builder/queries/plan-steps.rq> .
+<https://drift-king.org/the-builder/name/copy>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "copy" ;
+    dcterms:references <https://drift-king.org/the-builder/queries/approval-files.rq> ,
+        <https://drift-king.org/the-builder/queries/letter-signing.rq> ,
+        <https://drift-king.org/the-builder/queries/plan-steps.rq> ,
+        <https://drift-king.org/the-builder/queries/publish-copies.rq> .
+<https://drift-king.org/the-builder/name/entity>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "entity" ;
+    dcterms:references <https://drift-king.org/the-builder/queries/step-input-entities.rq> .
+<https://drift-king.org/the-builder/name/file>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "file" ;
+    dcterms:references <https://drift-king.org/not-ah/ast-grep> ,
+        <https://drift-king.org/the-builder/queries/approval-files.rq> ,
+        <https://drift-king.org/the-builder/queries/render-inputs.rq> ,
+        <https://drift-king.org/the-linter/checks/code-strings-named.rq> ,
+        <https://drift-king.org/the-linter/checks/file-provenance.rq> ,
+        <https://drift-king.org/the-linter/checks/namespace-terms-defined.rq> .
+<https://drift-king.org/the-builder/name/folder>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "folder" ;
+    dcterms:references <https://drift-king.org/the-builder/queries/code-scope.rq> .
+<https://drift-king.org/the-builder/name/input>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "input" ;
+    dcterms:references <https://drift-king.org/the-builder/queries/render-inputs.rq> .
+<https://drift-king.org/the-builder/name/line>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "line" ;
+    dcterms:references <https://drift-king.org/not-ah/ast-grep> ,
+        <https://drift-king.org/the-linter/checks/code-strings-named.rq> ,
+        <https://drift-king.org/the-linter/checks/namespace-terms-defined.rq> .
+<https://drift-king.org/the-builder/name/link>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "link" ;
+    dcterms:references <https://drift-king.org/site/templates/approval.mustache> ,
+        <https://drift-king.org/site/templates/document.mustache> .
+<https://drift-king.org/the-builder/name/name>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "name" ;
+    dcterms:references <https://drift-king.org/catalog-v001.xml> ,
+        <https://drift-king.org/the-linter/checks/code-strings-named.rq> ,
+        <https://drift-king.org/the-linter/checks/namespace-terms-defined.rq> .
+<https://drift-king.org/the-builder/name/outcome>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "outcome" ;
+    dcterms:references <https://drift-king.org/the-builder/queries/expected-outcome.rq> .
+<https://drift-king.org/the-builder/name/paragraphs>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "paragraphs" ;
+    dcterms:references <https://drift-king.org/site/templates/approval.mustache> ,
+        <https://drift-king.org/site/templates/document.mustache> ,
+        <https://drift-king.org/site/templates/index.mustache> ,
+        <https://drift-king.org/site/templates/letter.mustache> .
+<https://drift-king.org/the-builder/name/plan>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "plan" ;
+    dcterms:references <https://drift-king.org/the-builder/queries/plan-steps.rq> ,
+        <https://drift-king.org/the-builder/queries/step-precedes.rq> .
+<https://drift-king.org/the-builder/name/range>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "range" ;
+    dcterms:references <https://drift-king.org/not-ah/ast-grep> ,
+        <https://drift-king.org/the-linter/checks/range-retypes.rq> .
+<https://drift-king.org/the-builder/name/ready>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "ready" ;
+    dcterms:references <https://drift-king.org/the-builder/queries/plan-steps.rq> .
+<https://drift-king.org/the-builder/name/render>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "render" ;
+    dcterms:references <https://drift-king.org/the-builder/queries/plan-steps.rq> .
+<https://drift-king.org/the-builder/name/role>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "role" ;
+    dcterms:references <https://drift-king.org/the-builder/queries/render-inputs.rq> .
+<https://drift-king.org/the-builder/name/rows>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "rows" ;
+    dcterms:references <https://drift-king.org/site/templates/approval.mustache> ,
+        <https://drift-king.org/site/templates/index.mustache> ,
+        <https://drift-king.org/site/templates/letter.mustache> .
+<https://drift-king.org/the-builder/name/rule>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "rule" ;
+    dcterms:references <https://drift-king.org/the-builder/queries/code-scope.rq> .
+<https://drift-king.org/the-builder/name/source>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "source" ;
+    dcterms:references <https://drift-king.org/the-builder/queries/code-scope.rq> ,
+        <https://drift-king.org/the-builder/queries/publish-copies.rq> .
+<https://drift-king.org/the-builder/name/start>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "start" ;
+    dcterms:references <https://drift-king.org/not-ah/ast-grep> .
+<https://drift-king.org/the-builder/name/step>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "step" ;
+    dcterms:references <https://drift-king.org/the-builder/queries/approval-files.rq> ,
+        <https://drift-king.org/the-builder/queries/code-scope.rq> ,
+        <https://drift-king.org/the-builder/queries/plan-steps.rq> ,
+        <https://drift-king.org/the-builder/queries/publish-copies.rq> ,
+        <https://drift-king.org/the-builder/queries/render-inputs.rq> ,
+        <https://drift-king.org/the-builder/queries/step-input-entities.rq> ,
+        <https://drift-king.org/the-builder/queries/step-precedes.rq> ,
+        <https://drift-king.org/the-linter/checks/canary-isolation.rq> ,
+        <https://drift-king.org/the-linter/checks/file-provenance.rq> .
+<https://drift-king.org/the-builder/name/subject>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "subject" ;
+    dcterms:references <https://drift-king.org/the-builder/queries/expected-outcome.rq> ,
+        <https://drift-king.org/the-builder/queries/known-gap.rq> ,
+        <https://drift-king.org/the-linter/checks/domain-retypes.rq> .
+<https://drift-king.org/the-builder/name/target>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "target" ;
+    dcterms:references <https://drift-king.org/the-builder/queries/publish-copies.rq> ,
+        <https://drift-king.org/the-builder/queries/render-inputs.rq> ,
+        <https://drift-king.org/the-linter/checks/range-retypes.rq> .
+<https://drift-king.org/the-builder/name/test>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "test" ;
+    dcterms:references <https://drift-king.org/the-builder/queries/expected-outcome.rq> ,
+        <https://drift-king.org/the-builder/queries/known-gap.rq> .
+<https://drift-king.org/the-builder/name/text>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "text" ;
+    dcterms:references <https://drift-king.org/not-ah/ast-grep> ,
+        <https://drift-king.org/site/templates/approval.mustache> ,
+        <https://drift-king.org/site/templates/document.mustache> ,
+        <https://drift-king.org/site/templates/index.mustache> ,
+        <https://drift-king.org/site/templates/letter.mustache> .
+<https://drift-king.org/the-builder/name/title>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "title" ;
+    dcterms:references <https://drift-king.org/site/templates/approval.mustache> ,
+        <https://drift-king.org/site/templates/document.mustache> ,
+        <https://drift-king.org/site/templates/letter.mustache> ,
+        <https://drift-king.org/the-builder/queries/plan-steps.rq> .
+<https://drift-king.org/the-builder/name/uri>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "uri" ;
+    dcterms:references <https://drift-king.org/catalog-v001.xml> ,
+        <https://drift-king.org/the-linter/checks/namespace-terms-defined.rq> .
+
+# ---------------------------------------------------------------------------
+# What the-builder says (string gap, group 2). Every line it prints is one of
+# these: its dcterms:description is a Mustache template, and the code names
+# the message by its IRI and fills the named slots. The code never spells a
+# message. Until the model is loaded, a message prints as its own IRI.
+# ---------------------------------------------------------------------------
+<https://drift-king.org/the-builder/messages>
+    a skos:ConceptScheme ;
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    skos:prefLabel "what the-builder says"@en .
+<https://drift-king.org/the-builder/message/read-failed>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/messages> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    dcterms:description "the-builder: failed to read {{{path}}}: {{{e}}}" .
+<https://drift-king.org/the-builder/message/catalog-unmapped>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/messages> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    dcterms:description "the-builder: the catalog does not map {{{iri}}}" .
+<https://drift-king.org/the-builder/message/no-namespace>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/messages> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    dcterms:description "the-builder: {{{model}}} has no {{{property}}}" .
+<https://drift-king.org/the-builder/message/query-unreadable>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/messages> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    dcterms:description "the-builder: failed to read query {{{iri}}} -- {{{e}}}" .
+<https://drift-king.org/the-builder/message/not-select>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/messages> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    dcterms:description "the-builder: {{{query}}} is not a SELECT query" .
+<https://drift-king.org/the-builder/message/cell>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/messages> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    dcterms:description "?{{{name}}}={{{value}}}" .
+<https://drift-king.org/the-builder/message/bad-query>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/messages> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    dcterms:description "the-builder: bad query {{{query}}} -- {{{e}}}" .
+<https://drift-king.org/the-builder/message/query-failed>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/messages> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    dcterms:description "the-builder: query {{{query}}} failed -- {{{e}}}" .
+<https://drift-king.org/the-builder/message/cycle>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/messages> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    dcterms:description "the-builder: cycle detected among steps; cannot order" .
+<https://drift-king.org/the-builder/message/no-assertion>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/messages> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    dcterms:description "the-builder: no earl:Assertion for test {{{test}}} subject {{{subject}}} -- nothing to hold the run to" .
+<https://drift-king.org/the-builder/message/no-query-input>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/messages> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    dcterms:description "the-builder: query step {{{step}}} has no input conforming to SPARQL 1.1 Query" .
+<https://drift-king.org/the-builder/message/no-subject-input>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/messages> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    dcterms:description "the-builder: query step {{{step}}} has no subject input besides its query" .
+<https://drift-king.org/the-builder/message/open-gap>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/messages> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    dcterms:description "{{{step}}} OPEN GAP -- expected {{{expected}}} got {{{actual}}} -- query {{{query}}} subject {{{subject}}}" .
+<https://drift-king.org/the-builder/message/check-failed>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/messages> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    dcterms:description "{{{step}}} FAILED -- expected {{{expected}}} got {{{actual}}} -- query {{{query}}} subject {{{subject}}}" .
+<https://drift-king.org/the-builder/message/as-expected>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/messages> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    dcterms:description "{{{step}}} {{{actual}}} (expected)" .
+<https://drift-king.org/the-builder/message/finding>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/messages> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    dcterms:description "  {{{finding}}}" .
+<https://drift-king.org/the-builder/message/command-failed>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/messages> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    dcterms:description "the-builder: command failed: {{{command}}}" .
+<https://drift-king.org/the-builder/message/git-show-failed>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/messages> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    dcterms:description "the-builder: git show HEAD:{{{source}}} failed" .
+<https://drift-king.org/the-builder/message/hash-mismatch>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/messages> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    dcterms:description "the-builder: {{{target}}} expected sha256 {{{expected}}} but got {{{actual}}}" .
+<https://drift-king.org/the-builder/message/published>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/messages> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    dcterms:description "  published {{{target}}} (sha256 {{{actual}}})" .
+<https://drift-king.org/the-builder/message/unknown-role>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/messages> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    dcterms:description "the-builder: render step {{{step}}} has an input with unknown role {{{role}}}" .
+<https://drift-king.org/the-builder/message/no-template>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/messages> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    dcterms:description "the-builder: render step {{{step}}} has no template input" .
+<https://drift-king.org/the-builder/message/no-target>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/messages> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    dcterms:description "the-builder: render step {{{step}}} has no output target" .
+<https://drift-king.org/the-builder/message/compile-failed>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/messages> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    dcterms:description "the-builder: {{{template}}} failed to compile: {{{e}}}" .
+<https://drift-king.org/the-builder/message/render-failed>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/messages> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    dcterms:description "the-builder: {{{template}}} failed to render: {{{e}}}" .
+<https://drift-king.org/the-builder/message/rendered-matches>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/messages> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    dcterms:description "  rendered {{{target}}} (sha256 {{{actual}}}, matches)" .
+<https://drift-king.org/the-builder/message/rendered>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/messages> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    dcterms:description "  rendered {{{target}}}" .
+<https://drift-king.org/the-builder/message/catalog-required>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/messages> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    dcterms:description "the-builder: --catalog <path> is required; there is no default" .
+<https://drift-king.org/the-builder/message/dry-run-step>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/messages> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    dcterms:description "{{{title}}}\n  $ {{{command}}}" .
+<https://drift-king.org/the-builder/message/skipped>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/messages> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    dcterms:description "skipped -- failed check upstream {{{upstream}}} -- {{{title}}}" .
+<https://drift-king.org/the-builder/message/held>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/messages> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    dcterms:description "held -- open gap upstream {{{upstream}}} -- {{{title}}}" .
+<https://drift-king.org/the-builder/message/proceeding>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/messages> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    dcterms:description "  proceeding with known gap: {{{gap}}}" .
+<https://drift-king.org/the-builder/message/checks-failed>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/messages> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    dcterms:description "the-builder: one or more checks failed; see FAILED lines above" .
+
+# The slots the messages fill: each is a name the code shares with the model.
+<https://drift-king.org/the-builder/name/actual>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "actual" ;
+    dcterms:references <https://drift-king.org/the-builder/message/as-expected> ,
+        <https://drift-king.org/the-builder/message/check-failed> ,
+        <https://drift-king.org/the-builder/message/hash-mismatch> ,
+        <https://drift-king.org/the-builder/message/open-gap> ,
+        <https://drift-king.org/the-builder/message/published> ,
+        <https://drift-king.org/the-builder/message/rendered-matches> .
+<https://drift-king.org/the-builder/name/command>
+    dcterms:references <https://drift-king.org/the-builder/message/command-failed> ,
+        <https://drift-king.org/the-builder/message/dry-run-step> .
+<https://drift-king.org/the-builder/name/e>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "e" ;
+    dcterms:references <https://drift-king.org/the-builder/message/bad-query> ,
+        <https://drift-king.org/the-builder/message/compile-failed> ,
+        <https://drift-king.org/the-builder/message/query-failed> ,
+        <https://drift-king.org/the-builder/message/query-unreadable> ,
+        <https://drift-king.org/the-builder/message/read-failed> ,
+        <https://drift-king.org/the-builder/message/render-failed> .
+<https://drift-king.org/the-builder/name/expected>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "expected" ;
+    dcterms:references <https://drift-king.org/the-builder/message/check-failed> ,
+        <https://drift-king.org/the-builder/message/hash-mismatch> ,
+        <https://drift-king.org/the-builder/message/open-gap> .
+<https://drift-king.org/the-builder/name/finding>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "finding" ;
+    dcterms:references <https://drift-king.org/the-builder/message/finding> .
+<https://drift-king.org/the-builder/name/gap>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "gap" ;
+    dcterms:references <https://drift-king.org/the-builder/message/proceeding> .
+<https://drift-king.org/the-builder/name/iri>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "iri" ;
+    dcterms:references <https://drift-king.org/the-builder/message/catalog-unmapped> ,
+        <https://drift-king.org/the-builder/message/query-unreadable> .
+<https://drift-king.org/the-builder/name/model>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "model" ;
+    dcterms:references <https://drift-king.org/the-builder/message/no-namespace> .
+<https://drift-king.org/the-builder/name/name>
+    dcterms:references <https://drift-king.org/the-builder/message/cell> .
+<https://drift-king.org/the-builder/name/path>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "path" ;
+    dcterms:references <https://drift-king.org/the-builder/message/read-failed> .
+<https://drift-king.org/the-builder/name/property>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "property" ;
+    dcterms:references <https://drift-king.org/the-builder/message/no-namespace> .
+<https://drift-king.org/the-builder/name/query>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "query" ;
+    dcterms:references <https://drift-king.org/the-builder/message/bad-query> ,
+        <https://drift-king.org/the-builder/message/check-failed> ,
+        <https://drift-king.org/the-builder/message/not-select> ,
+        <https://drift-king.org/the-builder/message/open-gap> ,
+        <https://drift-king.org/the-builder/message/query-failed> .
+<https://drift-king.org/the-builder/name/role>
+    dcterms:references <https://drift-king.org/the-builder/message/unknown-role> .
+<https://drift-king.org/the-builder/name/source>
+    dcterms:references <https://drift-king.org/the-builder/message/git-show-failed> .
+<https://drift-king.org/the-builder/name/step>
+    dcterms:references <https://drift-king.org/the-builder/message/as-expected> ,
+        <https://drift-king.org/the-builder/message/check-failed> ,
+        <https://drift-king.org/the-builder/message/no-query-input> ,
+        <https://drift-king.org/the-builder/message/no-subject-input> ,
+        <https://drift-king.org/the-builder/message/no-target> ,
+        <https://drift-king.org/the-builder/message/no-template> ,
+        <https://drift-king.org/the-builder/message/open-gap> ,
+        <https://drift-king.org/the-builder/message/unknown-role> .
+<https://drift-king.org/the-builder/name/subject>
+    dcterms:references <https://drift-king.org/the-builder/message/check-failed> ,
+        <https://drift-king.org/the-builder/message/no-assertion> ,
+        <https://drift-king.org/the-builder/message/open-gap> .
+<https://drift-king.org/the-builder/name/target>
+    dcterms:references <https://drift-king.org/the-builder/message/hash-mismatch> ,
+        <https://drift-king.org/the-builder/message/published> ,
+        <https://drift-king.org/the-builder/message/rendered> ,
+        <https://drift-king.org/the-builder/message/rendered-matches> .
+<https://drift-king.org/the-builder/name/template>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "template" ;
+    dcterms:references <https://drift-king.org/the-builder/message/compile-failed> ,
+        <https://drift-king.org/the-builder/message/render-failed> .
+<https://drift-king.org/the-builder/name/test>
+    dcterms:references <https://drift-king.org/the-builder/message/no-assertion> .
+<https://drift-king.org/the-builder/name/title>
+    dcterms:references <https://drift-king.org/the-builder/message/dry-run-step> ,
+        <https://drift-king.org/the-builder/message/not-shipped> ,
+        <https://drift-king.org/the-builder/message/held> ,
+        <https://drift-king.org/the-builder/message/skipped> .
+<https://drift-king.org/the-builder/name/upstream>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "upstream" ;
+    dcterms:references <https://drift-king.org/the-builder/message/held> ,
+        <https://drift-king.org/the-builder/message/skipped> .
+<https://drift-king.org/the-builder/name/value>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "value" ;
+    dcterms:references <https://drift-king.org/the-builder/message/cell> .
+
+# ---------------------------------------------------------------------------
+# What the-builder runs itself (string gap, group 3): each command is a
+# Mustache template the code fills by IRI, run through the shell the model
+# names for the system. The code spells no program, no option and no path.
+# ---------------------------------------------------------------------------
+<https://drift-king.org/the-builder/commands>
+    a skos:ConceptScheme ;
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    skos:prefLabel "what the-builder runs"@en .
+<https://drift-king.org/the-builder/command/git-show>
+    a sd:SoftwareConfiguration , skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/commands> ;
+    rdfs:comment "the file as committed" ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    sd:hasExecutionCommand "git show 'HEAD:{{{source}}}'" .
+<https://drift-king.org/the-builder/command/sha256sum>
+    a sd:SoftwareConfiguration , skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/commands> ;
+    rdfs:comment "a file's sha256" ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    sd:hasExecutionCommand "sha256sum '{{{target}}}'" .
+<https://drift-king.org/the-builder/command/ast-grep-scan>
+    a sd:SoftwareConfiguration , skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/commands> ;
+    rdfs:comment "every match of an ast-grep rule in a folder" ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    sd:hasExecutionCommand "ast-grep scan --rule '{{{rule}}}' --json=compact '{{{folder}}}'" .
+<https://drift-king.org/the-builder/command/list-files>
+    a sd:SoftwareConfiguration , skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/commands> ;
+    rdfs:comment "every file in the repo, committed or not, but not ignored" ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    sd:hasExecutionCommand "git ls-files -co --exclude-standard" .
+<https://drift-king.org/the-builder/shell/posix>
+    a sd:SoftwareConfiguration , skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/commands> ;
+    rdfs:comment "the shell every command runs in, on Linux and macOS" ;
+    sd:hasExecutionCommand "sh" .
+<https://drift-king.org/the-builder/shell/windows>
+    a sd:SoftwareConfiguration , skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/commands> ;
+    rdfs:comment "the shell every command runs in, on the lead architect's Windows machine: Git Bash" ;
+    sd:hasExecutionCommand "C:\\Program Files\\Git\\bin\\bash.exe" .
+
+# The names group 3 adds: the words that are part of a query, a shell or a file format.
+<https://drift-king.org/the-builder/name/conformsTo>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "conformsTo" ;
+    dcterms:references <https://drift-king.org/the-builder/queries/step-input-entities.rq> .
+<https://drift-king.org/the-builder/name/sha256>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "sha256" ;
+    dcterms:references <https://drift-king.org/the-builder/queries/publish-copies.rq> ,
+        <https://drift-king.org/the-builder/queries/render-inputs.rq> .
+<https://drift-king.org/the-builder/name/shell-command-option>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "-c" ;
+    dcterms:references <https://drift-king.org/the-builder/shell/posix> ,
+        <https://drift-king.org/the-builder/shell/windows> .
+<https://drift-king.org/the-builder/name/xml-base>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "xml:base" ;
+    dcterms:references <https://drift-king.org/the-builder/vocab/earl.rdf> .
+<https://drift-king.org/the-builder/name/sparql-select>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "SELECT" ;
+    dcterms:references <https://www.w3.org/TR/sparql11-query/> .
+<https://drift-king.org/the-builder/name/sparql-where>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "WHERE" ;
+    dcterms:references <https://www.w3.org/TR/sparql11-query/> .
+<https://drift-king.org/the-builder/name/rule> dcterms:references <https://drift-king.org/the-builder/queries/subject-rule.rq> .
+<https://drift-king.org/the-builder/name/class> dcterms:references <https://drift-king.org/the-builder/queries/subject-rule.rq> .
+<https://drift-king.org/the-builder/name/subject> dcterms:references <https://drift-king.org/the-builder/queries/subject-rule.rq> .
+<https://drift-king.org/the-builder/name/base> dcterms:references <https://drift-king.org/the-builder/queries/subject-rule.rq> .
+
+# ---------------------------------------------------------------------------
+# Ship steps. A step that changes something outside this machine -- a deploy,
+# a push, a registry login -- is a ship step, and a plain run of the builder
+# does not ship. It verifies: every check, copy and render runs, and each ship
+# step says it was not shipped. Shipping takes an explicit --ship.
+# ---------------------------------------------------------------------------
+<https://drift-king.org/ah/the-builder/ShipStep>
+    a owl:Class ;
+    rdfs:subClassOf p-plan:Step ;
+    rdfs:label "ship step" ;
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcterms:references <https://drift-king.org/the-builder/queries/plan-steps.rq> ;
+    rdfs:comment "Changes something outside this machine: a deploy, a push, a registry login or logout. Runs only on a run with --ship." .
+<https://drift-king.org/the-builder/message/not-shipped>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/messages> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    dcterms:description "(not shipped: a verify run; a run with --ship ships it) {{{title}}}" .
+<https://drift-king.org/the-builder/name/ship>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "ship" ;
+    dcterms:references <https://drift-king.org/the-builder/queries/plan-steps.rq> .
+<https://drift-king.org/the-builder/name/ship-option>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "--ship" ;
+    rdfs:comment "The one option that lets a run ship." .
+<https://drift-king.org/the-builder/name/dry-run-option>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "--dry-run" ;
+    rdfs:comment "The option that lists the plan's steps and runs none of them." .
+<https://drift-king.org/the-builder/name/catalog-option>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "--catalog" ;
+    rdfs:comment "The option naming the catalog file every import resolves through." .
+
+<https://drift-king.org/the-builder/queries/approval-results.rq>
+    a dcat:Resource , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    dcterms:title "what the checks an approval names found, in the build that renders it" ;
+    skos:notation "results" ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/approval-results> .
+<https://drift-king.org/the-builder/name/key>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "key" ;
+    dcterms:references <https://drift-king.org/the-builder/queries/render-inputs.rq> .
+# the-builder asserts what each check found, in the run that ran it.
+<https://drift-king.org/ah/the-builder> a earl:Assertor .
+
+# Where an address of ours goes when it is not a published file: to the
+# published file that defines it, by rdfs:isDefinedBy, which the-builder
+# records from each file of ours read alone.
+<https://drift-king.org/the-builder/queries/redirects.rq>
+    a dcat:Resource , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    dcterms:title "each address of ours that is not a published file, and the published file that defines it" ;
+    dcterms:references <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/redirect-rows> .
+
+# The queries a release approval's page is rendered from: what its checks found
+# on the subjects it names, and the packages it brings with their integrities.
+<https://drift-king.org/the-builder/queries/approval-release-results.rq>
+    a dcat:Resource , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    dcterms:title "what the checks a release approval names found, on the subjects it names" ;
+    skos:notation "results" ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/approval-release-results> .
+<https://drift-king.org/the-builder/queries/approval-dependencies.rq>
+    a dcat:Resource , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    dcterms:title "the packages a release approval names, and what they bring, with their versions and integrities" ;
+    skos:notation "packages" ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/approval-packages> .
+
+<https://drift-king.org/the-builder/queries/approval-wanted.rq>
+    a dcat:Resource , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    dcterms:title "what a release approval's document wanted, beside the checks that prove it and what they found" ;
+    skos:notation "wanted" ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/approval-wanted> .
+
+<https://drift-king.org/the-builder/queries/approval-unnamed-checks.rq>
+    a dcat:Resource , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    dcterms:title "the checks a release approval's candidate was given that no wanted item it names is proved by" ;
+    skos:notation "unnamed" ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/approval-unnamed> .
+
+<https://drift-king.org/the-builder/message/untaken>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/messages> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    dcterms:description "held -- {{{needed}}} has no signed taking of {{{version}}} -- {{{title}}}\n  {{{reason}}}" .
+<https://drift-king.org/the-builder/name/needed>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "needed" ;
+    dcterms:references <https://drift-king.org/the-builder/message/untaken> .
+<https://drift-king.org/the-builder/name/version>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "version" ;
+    dcterms:references <https://drift-king.org/the-builder/message/untaken> .
+<https://drift-king.org/the-builder/name/reason>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "reason" ;
+    dcterms:references <https://drift-king.org/the-builder/message/untaken> .
+
+<https://drift-king.org/the-builder/queries/published-files.rq>
+    a dcat:Resource , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    dcterms:title "every published file, with the media type the model names for it, and whether it needs a rule" ;
+    skos:notation "files" ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/published-files> .
+
+<https://drift-king.org/the-builder/queries/clean-rules.rq>
+    a dcat:Resource , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    dcterms:title "the clean rules: each one's name, its pattern and its canary file" ;
+    skos:notation "rows" ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/clean-rules> .
+
+<https://drift-king.org/the-builder/command/head-commit>
+    a sd:SoftwareConfiguration , skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/commands> ;
+    rdfs:comment "the commit the build is run from" ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    sd:hasExecutionCommand "git rev-parse HEAD" .
+
+<https://drift-king.org/the-builder/queries/source-files.rq>
+    a dcat:Resource , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    dcterms:title "every source file, with the address on GitHub it is sent to, and whether a copy is published" ;
+    skos:notation "rows" ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/source-files> .

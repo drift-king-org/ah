@@ -1,0 +1,45 @@
+# Ported from ah-workbench's src/the-linter/checks/code-strings-named.rq,
+# rescoped from lakehouse.apricotter.com to drift-king.org. Every string in
+# hand-written code must name something the model names: the label, title,
+# sd:name or skos:prefLabel of one of our own terms (scoped by
+# vann:preferredNamespaceUri), or an IRI the model uses in any position.
+# Strings are observed as py:Constant (Python), rs:StringLiteral (Rust) or
+# js:String (JS) nodes, each grammar's own real node kind, per its own
+# ast-grep rule.
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:    <http://www.w3.org/2004/02/skos/core#>
+PREFIX sd:      <https://w3id.org/okn/o/sd#>
+PREFIX py:      <https://drift-king.org/python/3.13/ast#>
+PREFIX rs:      <https://drift-king.org/rust/ast#>
+PREFIX js:      <https://drift-king.org/javascript/ast#>
+
+SELECT ?base ?found ?line ?value WHERE {
+  {
+    ?constant a py:Constant ; py:Constant.value ?value ; py:expr.lineno ?line ; dcterms:isPartOf ?file .
+  } UNION {
+    ?constant a rs:StringLiteral ; rs:StringLiteral.value ?value ; rs:StringLiteral.line ?line ; dcterms:isPartOf ?file .
+  } UNION {
+    ?constant a js:String ; js:String.value ?value ; js:String.line ?line ; dcterms:isPartOf ?file .
+  }
+  # A word: one of ours, not a word some imported vocabulary happens to use.
+  # ?base is bound by the caller, ah.ttl's own vann:preferredNamespaceUri.
+  FILTER NOT EXISTS {
+    ?thing rdfs:label|dcterms:title|sd:name|skos:prefLabel ?name .
+    FILTER (str(?name) = ?value && strstarts(str(?thing), str(?base)))
+  }
+  # An address: looked up as the IRI it spells, in any position, not by
+  # comparing it with every triple. Only a string with a scheme can spell
+  # one -- and IRI() errors on one that merely contains ":" without being a
+  # real IRI (a colon plus a space or brace, e.g. "pid1: failed to bind
+  # :8080"), which would leave ?address unbound. An unbound ?address inside
+  # FILTER NOT EXISTS matches every triple in the store, so the string would
+  # count as named when it isn't. COALESCE falls back to false so an
+  # unparseable IRI is excluded the same way a plain word is.
+  BIND (COALESCE(IF(contains(?value, ":"), IRI(?value), false), false) AS ?address)
+  FILTER NOT EXISTS {
+    { ?address ?p1 ?o1 } UNION { ?s2 ?address ?o2 } UNION { ?s3 ?p3 ?address }
+  }
+  BIND (str(?file) AS ?found)
+}
+ORDER BY ?file ?line ?value

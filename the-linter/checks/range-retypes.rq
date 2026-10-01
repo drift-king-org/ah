@@ -1,0 +1,26 @@
+# A property's rdfs:range is not a check, same reasoning as domain-retypes
+# for rdfs:domain: it is an inference. Use a thing as the OBJECT of a
+# property whose range names a class, and a reasoner concludes the thing is
+# of that class. On a thing the model already typed as something else, that
+# silently retypes it. This finds every such use before a reasoner does.
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX vann: <http://purl.org/vocab/vann/>
+
+SELECT DISTINCT ?target ?property ?asserted ?range WHERE {
+  # Ours only: a foreign vocabulary's own slips are its authors' to fix.
+  ?ontology vann:preferredNamespaceUri ?base .
+  FILTER (STRSTARTS(STR(?target), STR(?base)))
+  ?whatever ?property ?target .
+  FILTER (isIRI(?target))
+  ?property rdfs:range ?range .
+  FILTER (isIRI(?range))
+  ?target rdf:type ?asserted .
+  FILTER (isIRI(?asserted))
+  FILTER (?asserted NOT IN (owl:NamedIndividual, owl:Thing, rdfs:Resource))
+  FILTER NOT EXISTS { ?asserted rdfs:subClassOf* ?range }
+  # The thing is fine if some other asserted type of it already is the range.
+  FILTER NOT EXISTS { ?target rdf:type ?other . ?other rdfs:subClassOf* ?range }
+}
+ORDER BY ?target ?property

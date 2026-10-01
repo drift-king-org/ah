@@ -1,0 +1,33 @@
+# A step that waits for a version to be taken: it requires a step whose output is
+# the signed taking (dcterms:requires), and it names the version (dcterms:references).
+# It is held while no taking of that version has been signed: a taking is a document
+# that is the needed step's output, about that version, used by an activity with an end
+# time, a person and a DocuSign dev envelope, as known-gap.rq counts a signing. A
+# taking of another version does not release it. ?step, when the caller binds it, is
+# the one step asked about; unbound, every held step is found.
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX p-plan:  <http://purl.org/net/p-plan#>
+PREFIX prov:    <http://www.w3.org/ns/prov#>
+PREFIX sd:      <https://w3id.org/okn/o/sd#>
+
+SELECT ?step ?needed ?version ?reason WHERE {
+  ?step dcterms:requires ?needed ;
+    dcterms:references ?version .
+  ?needed a p-plan:Step ;
+    p-plan:hasOutputVar ?output .
+  ?version a sd:SoftwareVersion .
+  FILTER NOT EXISTS {
+    ?taking p-plan:correspondsToVariable ?output ;
+      dcterms:subject ?version .
+    ?signing a prov:Activity ;
+      prov:used ?used ;
+      prov:endedAtTime ?ended ;
+      prov:wasAssociatedWith ?signer ;
+      dcterms:identifier ?envelope .
+    ?used prov:specializationOf ?taking .
+    ?signer a prov:Person .
+    FILTER (STRSTARTS(STR(?envelope), "docusign-dev:envelope:"))
+  }
+  OPTIONAL { ?step dcterms:description ?reason }
+}
+ORDER BY ?step

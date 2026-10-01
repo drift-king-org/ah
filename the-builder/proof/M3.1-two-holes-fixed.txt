@@ -1,0 +1,78 @@
+M3.1: two holes in M3, found by the reviewer, plus one they found in the fix.
+
+Hole 1: code-strings-named.rq went blind on some strings.
+
+  BIND (IF(contains(?value, ":"), IRI(?value), false) AS ?address)
+
+A string with a colon and a space or brace ("pid1: failed to bind :8080")
+is not a valid IRI. IRI() errors on it, which leaves ?address unbound
+rather than raising. An unbound ?address inside
+  FILTER NOT EXISTS { { ?address ?p1 ?o1 } UNION ... }
+matches every triple in the store (an unbound variable in a nested EXISTS
+pattern is free, not fixed to the outer non-binding), so NOT EXISTS was
+false and the string was silently treated as named. Verified directly
+against pyoxigraph 0.5.11:
+
+  BIND (IF(contains(?value, ":"), IRI(?value), false) AS ?address)   -- "pid1: failed to bind :8080" -> address unbound -> counted as named (wrong)
+  BIND (COALESCE(IF(contains(?value, ":"), IRI(?value), false), false) AS ?address)  -- same string -> address = false -> counted as unnamed (right)
+
+Fixed with COALESCE. Canary added to unnamed-string-rust.rs:
+  let _y = "canary: a colon and spaces {x}";
+Caught, confirmed by rerunning the-builder.
+
+My own M3 proof note had the cause backwards (said oxigraph was more
+lenient than rdflib; it is oxigraph's engine that has the bug, and the true
+count was always higher than what I first reported). Corrected count: 30,
+not 23 -- 7 in cloudflare-pid-rs/pid1/src/main.rs (previously hidden by
+this bug), 23 in cloudflare-pid-rs/worker/src/index.js (unchanged).
+M3-code-strings-named-gap.txt is superseded by
+M3.1-code-strings-named-gap.txt, which the-builder itself printed after
+the fix.
+
+Hole 2: any agent could approve a gap.
+
+known-gap.rq previously accepted any prov:Entity that referenced the test
+and subject, attributed to whoever wrote it -- including me, the coder,
+claiming the lead architect's approval, which I had not actually gotten.
+
+Redesigned per the reviewer's shape, in ah.ttl:
+- The gap is now a real earl:Assertion (test, subject, earl:failed), a
+  prov:Entity, and an oa:Annotation (oa:hasTarget's own domain), with
+  prov:wasDerivedFrom a snapshot of ah.ttl at the M3 commit (f9a7855,
+  sha256:002faadcc1bc5114c6e08594189acf23f735c372aaddf28c876d79def7ea7117)
+  and oa:hasTarget the exact span of intent/letter-of-intent.md it waives
+  (offsets 67..117: "Nothing is built or run unless the model names it.").
+  prov:wasAttributedTo not-ah/agent/coder -- never the lead architect, who
+  did not write it.
+- known-gap.rq now requires a prov:Activity that prov:used the gap, with
+  prov:endedAtTime, prov:wasAssociatedWith a prov:Person, and a
+  dcterms:identifier matching docusign-dev:envelope:..., and no
+  prov:wasInvalidatedBy. None of that exists yet -- writing the gap node is
+  free, and it must not count until it is actually signed. Verified in
+  pyoxigraph 0.5.11 against three fixtures: unsigned (0 rows, correct),
+  properly signed (1 row, correct), signed then invalidated (0 rows,
+  correct). Canary: the-linter/canaries/known-gap-unsigned.ttl.
+- expected-outcome.rq now requires earl:assertedBy not-ah/the-linter
+  specifically, so it never picks up the gap's own earl:Assertion (which is
+  assertedBy no one -- prov:wasAttributedTo is a different relation) in
+  place of the real target (earl:passed).
+- approvals/gap-code-strings-named.txt is what actually goes to DocuSign:
+  the intent sentence, the finding count, the proof file's sha256, what
+  closes it, and /sig1//date1/ for the lead architect to fill in.
+
+A third hole, found while wiring the second fix and already fixed by the
+reviewer before I finished: giving ah.ttl a failed earl:Assertion (for the
+gap) made canary-isolation.rq treat ah.ttl as its own canary -- every
+real-step's hasInputVar includes var/the-model, which both ?canaryVar and
+?modelVar could bind to, since ah.ttl now satisfied both "a canary" (failed
+assertion) and "the model" (owl:Ontology) at once. The reviewer's fix:
+canary-isolation.rq now requires earl:assertedBy not-ah/the-linter on the
+canary's own assertion (the gap's is assertedBy no one), plus a
+FILTER (?model != ?canary) belt-and-braces check. Verified in pyoxigraph
+0.5.11: canary-isolation's own canary still finds 1 (the leaky-step), the
+real model finds 0.
+
+Full run after both fixes, the-builder's own output: every check passes or
+canary-fails as expected; the only failure is code-strings-named/real-step,
+unsigned, exit 1 -- correct, not a bug, until the DocuSign envelope comes
+back.

@@ -1,0 +1,26 @@
+# What a render step reads and writes. Each input's role comes from what it
+# conforms to: a Mustache template, a SPARQL query (run on the main store,
+# every row given to the template), or a CommonMark text whose first line is
+# the title and whose blank-line-separated blocks are its paragraphs. The
+# output is the step's output copy, with the sha256 it must have, if the
+# model pins one. ?step and ?base are bound by the caller.
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX p-plan:  <http://purl.org/net/p-plan#>
+PREFIX skos:    <http://www.w3.org/2004/02/skos/core#>
+
+SELECT ?step ?base ?input ?role ?target ?sha256 ?key WHERE {
+  ?step p-plan:hasInputVar ?var ; p-plan:hasOutputVar ?outVar .
+  ?file p-plan:correspondsToVariable ?var ; dcterms:conformsTo ?role .
+  ?out p-plan:correspondsToVariable ?outVar .
+  # A query with a notation fills the template under that name.
+  OPTIONAL { ?file skos:notation ?key }
+  FILTER (strstarts(str(?file), str(?base)) && strstarts(str(?out), str(?base)))
+  BIND (strafter(str(?file), str(?base)) AS ?input)
+  BIND (strafter(str(?out), str(?base)) AS ?target)
+  OPTIONAL {
+    ?out dcterms:identifier ?id .
+    FILTER (strstarts(?id, "sha256:"))
+    BIND (strafter(?id, "sha256:") AS ?sha256)
+  }
+}
+ORDER BY ?input

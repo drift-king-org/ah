@@ -1,0 +1,37 @@
+Labelling, per M0 item 3: every result in H2-code-strings-named.txt, and
+every "real codebase" finding count anywhere in this file, comes from an ad
+hoc Python harness (ast-grep -> hand-written RDF injection -> rdflib),
+never from the-builder. INFORMATIONAL until M3 runs the same checks inside
+the-builder itself. Treat none of these finding counts as a gate.
+
+1. Rust joins (rules/strings-rust.yml): added a macro_invocation branch
+   matching concat!(...) and format!(...) by name, and excluded individual
+   string_literals inside either from also matching separately (stopBy:
+   end was required -- inside only checks the immediate parent by default,
+   and a literal's immediate parent is token_tree, not macro_invocation;
+   caught by testing, not assumed). Rewrote canaries/joined-words-rust.rs
+   to use concat!("name", "step") -- valid Rust, unlike "name" + "step"
+   (str + str doesn't compile). Verified: joined value computes to
+   "namestep" correctly, same as before.
+
+2. extern "C" excluded: added not: { inside: { stopBy: end, kind:
+   extern_modifier } }. Verified against the real pid1/src/main.rs: the
+   informational finding count dropped from 37 to 36, and "C" no longer
+   appears -- the specific case this item named.
+
+3. Labelling: done, this file and the note above.
+
+Both checks still clean after these rule edits:
+  domain-retypes: 1/0 (canary/model)
+  named-by-nobody: 0 unnamed, 63 files
+
+All 9 code-strings-named canaries still correct (bare-string x2 passed,
+joined-words x2 / others-label x2 / unnamed-string x2 / copied-value
+failed, as required).
+
+Known harness limitation, disclosed not fixed (informational check only):
+the ad hoc joined-value extractor for concat!/format! is a regex over the
+matched macro's raw text, so a format! call whose non-literal arguments
+happen to contain quoted strings (e.g. env_or_empty("CLOUDFLARE_LOCATION"))
+gets those folded into the "joined value" too. Real AST-scoped extraction
+is M3's job, inside the-builder, not this harness's.

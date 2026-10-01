@@ -1,0 +1,68 @@
+# How a published package is checked against the version that was signed.
+# Read-only: nothing is committed, pushed or published. The steps live here,
+# and nowhere else: .claude/skills/patch-and-verify/SKILL.md only says to
+# walk the current plan.
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
+@prefix p-plan:  <http://purl.org/net/p-plan#> .
+@prefix vp:      <https://drift-king.org/ah/verify-published/> .
+
+<https://drift-king.org/plans/verify-published.ttl>
+    a owl:Ontology , prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    dcterms:title "the verify-published plan" .
+
+vp:plan
+    a p-plan:Plan ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    dcterms:title "check that what a registry published is what was signed" ;
+    dcterms:description "Read-only. The signed version is the audited candidate: its files and their sha256s, in the model. Every comparison is against those, never against a description. When any differs, stop at that step and say which. A version published minutes ago can be missing from a registry's cache: a 404 then is lag, so retry before calling anything a mismatch, and never call lag a pass. Scratch files go in cloudflare-pid-rs/.tools and are listed in the report." .
+
+vp:var-tarball     a p-plan:Variable ; dcterms:title "the tarball, its sha1 and sha512 equal to the registry's" .
+vp:var-files       a p-plan:Variable ; dcterms:title "every file in the tarball, each sha256 equal to the candidate's" .
+vp:var-provenance  a p-plan:Variable ; dcterms:title "the attestation, its subject and certificate read" .
+vp:var-signatures  a p-plan:Variable ; dcterms:title "npm audit signatures' own words" .
+
+vp:pack
+    a p-plan:Step ;
+    p-plan:isStepOfPlan vp:plan ;
+    p-plan:hasOutputVar vp:var-tarball ;
+    dcterms:title "get the tarball" ;
+    dcterms:description "npm pack <name>@<version> into the scratch folder. Its sha1 must equal the registry's shasum and its sha512 the registry's integrity, as the registry's record for that version gives them." .
+
+vp:compare-files
+    a p-plan:Step ;
+    p-plan:isStepOfPlan vp:plan ;
+    p-plan:isPrecededBy vp:pack ;
+    p-plan:hasInputVar vp:var-tarball ;
+    p-plan:hasOutputVar vp:var-files ;
+    dcterms:title "compare every file" ;
+    dcterms:description "Unpack the tarball. It must hold exactly the candidate's files, no more and no fewer, and each file's sha256 must equal the candidate's file of the same name." .
+
+vp:provenance
+    a p-plan:Step ;
+    p-plan:isStepOfPlan vp:plan ;
+    p-plan:isPrecededBy vp:compare-files ;
+    p-plan:hasInputVar vp:var-tarball ;
+    p-plan:hasOutputVar vp:var-provenance ;
+    dcterms:title "read the provenance" ;
+    dcterms:description "Fetch the registry's attestations for the version. The provenance subject's digest must be the tarball's sha512. Its repository, workflow path, ref, commit and run must be the ones the release approval names. Read the same from the signing certificate, and report its issuer and when it was valid." .
+
+vp:audit-signatures
+    a p-plan:Step ;
+    p-plan:isStepOfPlan vp:plan ;
+    p-plan:isPrecededBy vp:provenance ;
+    p-plan:hasInputVar vp:var-provenance ;
+    p-plan:hasOutputVar vp:var-signatures ;
+    dcterms:title "audit the signatures" ;
+    dcterms:description "In a scratch folder that installs only that package at that version, run npm audit signatures, and keep what it says." .
+
+vp:report
+    a p-plan:Step ;
+    p-plan:isStepOfPlan vp:plan ;
+    p-plan:isPrecededBy vp:audit-signatures ;
+    p-plan:hasInputVar vp:var-tarball , vp:var-files , vp:var-provenance , vp:var-signatures ;
+    dcterms:title "report" ;
+    dcterms:description "Report each check with what it found: the two tarball hashes, each file with its sha256, the provenance's subject, repository, workflow, ref, commit and run, the certificate, and npm audit signatures' words. Anything that differs goes first. List the scratch files left." .

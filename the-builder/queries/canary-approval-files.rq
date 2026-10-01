@@ -1,0 +1,9 @@
+# Fixed rows for the approval template's render canary. Never read from the
+# model, so the canary's expected output only changes when the template or
+# the renderer does.
+SELECT ?label ?url ?sha256 WHERE {
+  VALUES (?label ?url ?sha256) {
+    ("The canary itself" "https://drift-king.org/the-linter/canaries/render/approval.md" "0000000000000000000000000000000000000000000000000000000000000000")
+    ("A second file" "https://drift-king.org/example.txt" "1111111111111111111111111111111111111111111111111111111111111111")
+  }
+}

@@ -1,0 +1,24 @@
+# Two observations, standing in for a disk scan's output. Neither is a real
+# file on disk -- the check doesn't care where the observation came from,
+# only whether the address it computes has any statement. Self-contained
+# (canary-isolation, M3): the-builder binds ?base itself (the real ah.ttl's
+# vann:preferredNamespaceUri, via substitute_variable), so this canary never
+# needs to supply or reference that fact.
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+# Must be found: nothing names this address, and the path has a space, so it
+# is not a valid IRI. That case once passed as named (Gap Catalog.dc.html,
+# 2026-09-29); a plain path takes the same route through the query.
+<https://drift-king.org/not-ah/canary/named-by-nobody/stray>
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter/disk-scan> ;
+    dcterms:identifier "canaries/named-by-nobody/stray file.txt" .
+
+# Must stay clean: the computed address is named right here, not by
+# reference to the real model.
+<https://drift-king.org/not-ah/canary/named-by-nobody/known>
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter/disk-scan> ;
+    dcterms:identifier "not-ah/canary/named-by-nobody/known-address" .
+<https://drift-king.org/not-ah/canary/named-by-nobody/known-address>
+    dcterms:isPartOf <https://drift-king.org/not-ah/canary/named-by-nobody/known> ;
+    rdfs:comment "Named right here, so the computed address has a statement." .

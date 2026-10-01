@@ -1,0 +1,21 @@
+# The canary for provenance-matches.rq: a kept tarball whose provenance names
+# a different commit from the one its audited candidate came from.
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
+@prefix sd:      <https://w3id.org/okn/o/sd#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+
+<https://drift-king.org/not-ah/canary/provenance-matches/package>
+    sd:hasDownloadURL "https://example.invalid/package-1.0.0.tgz"^^xsd:anyURI .
+<https://drift-king.org/not-ah/canary/provenance-matches/candidate/LICENSE>
+    dcterms:isPartOf <https://drift-king.org/not-ah/canary/provenance-matches/package> ;
+    prov:wasDerivedFrom <https://github.com/example/package/blob/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/LICENSE> .
+<https://drift-king.org/not-ah/canary/provenance-matches/kept.tgz>
+    prov:wasDerivedFrom <https://example.invalid/package-1.0.0.tgz> ;
+    dcterms:identifier "sha512-AAAA" .
+<https://drift-king.org/not-ah/canary/provenance-matches/statement>
+    dcterms:subject "sha512-AAAA" ;
+    dcterms:identifier "rekor:1" ;
+    prov:wasGeneratedBy <https://drift-king.org/not-ah/canary/provenance-matches/build> .
+<https://drift-king.org/not-ah/canary/provenance-matches/build>
+    prov:used <https://github.com/example/package/commit/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb> .

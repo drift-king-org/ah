@@ -1,0 +1,27 @@
+# Every published file, with the Content-Type the model names for it: its media type, and
+# the charset that type is served with. ?rule is true when the file needs a rule in the
+# generated headers file: the platform does not already answer with that type
+# (servedUnaided), or the file must be served as the exact bytes (cacheControl). A file
+# with no media type is not published, and is not listed. The path is the address under
+# the site. ?source is true for a file in a source folder: it is served from GitHub, so it has no
+# rule here and the deploy leaves its copy out. ?base is bound by the caller.
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX site:    <https://drift-king.org/ah/site/>
+
+SELECT ?base ?path ?contentType ?cacheControl ?rule ?source WHERE {
+  ?file dcterms:format ?type .
+  ?type rdfs:label ?label .
+  OPTIONAL { ?type site:charset ?charset }
+  OPTIONAL { ?file site:servedUnaided ?unaided }
+  OPTIONAL { ?file site:cacheControl ?cacheControl }
+  BIND (strafter(str(?file), concat(str(?base), "site/public/")) AS ?path)
+  BIND (IF(bound(?charset), concat(?label, "; charset=", ?charset), ?label) AS ?contentType)
+  BIND (EXISTS {
+    ?folder a <https://drift-king.org/ah/SourceFolder> .
+    FILTER (STRSTARTS(?path, STRAFTER(STR(?folder), STR(?base))))
+  } AS ?source)
+  BIND ((!?source && (!bound(?unaided) || !?unaided || bound(?cacheControl))) AS ?rule)
+  FILTER (?path != "")
+}
+ORDER BY ?path

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<catalog prefer="public" xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
+    <uri id="ah: ah.ttl is local" name="https://drift-king.org/ah.ttl" uri="ah.ttl"/>
+    <uri id="ah: ah/the-builder.ttl is local" name="https://drift-king.org/ah/the-builder.ttl" uri="ah/the-builder.ttl"/>
+    <uri id="ah: ah/cloudflare-pid-rs.ttl is local" name="https://drift-king.org/ah/cloudflare-pid-rs.ttl" uri="ah/cloudflare-pid-rs.ttl"/>
+    <uri id="ah: ah/site.ttl is local" name="https://drift-king.org/ah/site.ttl" uri="ah/site.ttl"/>
+    <uri id="ah: ah/signings.ttl is local" name="https://drift-king.org/ah/signings.ttl" uri="ah/signings.ttl"/>
+    <uri id="ah: ah/x-components-0.2.0-checks.ttl is local" name="https://drift-king.org/ah/x-components-0.2.0-checks.ttl" uri="ah/x-components-0.2.0-checks.ttl"/>
+    <uri id="ah: ah/x-components-0.2.0-wanted.ttl is local" name="https://drift-king.org/ah/x-components-0.2.0-wanted.ttl" uri="ah/x-components-0.2.0-wanted.ttl"/>
+    <uri id="ah: not-ah.ttl is local" name="https://drift-king.org/not-ah.ttl" uri="not-ah.ttl"/>
+    <uri id="ah: the signing plan is local" name="https://drift-king.org/plans/docusign-approval.ttl" uri="plans/docusign-approval.ttl"/>
+    <uri id="ah: the signing plan, version 2, is local" name="https://drift-king.org/plans/docusign-approval-v2.ttl" uri="plans/docusign-approval-v2.ttl"/>
+    <uri id="ah: the patch-and-verify plan is local" name="https://drift-king.org/plans/patch-and-verify.ttl" uri="plans/patch-and-verify.ttl"/>
+    <uri id="ah: the verify-published plan is local" name="https://drift-king.org/plans/verify-published.ttl" uri="plans/verify-published.ttl"/>
+    <uri id="ah: the push-and-tag plan is local" name="https://drift-king.org/plans/push-and-tag.ttl" uri="plans/push-and-tag.ttl"/>
+    <!-- Vendored vocabularies (M1): each name is the vocabulary's own
+         self-declared owl:Ontology IRI (or, for DCMI/EARL, the namespace
+         our own @prefix lines bind), not the URL it was fetched from. -->
+    <uri id="not-ah: DCAT is the vendored copy" name="http://www.w3.org/ns/dcat" uri="the-builder/vocab/dcat3.ttl"/>
+    <uri id="not-ah: DCMI Terms is the vendored copy" name="http://purl.org/dc/terms/" uri="the-builder/vocab/dublin_core_terms.ttl"/>
+    <uri id="not-ah: PROV-O is the vendored copy" name="http://www.w3.org/ns/prov#" uri="the-builder/vocab/prov-o.ttl"/>
+    <!-- PROV-O declares itself under both names; DCAT's own owl:imports
+         uses this one specifically. Same file, discovered by running
+         the-builder, not by re-reading DCAT's imports by hand first. -->
+    <uri id="not-ah: PROV-O, the other name DCAT imports it by" name="http://www.w3.org/ns/prov-o#" uri="the-builder/vocab/prov-o.ttl"/>
+    <!-- Also discovered by running the-builder: DCAT imports SKOS, which
+         M1's fixed list of nine didn't include. -->
+    <uri id="not-ah: SKOS is the vendored copy" name="http://www.w3.org/2004/02/skos/core" uri="the-builder/vocab/skos.rdf"/>
+    <uri id="not-ah: SD is the vendored copy" name="https://w3id.org/okn/o/sd" uri="the-builder/vocab/sd.ttl"/>
+    <uri id="not-ah: SOSA is the vendored copy" name="http://www.w3.org/ns/sosa/" uri="the-builder/vocab/sosa.ttl"/>
+    <uri id="not-ah: SHACL is the vendored copy" name="http://www.w3.org/ns/shacl#" uri="the-builder/vocab/shacl.ttl"/>
+    <!-- SHACL declares itself with the #; component.ttl in @apricotter/x-components
+         imports it without. Same file under both names, as with PROV-O. -->
+    <uri id="not-ah: SHACL, the name without its #" name="http://www.w3.org/ns/shacl" uri="the-builder/vocab/shacl.ttl"/>
+    <uri id="not-ah: VANN is the vendored copy" name="http://purl.org/vocab/vann/" uri="the-builder/vocab/vann.rdf"/>
+    <uri id="not-ah: EARL is the vendored copy" name="http://www.w3.org/ns/earl#" uri="the-builder/vocab/earl.rdf"/>
+    <uri id="not-ah: Web Annotation is the vendored copy" name="http://www.w3.org/ns/oa#" uri="the-builder/vocab/oa.ttl"/>
+    <uri id="not-ah: P-Plan is the vendored copy" name="http://purl.org/net/p-plan#" uri="the-builder/vocab/p-plan.rdf"/>
+    <!-- the-builder's own queries (M3): no SPARQL text lives in main.rs, so
+         every question it asks the model is one of these, resolved the same
+         way ah.ttl itself is -- through this catalog, never a literal path. -->
+    <uri id="the-builder: plan-steps.rq" name="https://drift-king.org/the-builder/queries/plan-steps.rq" uri="the-builder/queries/plan-steps.rq"/>
+    <uri id="the-builder: subject-rule.rq" name="https://drift-king.org/the-builder/queries/subject-rule.rq" uri="the-builder/queries/subject-rule.rq"/>
+    <uri id="the-builder: step-precedes.rq" name="https://drift-king.org/the-builder/queries/step-precedes.rq" uri="the-builder/queries/step-precedes.rq"/>
+    <uri id="the-builder: step-input-entities.rq" name="https://drift-king.org/the-builder/queries/step-input-entities.rq" uri="the-builder/queries/step-input-entities.rq"/>
+    <uri id="the-builder: expected-outcome.rq" name="https://drift-king.org/the-builder/queries/expected-outcome.rq" uri="the-builder/queries/expected-outcome.rq"/>
+    <uri id="the-builder: known-gap.rq" name="https://drift-king.org/the-builder/queries/known-gap.rq" uri="the-builder/queries/known-gap.rq"/>
+    <uri id="the-builder: canary-approval-files.rq" name="https://drift-king.org/the-builder/queries/canary-approval-files.rq" uri="the-builder/queries/canary-approval-files.rq"/>
+    <uri id="the-builder: canary-letter-signing.rq" name="https://drift-king.org/the-builder/queries/canary-letter-signing.rq" uri="the-builder/queries/canary-letter-signing.rq"/>
+    <uri id="the-builder: approval-files.rq" name="https://drift-king.org/the-builder/queries/approval-files.rq" uri="the-builder/queries/approval-files.rq"/>
+    <uri id="the-builder: approval-results.rq" name="https://drift-king.org/the-builder/queries/approval-results.rq" uri="the-builder/queries/approval-results.rq"/>
+    <uri id="the-builder: render-inputs.rq" name="https://drift-king.org/the-builder/queries/render-inputs.rq" uri="the-builder/queries/render-inputs.rq"/>
+    <uri id="the-builder: letter-signing.rq" name="https://drift-king.org/the-builder/queries/letter-signing.rq" uri="the-builder/queries/letter-signing.rq"/>
+    <uri id="the-builder: code-scope.rq" name="https://drift-king.org/the-builder/queries/code-scope.rq" uri="the-builder/queries/code-scope.rq"/>
+    <uri id="the-builder: publish-copies.rq" name="https://drift-king.org/the-builder/queries/publish-copies.rq" uri="the-builder/queries/publish-copies.rq"/>
+    <uri id="the-builder: redirects.rq" name="https://drift-king.org/the-builder/queries/redirects.rq" uri="the-builder/queries/redirects.rq"/>
+    <!-- the-linter's checks and canaries (M3): each is a plan step's input,
+         resolved the same way. -->
+    <uri id="the-linter: x-components-components-whole.rq" name="https://drift-king.org/the-linter/checks/x-components-components-whole.rq" uri="the-linter/checks/x-components-components-whole.rq"/>
+    <uri id="the-linter: x-components-components-whole.ttl" name="https://drift-king.org/the-linter/canaries/x-components-components-whole.ttl" uri="the-linter/canaries/x-components-components-whole.ttl"/>
+    <uri id="the-linter: x-components-roles-resolve.rq" name="https://drift-king.org/the-linter/checks/x-components-roles-resolve.rq" uri="the-linter/checks/x-components-roles-resolve.rq"/>
+    <uri id="the-linter: x-components-roles-resolve.ttl" name="https://drift-king.org/the-linter/canaries/x-components-roles-resolve.ttl" uri="the-linter/canaries/x-components-roles-resolve.ttl"/>
+    <uri id="the-linter: x-components-words-clean.rq" name="https://drift-king.org/the-linter/checks/x-components-words-clean.rq" uri="the-linter/checks/x-components-words-clean.rq"/>
+    <uri id="the-linter: x-components-words-clean.ttl" name="https://drift-king.org/the-linter/canaries/x-components-words-clean.ttl" uri="the-linter/canaries/x-components-words-clean.ttl"/>
+    <uri id="not-ah: the x-components candidate's model is the kept copy" name="https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0-candidate/component.ttl" uri="vendor/npm/apricotter-x-components/0.1.0-candidate/component.ttl"/>
+    <uri id="not-ah: the x-components 0.2.0 candidate's model is the kept copy" name="https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/component.ttl" uri="vendor/npm/apricotter-x-components/0.2.0-candidate/component.ttl"/>
+    <uri id="the-builder: untaken.rq is local" name="https://drift-king.org/the-builder/queries/untaken.rq" uri="the-builder/queries/untaken.rq"/>
+    <uri id="the-linter: held-until-taken-untaken.ttl" name="https://drift-king.org/the-linter/canaries/held-until-taken-untaken.ttl" uri="the-linter/canaries/held-until-taken-untaken.ttl"/>
+    <uri id="the-linter: held-until-taken-wrong-version.ttl" name="https://drift-king.org/the-linter/canaries/held-until-taken-wrong-version.ttl" uri="the-linter/canaries/held-until-taken-wrong-version.ttl"/>
+    <uri id="the-linter: held-until-taken-taken.ttl" name="https://drift-king.org/the-linter/canaries/held-until-taken-taken.ttl" uri="the-linter/canaries/held-until-taken-taken.ttl"/>
+    <uri id="the-linter: named-by-nobody-intake-only.ttl" name="https://drift-king.org/the-linter/canaries/named-by-nobody-intake-only.ttl" uri="the-linter/canaries/named-by-nobody-intake-only.ttl"/>
+    <uri id="the-linter: named-by-nobody-intake-and-elsewhere.ttl" name="https://drift-king.org/the-linter/canaries/named-by-nobody-intake-and-elsewhere.ttl" uri="the-linter/canaries/named-by-nobody-intake-and-elsewhere.ttl"/>
+    <uri id="the-linter: ship-steps-marked.rq" name="https://drift-king.org/the-linter/checks/ship-steps-marked.rq" uri="the-linter/checks/ship-steps-marked.rq"/>
+    <uri id="the-linter: ship-steps-marked.ttl" name="https://drift-king.org/the-linter/canaries/ship-steps-marked.ttl" uri="the-linter/canaries/ship-steps-marked.ttl"/>
+    <uri id="the-linter: domain-retypes.rq" name="https://drift-king.org/the-linter/checks/domain-retypes.rq" uri="the-linter/checks/domain-retypes.rq"/>
+    <uri id="the-linter: domain-retypes.ttl" name="https://drift-king.org/the-linter/canaries/domain-retypes.ttl" uri="the-linter/canaries/domain-retypes.ttl"/>
+    <uri id="the-linter: range-retypes.rq" name="https://drift-king.org/the-linter/checks/range-retypes.rq" uri="the-linter/checks/range-retypes.rq"/>
+    <uri id="the-linter: range-retypes.ttl" name="https://drift-king.org/the-linter/canaries/range-retypes.ttl" uri="the-linter/canaries/range-retypes.ttl"/>
+    <uri id="the-linter: namespace-terms-defined.rq" name="https://drift-king.org/the-linter/checks/namespace-terms-defined.rq" uri="the-linter/checks/namespace-terms-defined.rq"/>
+    <uri id="the-linter: namespace-terms-defined.ttl" name="https://drift-king.org/the-linter/canaries/namespace-terms-defined.ttl" uri="the-linter/canaries/namespace-terms-defined.ttl"/>
+    <uri id="the-linter: terms-defined-in-vocab.rq" name="https://drift-king.org/the-linter/checks/terms-defined-in-vocab.rq" uri="the-linter/checks/terms-defined-in-vocab.rq"/>
+    <uri id="the-linter: terms-defined-in-vocab.ttl" name="https://drift-king.org/the-linter/canaries/terms-defined-in-vocab.ttl" uri="the-linter/canaries/terms-defined-in-vocab.ttl"/>
+    <uri id="the-linter: canary-isolation.rq" name="https://drift-king.org/the-linter/checks/canary-isolation.rq" uri="the-linter/checks/canary-isolation.rq"/>
+    <uri id="the-linter: canary-isolation.ttl" name="https://drift-king.org/the-linter/canaries/canary-isolation.ttl" uri="the-linter/canaries/canary-isolation.ttl"/>
+    <uri id="the-linter: iri-names-not-values.rq" name="https://drift-king.org/the-linter/checks/iri-names-not-values.rq" uri="the-linter/checks/iri-names-not-values.rq"/>
+    <uri id="the-linter: iri-names-not-values.ttl" name="https://drift-king.org/the-linter/canaries/iri-names-not-values.ttl" uri="the-linter/canaries/iri-names-not-values.ttl"/>
+    <uri id="the-linter: approvals-are-documents.rq" name="https://drift-king.org/the-linter/checks/approvals-are-documents.rq" uri="the-linter/checks/approvals-are-documents.rq"/>
+    <uri id="the-linter: approvals-are-documents.ttl" name="https://drift-king.org/the-linter/canaries/approvals-are-documents.ttl" uri="the-linter/canaries/approvals-are-documents.ttl"/>
+    <uri id="the-linter: named-by-nobody.rq" name="https://drift-king.org/the-linter/checks/named-by-nobody.rq" uri="the-linter/checks/named-by-nobody.rq"/>
+    <uri id="the-linter: procedure-chain.rq" name="https://drift-king.org/the-linter/checks/procedure-chain.rq" uri="the-linter/checks/procedure-chain.rq"/>
+    <uri id="the-linter: procedure-chain.ttl" name="https://drift-king.org/the-linter/canaries/procedure-chain.ttl" uri="the-linter/canaries/procedure-chain.ttl"/>
+    <uri id="the-linter: every-address-opens.rq" name="https://drift-king.org/the-linter/checks/every-address-opens.rq" uri="the-linter/checks/every-address-opens.rq"/>
+    <uri id="the-linter: every-address-opens.ttl" name="https://drift-king.org/the-linter/canaries/every-address-opens.ttl" uri="the-linter/canaries/every-address-opens.ttl"/>
+    <uri id="the-linter: provenance-matches.rq" name="https://drift-king.org/the-linter/checks/provenance-matches.rq" uri="the-linter/checks/provenance-matches.rq"/>
+    <uri id="the-linter: provenance-matches.ttl" name="https://drift-king.org/the-linter/canaries/provenance-matches.ttl" uri="the-linter/canaries/provenance-matches.ttl"/>
+    <uri id="the-linter: tool-version-pinned.rq" name="https://drift-king.org/the-linter/checks/tool-version-pinned.rq" uri="the-linter/checks/tool-version-pinned.rq"/>
+    <uri id="the-linter: tool-version-pinned.ttl" name="https://drift-king.org/the-linter/canaries/tool-version-pinned.ttl" uri="the-linter/canaries/tool-version-pinned.ttl"/>
+    <uri id="vendor: x-components 0.1.0 provenance, derived" name="https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0/provenance.ttl" uri="vendor/npm/apricotter-x-components/0.1.0/provenance.ttl"/>
+    <uri id="the-linter: named-by-nobody.ttl" name="https://drift-king.org/the-linter/canaries/named-by-nobody.ttl" uri="the-linter/canaries/named-by-nobody.ttl"/>
+    <uri id="the-linter: code-strings-named.rq" name="https://drift-king.org/the-linter/checks/code-strings-named.rq" uri="the-linter/checks/code-strings-named.rq"/>
+    <uri id="the-linter: unnamed-string-rust.rs canary" name="https://drift-king.org/the-linter/canaries/unnamed-string-rust.rs" uri="the-linter/canaries/unnamed-string-rust.rs"/>
+    <uri id="the-linter: compared-string-rust.rs canary" name="https://drift-king.org/the-linter/canaries/compared-string-rust.rs" uri="the-linter/canaries/compared-string-rust.rs"/>
+    <uri id="the-linter: compared-string-js.js canary" name="https://drift-king.org/the-linter/canaries/compared-string-js.js" uri="the-linter/canaries/compared-string-js.js"/>
+</catalog>

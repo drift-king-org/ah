@@ -1,0 +1,18 @@
+# Two steps that each precede the other, in their own fake plan -- not
+# ah/the-builder/plan, so loading this canary alongside the real model
+# never poisons the real plan's own step discovery. the-builder's
+# step-ordering must detect the cycle in THIS plan and stop; it already
+# does the same for the dcterms:requires graph (B2).
+@prefix p-plan: <http://purl.org/net/p-plan#> .
+
+<https://drift-king.org/not-ah/canary/plan-cycle/plan> a p-plan:Plan .
+
+<https://drift-king.org/not-ah/canary/plan-cycle/a>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/not-ah/canary/plan-cycle/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/canary/plan-cycle/b> .
+
+<https://drift-king.org/not-ah/canary/plan-cycle/b>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/not-ah/canary/plan-cycle/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/canary/plan-cycle/a> .

@@ -1,0 +1,18 @@
+git init, repo-local identity only:
+  user.name  = Drift King
+  user.email = compliance@drift-king.org
+
+.gitignore: target/, node_modules/, .wrangler/, .tools/ -- named in ah.ttl.
+
+Pre-commit checks (fresh disk scan, not a hand-kept list):
+  named-by-nobody-style: 0 unnamed file(s), 43 checked
+  domain-retypes: 1 finding on the canary (required), 0 on the real model
+
+Commit: fb106fd, root commit, 43 files, no trailer.
+  author:    Drift King <compliance@drift-king.org>
+  committer: Drift King <compliance@drift-king.org>
+
+git rev-parse HEAD^{tree}:
+  5f43a783a4f1b4aa85e12b9a0e4f101c182d944f
+
+Not pushed.

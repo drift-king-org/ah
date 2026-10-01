@@ -1,0 +1,9 @@
+# Fixed rows for the letter and home templates' render canaries. Never read
+# from the model, so the canaries' expected output only changes when a
+# template or the renderer does. The address carries & and ? so escaping in
+# an href is checked too.
+SELECT ?signed_on ?envelope ?signed_url ?signed_sha256 WHERE {
+  VALUES (?signed_on ?envelope ?signed_url ?signed_sha256) {
+    ("2000-01-01" "00000000-0000-0000-0000-000000000000" "/canary/signed.pdf?a=1&b=2" "2222222222222222222222222222222222222222222222222222222222222222")
+  }
+}

@@ -1,0 +1,13 @@
+# The ast-grep rule and the string class for a source file, from the
+# language it conforms to: a rule dcterms:references the language it reads.
+# A subject with no such rule is RDF, and is loaded as RDF. ?subject and
+# ?base are bound by the caller.
+PREFIX dcterms: <http://purl.org/dc/terms/>
+
+SELECT ?subject ?base ?rule ?class WHERE {
+  ?subject dcterms:conformsTo ?language .
+  ?ruleFile dcterms:references ?language ;
+    dcterms:subject ?class .
+  FILTER (strstarts(str(?ruleFile), str(?base)))
+  BIND (strafter(str(?ruleFile), str(?base)) AS ?rule)
+}

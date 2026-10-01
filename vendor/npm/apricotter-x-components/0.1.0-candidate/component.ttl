@@ -1,0 +1,625 @@
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix aria:  <https://apricotter.com/ns/wai-aria#> .
+@prefix cmp:   <https://apricotter.com/ns/components#> .
+
+
+
+aria:Role a owl:Class, sh:NodeShape ;
+    rdfs:label "AriaRole" ;
+    rdfs:comment "One role from the W3C WAI-ARIA 1.2 Roles Model (the spec's §5), borrowed as grounding vocabulary for cmp:Component's cmp:hasAriaRole, not as a class of DOM-element individuals." ;
+    sh:closed true ;
+    sh:ignoredProperties ( rdf:type rdfs:comment ) ;
+    sh:property [ sh:path rdfs:label ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path aria:isAbstractRole ; sh:datatype xsd:boolean ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path aria:broaderRole ; sh:class aria:Role ; sh:maxCount 1 ] ;
+    sh:property [ sh:path aria:nameFrom ; sh:datatype xsd:string ; sh:in ( "author" "contents" "prohibited" ) ] ;
+    sh:property [ sh:path aria:nameRequired ; sh:datatype xsd:boolean ; sh:maxCount 1 ] ;
+    sh:property [ sh:path aria:childrenPresentational ; sh:datatype xsd:boolean ; sh:maxCount 1 ] ;
+    sh:property [ sh:path aria:requiredState ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path aria:supportedState ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path aria:requiresOwnedRole ; sh:class aria:Role ] ;
+    sh:property [ sh:path aria:requiresContextRole ; sh:class aria:Role ] ;
+    sh:property [ sh:path aria:baseConceptElement ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path aria:relatedConceptElement ; sh:datatype xsd:string ] .
+
+
+
+cmp:role-roletype a aria:Role ;
+    rdfs:label "roletype" ; aria:isAbstractRole true ;
+    rdfs:comment "The base role from which all other roles inherit (§5.4, `roletype`)." .
+
+cmp:role-widget a aria:Role ;
+    rdfs:label "widget" ; aria:isAbstractRole true ; aria:broaderRole cmp:role-roletype ;
+    rdfs:comment "An interactive component of a GUI (§5.4, `widget`)." .
+
+cmp:role-structure a aria:Role ;
+    rdfs:label "structure" ; aria:isAbstractRole true ; aria:broaderRole cmp:role-roletype ;
+    rdfs:comment "A document structural element (§5.4, `structure`)." .
+
+cmp:role-command a aria:Role ;
+    rdfs:label "command" ; aria:isAbstractRole true ; aria:broaderRole cmp:role-widget ;
+    aria:nameFrom "author" ;
+    rdfs:comment "A form of widget that performs an action but does not receive input data (§5.4, `command`)." .
+
+cmp:role-input a aria:Role ;
+    rdfs:label "input" ; aria:isAbstractRole true ; aria:broaderRole cmp:role-widget ;
+    aria:supportedState "aria-disabled" ;
+    rdfs:comment "A generic type of widget that allows user input (§5.4, `input`)." .
+
+cmp:role-section a aria:Role ;
+    rdfs:label "section" ; aria:isAbstractRole true ; aria:broaderRole cmp:role-structure ;
+    rdfs:comment "A renderable structural containment unit in a document or application (§5.4, `section`)." .
+
+cmp:role-sectionhead a aria:Role ;
+    rdfs:label "sectionhead" ; aria:isAbstractRole true ; aria:broaderRole cmp:role-structure ;
+    rdfs:comment "A structure that labels or summarizes the topic of its related section (§5.4, `sectionhead`)." .
+
+cmp:role-landmark a aria:Role ;
+    rdfs:label "landmark" ; aria:isAbstractRole true ; aria:broaderRole cmp:role-section ;
+    aria:nameFrom "author" ;
+    rdfs:comment "A perceivable section containing content relevant to a specific author-specified purpose, important enough that users will want to navigate to it directly (§5.4, `landmark`; all eight landmark roles in §5.3.4 inherit from this)." .
+
+
+cmp:role-button a aria:Role ;
+    rdfs:label "button" ; aria:isAbstractRole false ; aria:broaderRole cmp:role-command ;
+    aria:baseConceptElement "button" ;
+    aria:supportedState "aria-disabled", "aria-haspopup", "aria-expanded", "aria-pressed" ;
+    aria:nameFrom "contents", "author" ; aria:nameRequired true ; aria:childrenPresentational true ;
+    rdfs:comment "An input that allows for user-triggered actions when clicked or pressed (§5.4, `button`)." .
+
+cmp:role-checkbox a aria:Role ;
+    rdfs:label "checkbox" ; aria:isAbstractRole false ; aria:broaderRole cmp:role-input ;
+    aria:relatedConceptElement "input[type=checkbox]" ;
+    aria:requiredState "aria-checked" ;
+    aria:supportedState "aria-errormessage", "aria-expanded", "aria-invalid", "aria-readonly", "aria-required" ;
+    aria:nameFrom "contents", "author" ; aria:nameRequired true ;
+    rdfs:comment "A checkable input with true/false/mixed values (§5.4, `checkbox`)." .
+
+cmp:role-radio a aria:Role ;
+    rdfs:label "radio" ; aria:isAbstractRole false ; aria:broaderRole cmp:role-input ;
+    aria:relatedConceptElement "input[type=radio]" ;
+    aria:requiredState "aria-checked" ;
+    aria:supportedState "aria-posinset", "aria-setsize" ;
+    aria:nameFrom "contents", "author" ; aria:nameRequired true ; aria:childrenPresentational true ;
+    rdfs:comment "A checkable input in a mutually-exclusive group (§5.4, `radio`)." .
+
+cmp:role-link a aria:Role ;
+    rdfs:label "link" ; aria:isAbstractRole false ; aria:broaderRole cmp:role-command ;
+    aria:supportedState "aria-disabled", "aria-expanded", "aria-haspopup" ;
+    aria:nameFrom "contents", "author" ; aria:nameRequired true ;
+    rdfs:comment "An interactive reference to a resource that navigates the user agent when activated (§5.4, `link`)." .
+
+cmp:role-heading a aria:Role ;
+    rdfs:label "heading" ; aria:isAbstractRole false ; aria:broaderRole cmp:role-sectionhead ;
+    aria:relatedConceptElement "h1", "h2", "h3", "h4", "h5", "h6" ;
+    aria:requiredState "aria-level" ;
+    aria:nameFrom "contents", "author" ; aria:nameRequired true ;
+    rdfs:comment "A heading for a section of the page; native <h1>-<h6> already supply aria-level implicitly (§5.4, `heading`)." .
+
+cmp:role-group a aria:Role ;
+    rdfs:label "group" ; aria:isAbstractRole false ; aria:broaderRole cmp:role-section ;
+    aria:relatedConceptElement "fieldset" ;
+    aria:supportedState "aria-activedescendant", "aria-disabled" ;
+    aria:nameFrom "author" ;
+    rdfs:comment "A set of UI objects not intended for a page summary or table of contents — contrast cmp:role-region, which is (§5.4, `group`)." .
+
+cmp:role-img a aria:Role ;
+    rdfs:label "img" ; aria:isAbstractRole false ; aria:broaderRole cmp:role-section ;
+    aria:relatedConceptElement "img" ;
+    aria:nameFrom "author" ; aria:nameRequired true ; aria:childrenPresentational true ;
+    rdfs:comment "A container representing a single graphic, whether or not formed by a collection of elements (§5.4, `img`)." .
+
+cmp:role-list a aria:Role ;
+    rdfs:label "list" ; aria:isAbstractRole false ; aria:broaderRole cmp:role-section ;
+    aria:baseConceptElement "ol", "ul" ;
+    aria:requiresOwnedRole cmp:role-listitem ;
+    aria:nameFrom "author" ;
+    rdfs:comment "A section containing listitem elements (§5.4, `list`)." .
+
+cmp:role-listitem a aria:Role ;
+    rdfs:label "listitem" ; aria:isAbstractRole false ; aria:broaderRole cmp:role-section ;
+    aria:baseConceptElement "li" ;
+    aria:requiresContextRole cmp:role-list ;
+    aria:supportedState "aria-level", "aria-posinset", "aria-setsize" ;
+    aria:nameFrom "author" ;
+    rdfs:comment "A single item in a list; authors MUST ensure it is contained in (or owned by) a list (§5.4, `listitem`)." .
+
+cmp:role-generic a aria:Role ;
+    rdfs:label "generic" ; aria:isAbstractRole false ; aria:broaderRole cmp:role-structure ;
+    aria:relatedConceptElement "div", "span" ;
+    aria:nameFrom "prohibited" ;
+    rdfs:comment "A nameless container with no semantic meaning on its own — the implicit role of a bare HTML div/span. Authors SHOULD NOT assign this role in content; it exists for user-agent implementors (§5.4, `generic`)." .
+
+cmp:role-banner a aria:Role ;
+    rdfs:label "banner" ; aria:isAbstractRole false ; aria:broaderRole cmp:role-landmark ;
+    aria:nameFrom "author" ;
+    rdfs:comment "Site-oriented content at the top of a page (logo, site-wide search) — at most one per page (§5.4, `banner`; APG landmark-regions: HTML header is banner only in body context)." .
+
+cmp:role-contentinfo a aria:Role ;
+    rdfs:label "contentinfo" ; aria:isAbstractRole false ; aria:broaderRole cmp:role-landmark ;
+    aria:nameFrom "author" ;
+    rdfs:comment "Common information at the bottom of a page (copyright, policy links) — at most one per page (§5.4, `contentinfo`; APG landmark-regions: HTML footer is contentinfo only in body context)." .
+
+cmp:role-navigation a aria:Role ;
+    rdfs:label "navigation" ; aria:isAbstractRole false ; aria:broaderRole cmp:role-landmark ;
+    aria:relatedConceptElement "nav" ;
+    aria:nameFrom "author" ;
+    rdfs:comment "A landmark collecting navigational elements, usually links (§5.4, `navigation`)." .
+
+cmp:role-region a aria:Role ;
+    rdfs:label "region" ; aria:isAbstractRole false ; aria:broaderRole cmp:role-landmark ;
+    aria:relatedConceptElement "section" ;
+    aria:nameFrom "author" ; aria:nameRequired true ;
+    rdfs:comment "A landmark for content important enough to navigate to directly; MUST have a label, and an HTML <section> only gets this role once it has one (§5.4, `region`)." .
+
+cmp:role-form a aria:Role ;
+    rdfs:label "form" ; aria:isAbstractRole false ; aria:broaderRole cmp:role-landmark ;
+    aria:baseConceptElement "form" ;
+    aria:nameFrom "author" ; aria:nameRequired true ;
+    rdfs:comment "A landmark region combining items into a form; MUST be labeled (§5.4, `form`)." .
+
+
+cmp:role-status a aria:Role ;
+    rdfs:label "status" ; aria:isAbstractRole false ; aria:broaderRole cmp:role-section ;
+    aria:relatedConceptElement "strong" ;
+    aria:nameFrom "author" ;
+    rdfs:comment "A live region whose content is advisory information for the user, not important enough to justify an alert (§5.4, `status`). Implicit aria-live \"polite\", implicit aria-atomic \"true\". Subclass role: `timer`." .
+
+cmp:role-alert a aria:Role ;
+    rdfs:label "alert" ; aria:isAbstractRole false ; aria:broaderRole cmp:role-section ;
+    aria:nameFrom "author" ;
+    rdfs:comment "A live region with important, usually time-sensitive information (§5.4, `alert`). Implicit aria-live \"assertive\", implicit aria-atomic \"true\". The spec calls it a specialized form of `status` in prose, but its stated Superclass Role is `section`, which is what broaderRole records here." .
+
+
+
+
+<https://apricotter.com/ns/components> a owl:Ontology ;
+    owl:versionInfo "0.1.0" ;
+    rdfs:label "Apricotter component ontology" ;
+    rdfs:comment "The markup vocabulary behind expand.mjs's x-* tag registry: which components exist, what attributes each takes, which ARIA role each carries, and which may contain which. UI modelling, kept apart from any business domain." ;
+    owl:imports <https://apricotter.com/ns/wai-aria> ,
+                <http://www.w3.org/ns/shacl> .
+
+cmp:Component a owl:Class ;
+    rdfs:label "Component" ;
+    rdfs:comment "A registered `x-*` tag in expand.mjs. Abstract organizing superclass — every real component is exactly one of cmp:LeafComponent or cmp:WrapperComponent, never bare cmp:Component." .
+
+cmp:LeafComponent a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf cmp:Component ;
+    rdfs:label "LeafComponent" ;
+    rdfs:comment "Takes a flat object of string attributes and replaces itself entirely with complete markup (expand.mjs LEAF_COMPONENTS)." ;
+    sh:closed true ;
+    sh:ignoredProperties ( rdf:type rdfs:comment ) ;
+    sh:property [ sh:path cmp:tagName ; sh:datatype xsd:string ; sh:pattern "^x-[a-z0-9]+(-[a-z0-9]+)*$" ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path cmp:outputElement ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path cmp:hasAriaRole ; sh:class aria:Role ; sh:maxCount 1 ] ;
+    sh:property [ sh:path cmp:hasAttribute ; sh:class cmp:ComponentAttribute ] .
+
+cmp:WrapperComponent a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf cmp:Component ;
+    rdfs:label "WrapperComponent" ;
+    rdfs:comment "Rewrites only its open and close tags; children pass through untouched and are walked by the same parser pass (expand.mjs WRAPPER_COMPONENTS)." ;
+    sh:closed true ;
+    sh:ignoredProperties ( rdf:type rdfs:comment ) ;
+    sh:property [ sh:path cmp:tagName ; sh:datatype xsd:string ; sh:pattern "^x-[a-z0-9]+(-[a-z0-9]+)*$" ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path cmp:outputElement ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path cmp:hasAriaRole ; sh:class aria:Role ; sh:maxCount 1 ] ;
+    sh:property [ sh:path cmp:ownsComponent ; sh:class cmp:Component ] ;
+    sh:property [ sh:path cmp:hasAttribute ; sh:class cmp:ComponentAttribute ] .
+
+cmp:ComponentAttribute a owl:Class, sh:NodeShape ;
+    rdfs:label "ComponentAttribute" ;
+    rdfs:comment "One string attribute a component's own template actually reads (expand.mjs) — not the shared pass-through set (hx-*/aria-*/data-*/id/etc.), which is a fact about cmp:Component as a whole, not any one attribute. Modeled as a blank node per attribute: attributes aren't independently referenced or shared across components the way aria:Role individuals are, so there is no reason to mint each one its own IRI." ;
+    sh:closed true ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property [ sh:path cmp:attributeName ; sh:datatype xsd:string ; sh:pattern "^[a-z][a-z0-9]*(-[a-z0-9]+)*$" ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path cmp:attributeRequired ; sh:datatype xsd:boolean ; sh:minCount 1 ; sh:maxCount 1 ] .
+
+cmp:attributeName a owl:DatatypeProperty ; rdfs:label "attributeName" ; rdfs:domain cmp:ComponentAttribute ; rdfs:range xsd:string .
+cmp:attributeRequired a owl:DatatypeProperty ; rdfs:label "attributeRequired" ; rdfs:domain cmp:ComponentAttribute ; rdfs:range xsd:boolean ;
+    rdfs:comment "True for exactly the attributes the component linter's REQUIRED_ATTRS enforces today (an empty value there produces silently-empty output, not merely a missing nicety) — modeled here so the fact has one home instead of being re-derived from either side." .
+
+cmp:tagName a owl:DatatypeProperty ; rdfs:label "tagName" ; rdfs:domain cmp:Component ; rdfs:range xsd:string ;
+    rdfs:comment "The registered tag, e.g. \"x-button\" — a key of LEAF_COMPONENTS or WRAPPER_COMPONENTS in expand.mjs." .
+cmp:outputElement a owl:DatatypeProperty ; rdfs:label "outputElement" ; rdfs:domain cmp:Component ; rdfs:range xsd:string ;
+    rdfs:comment "The root HTML element the tag expands to. Every leaf and wrapper has exactly one — a wrapper is defined as one open/close tag pair." .
+cmp:hasAriaRole a owl:ObjectProperty ; rdfs:label "hasAriaRole" ; rdfs:domain cmp:Component ; rdfs:range aria:Role ;
+    rdfs:comment "The nearest ARIA role this component's output element carries, natively or otherwise. Absent when no role in the dug WAI-ARIA 1.2 vocabulary fits, or when the role is genuinely runtime-variable (see cmp:x-field, cmp:x-card)." .
+cmp:ownsComponent a owl:ObjectProperty ; rdfs:label "ownsComponent" ; rdfs:domain cmp:WrapperComponent ; rdfs:range cmp:Component ;
+    rdfs:comment "The child tag this wrapper's markup contract expects at least one of — Apricotter's own analog of ARIA's Required Owned Elements (§5.2.6), but for x-* tags rather than roles. NOT enforced by any parser or lint today; see KNOWN LIMITS." .
+cmp:hasAttribute a owl:ObjectProperty ; rdfs:label "hasAttribute" ; rdfs:domain cmp:Component ; rdfs:range cmp:ComponentAttribute ;
+    rdfs:comment "One attribute this component's own template reads (expand.mjs), grounded by reading the actual implementation, not inferred from it mechanically — a component's real attribute set is exactly as much a fact to model as its tagName or ARIA role." .
+
+cmp:AsAttribute a owl:NamedIndividual ;
+    rdfs:label "AsAttribute" ;
+    cmp:allowedElementName "article", "aside", "div", "dl", "form", "li", "main", "section" .
+
+cmp:allowedElementName a owl:DatatypeProperty ; rdfs:label "allowedElementName" ; rdfs:domain cmp:AsAttribute ; rdfs:range xsd:string ;
+    rdfs:comment "One legal value for a component's `as` attribute." .
+
+
+cmp:x-button a cmp:LeafComponent ; cmp:tagName "x-button" ; cmp:outputElement "button" ; cmp:hasAriaRole cmp:role-button ;
+    cmp:hasAttribute
+        [ a cmp:ComponentAttribute ; cmp:attributeName "label" ; cmp:attributeRequired true ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "type" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "variant" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "full" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "href" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "disabled" ; cmp:attributeRequired false ] ;
+    rdfs:comment "With `href` the output element is <a> and the ARIA role is `link`, not `button` — an action that looks like a button but navigates is a different thing to assistive technology, and §1.4's prefer-native-HTML rule says it must be a real anchor rather than a button with a click handler. `href` and `type` are mutually exclusive: <a> has no type, and `disabled` has no meaning on a link (there is no disabled state for an anchor), so both are ignored in that form. First needed by /reps, where Navigate leaves the page for Google Maps." .
+
+cmp:x-field a cmp:LeafComponent ; cmp:tagName "x-field" ; cmp:outputElement "label" ;
+    cmp:hasAttribute
+        [ a cmp:ComponentAttribute ; cmp:attributeName "label" ; cmp:attributeRequired true ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "name" ; cmp:attributeRequired true ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "type" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "value" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "required" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "hint" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "multiline" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "rows" ; cmp:attributeRequired false ] ;
+    rdfs:comment "No single hasAriaRole: the nested control's real role depends on its runtime `type` attribute (text -> textbox, checkbox -> checkbox, etc. per expand.mjs) — the outer <label> itself carries no ARIA role. `hint` renders its own element wired to the control with aria-describedby, never a placeholder and never a title attribute: a placeholder disappears on focus, which is exactly when the hint is needed, and title is unreachable by keyboard and touch. `multiline` swaps the <input> for a <textarea> (sized by `rows`), which is the only reason a note field could not be expressed with this tag before. Neither is cosmetic — without `hint` a form cannot carry compliant hint text using this component at all, so every form built from it so far shipped without one." .
+
+cmp:x-serp-mock a cmp:LeafComponent ; cmp:tagName "x-serp-mock" ; cmp:outputElement "figure" ;
+    cmp:hasAttribute
+        [ a cmp:ComponentAttribute ; cmp:attributeName "query" ; cmp:attributeRequired true ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "noun" ; cmp:attributeRequired false ] ;
+    rdfs:comment "The stylised map-pack mock: a search bar, a road sketch with four pins, and four result rows. Componentised so a page template can vary it per vertical instead of forking the markup. Only two things differ: `query` (the search bar text) and `noun` (shop or store). The ratings and the three competitor labels are fixed illustrative fixtures, and the figcaption says so: it is stylised, not a screenshot of a search engine. A LeafComponent because it takes no children -- everything inside is generated." .
+
+cmp:x-price a cmp:LeafComponent ; cmp:tagName "x-price" ; cmp:outputElement "span" ;
+    cmp:hasAttribute [ a cmp:ComponentAttribute ; cmp:attributeName "amount" ; cmp:attributeRequired true ] .
+
+cmp:x-consent a cmp:LeafComponent ; cmp:tagName "x-consent" ; cmp:outputElement "label" ; cmp:hasAriaRole cmp:role-checkbox ;
+    cmp:hasAttribute
+        [ a cmp:ComponentAttribute ; cmp:attributeName "label" ; cmp:attributeRequired true ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "name" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "checked" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "disabled" ; cmp:attributeRequired false ] ;
+    rdfs:comment "Unlike x-field, the nested <input> here is ALWAYS type=checkbox (never runtime-variable), so the role is a fixed fact even though it technically belongs to the nested element, not the outer <label>." .
+
+cmp:x-chip a cmp:LeafComponent ; cmp:tagName "x-chip" ; cmp:outputElement "span" ;
+    cmp:hasAttribute [ a cmp:ComponentAttribute ; cmp:attributeName "label" ; cmp:attributeRequired false ] ;
+    rdfs:comment "No ARIA role by design: expand.mjs's own comment calls this \"non-interactive by construction\" — a span with no href and no hover, so it cannot look clickable by accident." .
+
+cmp:x-tag a cmp:LeafComponent ; cmp:tagName "x-tag" ; cmp:outputElement "span" ;
+    cmp:hasAttribute [ a cmp:ComponentAttribute ; cmp:attributeName "label" ; cmp:attributeRequired false ] .
+
+cmp:x-kicker a cmp:LeafComponent ; cmp:tagName "x-kicker" ; cmp:outputElement "div" ;
+    cmp:hasAttribute [ a cmp:ComponentAttribute ; cmp:attributeName "label" ; cmp:attributeRequired false ] ;
+    rdfs:comment "Wraps .product-kicker: a small icon-plus-label badge above a cross-sell heading — a product callout is the one current call site. The icon itself (a fixed eye/watch glyph) is hardcoded in expand.mjs's render function, the same way x-theme-toggle hardcodes its sun/moon icons, rather than an icon-selection attribute — there is exactly one icon in use today, and adding a selector for a hypothetical second one is the moment to extend this, not now. No hasAriaRole: the icon is aria-hidden and the label is plain text, no interactive or landmark semantics to assert." .
+
+cmp:x-page-heading a cmp:LeafComponent ; cmp:tagName "x-page-heading" ; cmp:outputElement "header" ;
+    cmp:hasAttribute
+        [ a cmp:ComponentAttribute ; cmp:attributeName "title" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "blurb" ; cmp:attributeRequired false ] ;
+    rdfs:comment "Renders a bare <header>, NOT in body context, so per the APG landmark-regions HTML-element mapping this does NOT carry the banner role — it is a plain sectioning header, unlike cmp:x-header." .
+
+cmp:x-contact-actions a cmp:LeafComponent ; cmp:tagName "x-contact-actions" ; cmp:outputElement "div" ; cmp:hasAriaRole cmp:role-group ;
+    cmp:hasAttribute
+        [ a cmp:ComponentAttribute ; cmp:attributeName "primary" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "phone" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "email" ; cmp:attributeRequired false ] .
+
+cmp:x-person a cmp:LeafComponent ; cmp:tagName "x-person" ; cmp:outputElement "div" ; cmp:hasAriaRole cmp:role-group ;
+    cmp:hasAttribute
+        [ a cmp:ComponentAttribute ; cmp:attributeName "name" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "role" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "phone" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "bio" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "photo" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "photo-alt" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "compact" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "primary" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "email" ; cmp:attributeRequired false ] .
+
+cmp:x-card-link a cmp:LeafComponent ; cmp:tagName "x-card-link" ; cmp:outputElement "a" ; cmp:hasAriaRole cmp:role-link ;
+    rdfs:comment "outputElement/role-link describe the card WITH a href — three of the four current cards have none and render as a bare <div> instead, deliberately: a non-link card never picks up a hover state it doesn't own. Not modeled as a boolean/as attribute: whether a card links anywhere is a direct fact about the card, not a caller style choice, so it follows from href being present rather than being asked for separately." ;
+    cmp:hasAttribute
+        [ a cmp:ComponentAttribute ; cmp:attributeName "href" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "name" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "blurb" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "image" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "image-alt" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "image-class" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "image-placeholder" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "accent" ; cmp:attributeRequired false ] ;
+    rdfs:comment "image/image-alt/image-class/image-placeholder/accent give the card an image slot as well as href/name/blurb. image-class carries a per-card modifier (e.g. card-link__image--auto) since each photo needs its own crop/position rule; without it every card-link image would share one untargetable style. image-placeholder is the alternative for a card with no photo yet — renders the same .media-placeholder box, with the given text, instead of an <img>. A leaf can't accept children to hold that box itself, hence the attribute rather than caller-supplied markup. Named image-placeholder, not \"placeholder\": that plain name is already reserved in expand.mjs's passThrough() PASS_EXACT list for x-field's own real HTML placeholder attribute, and reusing it here would leak this component's internal box-text onto the card's own placeholder attribute through the shared pass-through mechanism. image and image-placeholder are mutually exclusive in practice (a card has a real photo or it doesn't); if both are given, image wins. accent renders a trailing .text-accent span (e.g. a linked card's own \"auto.example.com\" line) — the one card that's an actual link names its destination; the others don't need one." .
+
+cmp:x-header a cmp:LeafComponent ; cmp:tagName "x-header" ; cmp:outputElement "header" ; cmp:hasAriaRole cmp:role-banner ;
+    cmp:hasAttribute
+        [ a cmp:ComponentAttribute ; cmp:attributeName "brand" ; cmp:attributeRequired true ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "phone" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "phone-href" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "contact-href" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "theme-toggle" ; cmp:attributeRequired false ] ;
+    rdfs:comment "The site-wide header — this IS the body-context <header>, so it does carry the banner landmark. At most one per page, per cmp:role-banner." .
+
+cmp:x-theme-toggle a cmp:LeafComponent ; cmp:tagName "x-theme-toggle" ; cmp:outputElement "button" ; cmp:hasAriaRole cmp:role-button ;
+    rdfs:comment "The animated day/night dial. A toggle button per role-button's own supportedState aria-pressed (\"Buttons with a non-empty aria-pressed attribute are toggle buttons\", WAI-ARIA 1.2) — role=switch was considered and rejected since the real implementation uses aria-pressed, not aria-checked, which is what role=switch would require. No attributes, no owns: fixed markup, fixed id (a page's own script finds it by that id), at most one per page regardless of whether x-header's own theme-toggle boolAttr or this standalone tag put it there — see expand.mjs's themeToggleHtml()." .
+
+cmp:x-hero a cmp:LeafComponent ; cmp:tagName "x-hero" ; cmp:outputElement "section" ;
+    cmp:hasAttribute
+        [ a cmp:ComponentAttribute ; cmp:attributeName "heading" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "pitch" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "heading-tag" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "heading-id" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "pitch-id" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "door-image" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "image" ; cmp:attributeRequired false ] ;
+    rdfs:comment "No hasAriaRole: a <section> with no aria-label/aria-labelledby carries no implicit landmark role at all (APG landmark-regions: section only becomes `region` once it has an accessible name)." .
+
+cmp:x-link a cmp:LeafComponent ; cmp:tagName "x-link" ; cmp:outputElement "a" ; cmp:hasAriaRole cmp:role-link ;
+    cmp:hasAttribute
+        [ a cmp:ComponentAttribute ; cmp:attributeName "href" ; cmp:attributeRequired true ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "label" ; cmp:attributeRequired true ] ;
+    rdfs:comment "A plain link. Its href goes through the same external-link rule as every other anchor this registry emits (externalAttrs/EXTERNAL_MARK, expand.mjs) -- a mailto:/tel: or same-site href renders plain, an external one opens in a new tab and says so. Owned by cmp:x-footer, whose links are this tag's children rather than the wrapper's own attributes (PROP TYPES, expand.mjs's header comment: a list is a wrapper's children, never attributes)." .
+
+
+cmp:x-footer a cmp:WrapperComponent ; cmp:tagName "x-footer" ; cmp:outputElement "footer" ; cmp:hasAriaRole cmp:role-contentinfo ; cmp:ownsComponent cmp:x-link ;
+    cmp:hasAttribute
+        [ a cmp:ComponentAttribute ; cmp:attributeName "brand" ; cmp:attributeRequired true ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "blurb" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "phone" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "phone-href" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "email" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "copyright" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "links-heading" ; cmp:attributeRequired false ] ;
+    rdfs:comment "The site-wide footer — body-context <footer>, carries contentinfo. At most one per page, per cmp:role-contentinfo. Its links are cmp:x-link children, not attributes: a footer holds a list of links, and PROP TYPES (expand.mjs's header comment) says a list is a wrapper's children. links-heading labels that list, defaulting to \"Elsewhere\" (see expand.mjs's x-footer comment for why)." .
+
+cmp:x-card a cmp:WrapperComponent ; cmp:tagName "x-card" ; cmp:outputElement "div" ; cmp:hasAriaRole cmp:role-group ;
+    cmp:hasAttribute
+        [ a cmp:ComponentAttribute ; cmp:attributeName "as" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "compact" ; cmp:attributeRequired false ] ;
+    rdfs:comment "Default role/output assume the default `as` (\"div\"); expand.mjs's tagName() allowlist lets `as` override to form/dl/section/article/aside, each of which carries a different real role (form landmark, section/region if labeled, article, complementary) — not modeled as separate facts since it is a runtime choice per call site, not a property of the component definition." .
+
+cmp:x-facts a cmp:WrapperComponent ; cmp:tagName "x-facts" ; cmp:outputElement "ul" ; cmp:hasAriaRole cmp:role-list ; cmp:ownsComponent cmp:x-fact .
+
+cmp:x-fact a cmp:WrapperComponent ; cmp:tagName "x-fact" ; cmp:outputElement "li" ; cmp:hasAriaRole cmp:role-listitem .
+
+cmp:x-steps a cmp:WrapperComponent ; cmp:tagName "x-steps" ; cmp:outputElement "ol" ; cmp:hasAriaRole cmp:role-list ; cmp:ownsComponent cmp:x-step .
+
+cmp:x-step a cmp:WrapperComponent ; cmp:tagName "x-step" ; cmp:outputElement "li" ; cmp:hasAriaRole cmp:role-listitem ;
+    cmp:ownsComponent cmp:x-step-title, cmp:x-step-body .
+
+cmp:x-step-title a cmp:WrapperComponent ; cmp:tagName "x-step-title" ; cmp:outputElement "h3" ; cmp:hasAriaRole cmp:role-heading ;
+    rdfs:comment "Native <h3> already supplies aria-level=3 implicitly — no explicit aria-level attribute needed, per role-heading's requiredState and the native-semantics-first rule (implicit WAI-ARIA semantics, spec §8.4)." .
+
+cmp:x-step-body a cmp:WrapperComponent ; cmp:tagName "x-step-body" ; cmp:outputElement "p" .
+
+cmp:x-terms a cmp:WrapperComponent ; cmp:tagName "x-terms" ; cmp:outputElement "dl" ; cmp:ownsComponent cmp:x-term ;
+    rdfs:comment "No hasAriaRole asserted: a definition list's ARIA mapping is an HTML-AAM concern, outside the WAI-ARIA 1.2 core role definitions this dig covered — an honest gap, not an omission." .
+
+cmp:x-term a cmp:WrapperComponent ; cmp:tagName "x-term" ; cmp:outputElement "div" ; cmp:ownsComponent cmp:x-term-name, cmp:x-term-body .
+
+cmp:x-term-name a cmp:WrapperComponent ; cmp:tagName "x-term-name" ; cmp:outputElement "dt" .
+
+cmp:x-term-body a cmp:WrapperComponent ; cmp:tagName "x-term-body" ; cmp:outputElement "dd" .
+
+cmp:x-shop-offers a cmp:WrapperComponent ; cmp:tagName "x-shop-offers" ; cmp:outputElement "ul" ; cmp:hasAriaRole cmp:role-list ; cmp:ownsComponent cmp:x-shop-offer ;
+    rdfs:comment "The section itself. Renders empty when every offer has passed its valid_through, because retiring is a read filter (WHERE valid_through >= date('now')) and not a job that mutates rows. What a reader should see in place of a retired offer is undecided and deliberately not invented here." .
+
+cmp:x-shop-offer a cmp:WrapperComponent ; cmp:tagName "x-shop-offer" ; cmp:outputElement "li" ; cmp:hasAriaRole cmp:role-listitem ; cmp:ownsComponent cmp:x-shop-offer-headline, cmp:x-shop-offer-claim ;
+    rdfs:comment "One dated deal. Owns a headline and a claim line but not a detail: the shape requires the claim (sh:minCount 1) and puts no minimum on the detail, so an offer with nothing to claim is the canonical dead end while an offer with no detail is merely terse." .
+
+cmp:x-shop-offer-headline a cmp:WrapperComponent ; cmp:tagName "x-shop-offer-headline" ; cmp:outputElement "h3" ; cmp:hasAriaRole cmp:role-heading .
+
+cmp:x-shop-offer-detail a cmp:WrapperComponent ; cmp:tagName "x-shop-offer-detail" ; cmp:outputElement "p" .
+
+cmp:x-shop-offer-claim a cmp:WrapperComponent ; cmp:tagName "x-shop-offer-claim" ; cmp:outputElement "p" ;
+    rdfs:comment "How a visitor actually redeems: show this page at the counter, or press a button that mints a per-visitor code. The one child the offer cannot be published without." .
+
+cmp:x-heading a cmp:WrapperComponent ; cmp:tagName "x-heading" ; cmp:outputElement "h2" ; cmp:hasAriaRole cmp:role-heading ;
+    cmp:hasAttribute
+        [ a cmp:ComponentAttribute ; cmp:attributeName "level" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "compact" ; cmp:attributeRequired false ] ;
+    rdfs:comment "compact is a SIZE, not a level. `level` picks the heading element; the class was hardcoded to .section-heading, so every heading in the vocabulary rendered at --size-700 (2rem, Bitter bold) including a row title in a long list, which wrapped a two-word name onto two lines at 390px. compact swaps the class to .section-heading--compact at --size-600, the step that already exists between body and section heading. The distinction it encodes is the one the token scale already draws for --size-800: \"the wordmark is a UI element in a compact header, not a heading\" — a row title is the same category, a heading by semantics and a UI label by scale. Kept as an attribute on this tag instead of a new x-row-title so the element stays a real h2/h3: a screen reader user navigates a list by heading, and a tag that merely looks like a title would take that away. level is h2 (default) or h3, for a subsection heading nested under another x-heading's h2 on the same page — named level, not as: unlike x-card/x-column/x-section's as (an arbitrary wrapping element from ALLOWED_TAGS, falling back to div), this picks a heading level specifically, with its own smaller allowlist and a different fallback (h2). Reusing as would have collided with the generic \"as must be in ALLOWED_AS or it silently becomes a div\" rule, which has nothing to do with this attribute." .
+
+cmp:x-prose a cmp:WrapperComponent ; cmp:tagName "x-prose" ; cmp:outputElement "p" ;
+    cmp:hasAttribute [ a cmp:ComponentAttribute ; cmp:attributeName "muted" ; cmp:attributeRequired false ] ;
+    rdfs:comment "muted swaps the output class from .prose to .prose-muted — a second paragraph continuing the same thought in a quieter voice, not a separate concept needing its own tag." .
+
+cmp:x-column a cmp:WrapperComponent ; cmp:tagName "x-column" ; cmp:outputElement "section" ;
+    cmp:hasAttribute
+        [ a cmp:ComponentAttribute ; cmp:attributeName "as" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "wide" ; cmp:attributeRequired false ] ;
+    rdfs:comment "Same gap as x-hero: an unlabeled <section> carries no implicit landmark role. as follows x-card's own precedent (allowlist override, e.g. \"main\" for the page's single top-level landmark) — not modeled as a separate outputElement fact per value, same reasoning x-card's own comment already gives for not modeling that runtime choice. wide adds .column--wide alongside .column." .
+
+cmp:x-footnote a cmp:WrapperComponent ; cmp:tagName "x-footnote" ; cmp:outputElement "p" .
+
+cmp:x-cards-grid a cmp:WrapperComponent ; cmp:tagName "x-cards-grid" ; cmp:outputElement "div" ; cmp:ownsComponent cmp:x-card-link , cmp:x-card ;
+    cmp:hasAttribute
+        [ a cmp:ComponentAttribute ; cmp:attributeName "fit" ; cmp:attributeRequired false ] ;
+    rdfs:comment "FINDING: conceptually this is a list of x-card-link items (the same shape as x-facts/x-fact), but it renders as a bare <div>, not <ul>/<ol> — no role-list/role-listitem asserted because the markup genuinely does not carry that semantic. A screen reader gets no list-navigation affordance over a cards grid today. Surfaced by modeling the required-owned-element relationship explicitly; fixing it (role=\"list\" on the wrapper, role=\"listitem\" on each x-card-link, per §5.2.6) is an expand.mjs change, not an ontology one. It owns cmp:x-card as well as cmp:x-card-link: it was once modelled as holding links alone because links were the only thing it had held, and a grid of cards that cannot contain a card is the constraint being wrong rather than the usage. The CSS never cared -- .cards-grid lays out whatever children it is given. `fit` swaps the fixed four columns for as many as will fit at a readable minimum width: four narrow link cards is a deliberate shape, but three content cards forced into a four-column track came out 281px wide and very tall, with an empty column beside them. The count is a property of what is being laid out, not of the grid." .
+
+cmp:x-postcard a cmp:WrapperComponent ; cmp:tagName "x-postcard" ; cmp:outputElement "div" ; cmp:ownsComponent cmp:x-postcard-row ;
+    cmp:hasAttribute
+        [ a cmp:ComponentAttribute ; cmp:attributeName "name" ; cmp:attributeRequired true ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "mark" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "eyebrow" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "foot-label" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "foot-value" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "foot-href" ; cmp:attributeRequired false ] ;
+    rdfs:comment "A record laid out as a postcard: dark header band carrying the brand mark and an eyebrow, a serif name behind a short accent rule, label-over-value rows, and a heavy rule above a baseline sign-off. `name` is required because a postcard with no subject is a blank card. `foot-href` turns the sign-off value into a link, which is how a record points at wherever it is authoritative. Colours are tokens, not literal hex values: a self-contained design file hardcodes them, and pinning them here would fix the card to the paper theme." .
+
+cmp:x-postcard-row a cmp:LeafComponent ; cmp:tagName "x-postcard-row" ; cmp:outputElement "div" ;
+    cmp:hasAttribute
+        [ a cmp:ComponentAttribute ; cmp:attributeName "label" ; cmp:attributeRequired true ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "value" ; cmp:attributeRequired true ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "href" ; cmp:attributeRequired false ] ;
+    rdfs:comment "One label-over-value row. LABEL ABOVE, NOT BESIDE: the values are identifiers and amounts of wildly different lengths -- a long opaque platform id against a short amount like 30.00 USD -- and a two-column list of those either wraps mid-identifier or leaves a gutter sized for the longest one. Both label and value are required: a row with only one of them is a row that says nothing." .
+
+cmp:x-chips a cmp:WrapperComponent ; cmp:tagName "x-chips" ; cmp:outputElement "div" ; cmp:ownsComponent cmp:x-chip ;
+    rdfs:comment "Same finding as x-cards-grid: a bare <div> row of x-chip spans with no list semantics for assistive technology." .
+
+cmp:x-section a cmp:WrapperComponent ; cmp:tagName "x-section" ; cmp:outputElement "section" ;
+    cmp:hasAttribute
+        [ a cmp:ComponentAttribute ; cmp:attributeName "as" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "divider" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "media-split" ; cmp:attributeRequired false ] ;
+    rdfs:comment "Wraps .section-stack — a content group's own heading-to-body spacing, distinct from cmp:x-column's .column (the page-level max-width container the sections sit inside). as follows x-card's precedent (allowlist override to \"div\" for a section nested inside another section, e.g. a page's media-split pairing). divider adds .section-divider. media-split adds .media-split — a real, named attribute rather than a bare class=\"media-split\" on the caller's markup, because no wrapper here does raw class passthrough (expand.mjs's passThrough() forwards hx-/aria-/data-* and a short id/name-style allowlist, never class): a caller-supplied class attribute is silently dropped, not merged, which is exactly the bug this attribute exists to prevent — found live on a real page whose section carried class=\"media-split\" before this tag existed and never actually applied the two-column grid it named. No hasAriaRole, same gap as cmp:x-column/cmp:x-hero: an unlabeled <section> carries no implicit landmark role." .
+
+cmp:x-rule-list a cmp:WrapperComponent ; cmp:tagName "x-rule-list" ; cmp:outputElement "ul" ; cmp:hasAriaRole cmp:role-list ; cmp:ownsComponent cmp:x-rule-list-item ;
+    rdfs:comment "Wraps .rule-list: a short list of already-complete statements, rule-separated rather than bulleted — see that file's own comment for why this is distinct from cmp:x-facts (compact, dot-bulleted, for shorter/more numerous claims)." .
+
+cmp:x-rule-list-item a cmp:WrapperComponent ; cmp:tagName "x-rule-list-item" ; cmp:outputElement "li" ; cmp:hasAriaRole cmp:role-listitem .
+
+cmp:x-statement-list a cmp:WrapperComponent ; cmp:tagName "x-statement-list" ; cmp:outputElement "ul" ; cmp:hasAriaRole cmp:role-list ; cmp:ownsComponent cmp:x-statement ;
+    rdfs:comment "Wraps .statement-list: claim-beside-its-support rows separated by hairlines rather than numbered cards -- a numbered three-up grid is a familiar SaaS trope this pattern deliberately avoids. Used on more than one page before being componentized." .
+
+cmp:x-statement a cmp:WrapperComponent ; cmp:tagName "x-statement" ; cmp:outputElement "li" ; cmp:hasAriaRole cmp:role-listitem ;
+    cmp:ownsComponent cmp:x-statement-claim, cmp:x-statement-support .
+
+cmp:x-statement-claim a cmp:WrapperComponent ; cmp:tagName "x-statement-claim" ; cmp:outputElement "span" ;
+    rdfs:comment "No hasAriaRole asserted: a bare <span>'s ARIA mapping is an HTML-AAM concern outside the WAI-ARIA 1.2 core role definitions this dig covered — same honest gap already recorded for cmp:x-terms/cmp:x-term-name." .
+
+cmp:x-statement-support a cmp:WrapperComponent ; cmp:tagName "x-statement-support" ; cmp:outputElement "span" .
+
+cmp:x-statement-card a cmp:WrapperComponent ; cmp:tagName "x-statement-card" ; cmp:outputElement "div" ; cmp:ownsComponent cmp:x-statement-card-text ;
+    rdfs:comment "Wraps .statement-card: a single-argument lede, one bordered card with a vertical accent bar, replacing a bare <x-section><x-heading>...<x-prose>...</x-section> block that read as a caption once the page's own hero carried the weight. The accent bar is a CSS ::before, not a modeled child — no ontology fact for it, same as cmp:x-hero's door-image mechanic living entirely in CSS. No hasAriaRole, same gap as cmp:x-column/cmp:x-section: an unlabeled <div> carries no implicit landmark role." .
+
+cmp:x-statement-card-text a cmp:WrapperComponent ; cmp:tagName "x-statement-card-text" ; cmp:outputElement "p" ; cmp:ownsComponent cmp:x-statement-card-lead, cmp:x-statement-card-follow ;
+    rdfs:comment "The single-paragraph grouping .statement-card__text that cmp:x-statement-card's flex layout treats as one item alongside its accent bar — lead/follow are two display:block spans INSIDE one paragraph, not two independent flex children, which is why this level exists rather than nesting lead/follow directly under cmp:x-statement-card." .
+
+cmp:x-statement-card-lead a cmp:WrapperComponent ; cmp:tagName "x-statement-card-lead" ; cmp:outputElement "span" ;
+    rdfs:comment "The bold, primary-ink opening sentence — same claim/support SHAPE as cmp:x-statement-claim (a short weighted statement followed by its supporting sentence), but a genuinely different visual treatment (larger serif size, vertically stacked in one paragraph rather than a two-column row), hence a distinct tag rather than reusing cmp:x-statement-claim outside the list context it's modeled for. No hasAriaRole asserted, same gap already recorded for cmp:x-statement-claim." .
+
+cmp:x-statement-card-follow a cmp:WrapperComponent ; cmp:tagName "x-statement-card-follow" ; cmp:outputElement "span" .
+
+cmp:x-feature-grid a cmp:WrapperComponent ; cmp:tagName "x-feature-grid" ; cmp:outputElement "ul" ; cmp:hasAriaRole cmp:role-list ; cmp:ownsComponent cmp:x-feature-grid-item ;
+    rdfs:comment "Wraps .feature-grid: image-plus-caption items in a row, distinct from cmp:x-cards-grid (whole clickable cards with a link) — this holds plain content with no link and no border. An item's own <div class=\"media-placeholder\"> stays hand-written inside on purpose: a temporary photo-not-shot-yet stand-in, deliberately not a component." .
+
+cmp:x-feature-grid-item a cmp:WrapperComponent ; cmp:tagName "x-feature-grid-item" ; cmp:outputElement "li" ; cmp:hasAriaRole cmp:role-listitem .
+
+cmp:x-list a cmp:WrapperComponent ; cmp:tagName "x-list" ; cmp:outputElement "ul" ; cmp:hasAriaRole cmp:role-list ; cmp:ownsComponent cmp:x-card ;
+    rdfs:comment "A plain semantic list of cards. The vocabulary had three SPECIALISED lists (cmp:x-facts, cmp:x-steps, cmp:x-rule-list) and no general one, so a list of anything else had to be either a hand-written <ul> or a bare <div> — and the bare <div> is the choice cmp:x-cards-grid and cmp:x-chips already made, which is exactly the accessibility gap their own rdfs:comments record. This tag is the other answer: real <ul>/<li>, so assistive technology announces the item count. A rep scanning a list of shops learns how many are left without reading to the end. FINDING, recorded not fixed: its items are cmp:x-card with as=\"li\", and cmp:x-card asserts cmp:role-group, which is only true of its default <div> form — an <li> inside a <ul> has an implicit listitem role instead. Same shape as cmp:x-field's note about its control role depending on runtime `type`. Neither is wrong markup; the ontology just cannot state one role for a tag whose element the caller picks." .
+
+
+cmp:x-table a cmp:WrapperComponent ; cmp:tagName "x-table" ; cmp:outputElement "table" ; cmp:ownsComponent cmp:x-table-head , cmp:x-table-body ;
+    cmp:hasAttribute
+        [ a cmp:ComponentAttribute ; cmp:attributeName "caption" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "interactive" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "mono-row-header" ; cmp:attributeRequired false ] ;
+    rdfs:comment "A data table. `caption` emits a real <caption>, which the schema variant uses and the results variant does not -- a results grid names itself in a header bar above the table, beside its row count. `interactive` turns on row hover, and is the marker for data-rows: the schema table deliberately has no hover because nothing there is actionable. `mono-row-header` selects the row-header treatment, mono and regular weight for an identifier column against proportional and semibold for a name -- both are used, one per variant, on the same slot. border-collapse is SEPARATE with border-spacing 0, a deliberate choice that differs from a collapsed-border table; the difference is recorded, not resolved. No hasAriaRole: a real <table> element carries the table role implicitly, and asserting it here would restate what the element already means." .
+
+cmp:x-table-scroll a cmp:WrapperComponent ; cmp:tagName "x-table-scroll" ; cmp:outputElement "div" ;
+    cmp:hasAttribute
+        [ a cmp:ComponentAttribute ; cmp:attributeName "axis" ; cmp:attributeRequired false ] ;
+    rdfs:comment "The overflow container a table sticks against. Separate from cmp:x-table because position:sticky resolves against the nearest scrolling ancestor, so the scroll box and the table cannot be the same element. `axis` is x, y or both. Carries the styled scrollbars, and the horizontal one is load-bearing rather than decorative -- a default macOS overlay scrollbar fades when idle, so on a wide table the only signal that seven more columns exist disappears a second after load. Firefox takes scrollbar-width and scrollbar-color, WebKit and Blink need the pseudo-elements, and neither is a substitute for the other." .
+
+cmp:x-table-head a cmp:WrapperComponent ; cmp:tagName "x-table-head" ; cmp:outputElement "thead" ; cmp:ownsComponent cmp:x-table-row ;
+    cmp:hasAttribute
+        [ a cmp:ComponentAttribute ; cmp:attributeName "sticky" ; cmp:attributeRequired false ] ;
+    rdfs:comment "The header band. `sticky` pins it to the top of the scroll box, on purpose: a header that scrolls away from a long table takes its meaning with it. RENDERS WITHOUT A BODY, and that is deliberate: an empty state shows a head with no tbody so the shape of the table is visible even when it is empty. An empty result and a table that does not exist look different." .
+
+cmp:x-table-body a cmp:WrapperComponent ; cmp:tagName "x-table-body" ; cmp:outputElement "tbody" ; cmp:ownsComponent cmp:x-table-row ;
+    rdfs:comment "The rows. Optional: a table with a head and no body is the empty state, see cmp:x-table-head." .
+
+cmp:x-table-row a cmp:WrapperComponent ; cmp:tagName "x-table-row" ; cmp:outputElement "tr" ; cmp:ownsComponent cmp:x-table-cell ;
+    rdfs:comment "One row. No zebra striping anywhere in the family: the hairline already separates rows, and a stripe is a second weaker signal competing with it. Hover carries the row instead, and only when cmp:x-table sets `interactive`. No hasAriaRole for the same reason as cmp:x-table: a <tr> inside a <table> is already a row." .
+
+cmp:x-table-head-cell a cmp:LeafComponent ; cmp:tagName "x-table-head-cell" ; cmp:outputElement "th" ;
+    cmp:hasAttribute
+        [ a cmp:ComponentAttribute ; cmp:attributeName "label" ; cmp:attributeRequired true ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "align" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "sticky" ; cmp:attributeRequired false ] ;
+    rdfs:comment "A column header. Emits scope=col, which is what carries the columnheader role -- a th only means columnheader BECAUSE of its scope, so the attribute is the semantics and not decoration. `align` is end for a numeric column, which also turns on tabular figures so digits line up down the column. `sticky` pins this cell on the horizontal axis for a first column, and it carries the higher z-index of the two sticky axes because the top-left corner cell must paint above both the sticky head and the sticky column. NO SORT AFFORDANCE: a sortable header is a button inside a th and needs an aria-sort treatment, so that is its own modeling pass, not an attribute added here on a guess." .
+
+cmp:x-table-row-header a cmp:LeafComponent ; cmp:tagName "x-table-row-header" ; cmp:outputElement "th" ;
+    cmp:hasAttribute
+        [ a cmp:ComponentAttribute ; cmp:attributeName "label" ; cmp:attributeRequired true ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "href" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "sticky" ; cmp:attributeRequired false ] ;
+    rdfs:comment "The first cell of a row, identifying it. Emits scope=row, which is what makes a screen reader announce the row's identity when reading any cell in it -- a plain td here would lose that, and as with cmp:x-table-head-cell the scope IS the role. When `sticky`, it repaints an OPAQUE surface as well as pinning: without the fill, columns scrolling underneath show through the pinned cell. Its type treatment comes from cmp:x-table's `mono-row-header`, not from an attribute here, because it is a property of the table's kind rather than of one row. `href` makes the row navigable, and THE LINK GOES ON THIS CELL RATHER THAN THE ROW because a <tr> cannot be an anchor -- the row header is the row's identity, so it is the honest thing to link. A LINKED ROW TAKES THE 48px HIT TARGET BACK, which is a condition set out in advance: rows are ~40px because they are read rather than tapped, and if a row ever becomes a link to a detail view it has to take the 48 back. So the density of a navigable table differs from a read-only one, on purpose, keyed off the presence of the link rather than off a second attribute somebody could forget to set." .
+
+
+cmp:x-table-cell a cmp:LeafComponent ; cmp:tagName "x-table-cell" ; cmp:outputElement "td" ;
+    cmp:hasAttribute
+        [ a cmp:ComponentAttribute ; cmp:attributeName "value" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "align" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "mono" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "emphasis" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "href" ; cmp:attributeRequired false ] ;
+    rdfs:comment "One value. `href` makes the value a link, so a cell can link to one record while the row header names another; without it the table would silently drop the link, because an unmodeled attribute is not an error -- it is passed through onto the <td> and nothing renders. Putting the one linkable fact in the row header would have made a code the row's IDENTITY rather than one of its values. A NULL CELL IS NEVER A LINK: no value with an href would be a link to nowhere wearing the words that say there is nothing there. THE NULL TREATMENT IS THE LOAD-BEARING PART: a missing `value` renders the words no value in italic muted text, and an empty string renders the word empty in the same style -- never a blank cell, because an empty cell is ambiguous between a null, an empty string and a rendering bug, and a data explorer is the one place that distinction matters. Same discipline as GOV.UK's rule that a missing value is stated rather than omitted. A value of 0 renders as 0. `mono` is for identifier-shaped values, `align` end for numerics, `emphasis` muted for a secondary value." .
+
+cmp:x-console a cmp:WrapperComponent ; cmp:tagName "x-console" ; cmp:outputElement "div" ; cmp:ownsComponent cmp:x-side-nav ;
+    cmp:hasAttribute
+        [ a cmp:ComponentAttribute ; cmp:attributeName "as" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "full" ; cmp:attributeRequired false ] ;
+    rdfs:comment "Two-column shell: a standing section list beside the section being read. THE VOCABULARY HAD NO SUCH LAYOUT — cmp:x-section renders .section-stack, which is flex-direction:column, so a nav and a content column placed in one became a full-width nav strip ABOVE the content rather than beside it. cmp:x-column is a centred single measure and cmp:x-section's media-split is a text-and-figure pair, neither of which is a persistent sidebar. Distinct from all three for the same reason cmp:x-cta and cmp:x-cta-row are distinct from each other: these are different LAYOUTS, not one layout with an attribute. Collapses to a single column on a narrow viewport, because the first consumer is a rep holding a phone. No hasAriaRole: an unlabeled <div> carries no implicit landmark role, the same gap cmp:x-cta and cmp:x-column record — the landmark here is the cmp:x-side-nav inside it, which has one. `full` drops the --column-wide measure and runs the shell edge to edge. A reading page is measure-limited because a line of prose past about 75 characters is hard to track back from; a data console is not reading, it is scanning a grid, and a capped measure there just throws away the columns a wide screen was bought for. One console uses it; another does not, because its user is on a phone. `as` exists for the same reason cmp:x-section, cmp:x-card and cmp:x-column each carry one: the shell IS the page's main content, so a console renders it as <main> to get the main landmark, and without the attribute that landmark has nowhere to live. Declaring it here is also what stops it leaking — passThrough() skips a tag's OWN attributes, and it reads that list from component-attributes.generated.mjs, which is generated from these triples." .
+
+cmp:x-side-nav a cmp:WrapperComponent ; cmp:tagName "x-side-nav" ; cmp:outputElement "nav" ; cmp:hasAriaRole cmp:role-navigation ; cmp:ownsComponent cmp:x-side-nav-item ;
+    cmp:hasAttribute
+        [ a cmp:ComponentAttribute ; cmp:attributeName "label" ; cmp:attributeRequired true ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "orientation" ; cmp:attributeRequired false ] ;
+    rdfs:comment "A standing list of sections. FIRST REAL <nav> IN THE VOCABULARY: a nav stylesheet existed with no consumer for it, and no page yet held a <nav> element. This is the consumer. `label` is REQUIRED, unlike most attributes here: per the APG landmark-regions guidance a navigation landmark needs an accessible name once a page can hold more than one, and cmp:x-header already emits nav-classed links of its own — an unnamed second navigation region is announced as just \"navigation\" with no way to tell them apart. `orientation` selects .nav--column (a section list running down the side) or .nav--row (the header's shape). It is an attribute rather than two tags for the same reason cmp:x-prose's `muted` is an attribute: one component, one treatment, chosen by the caller. It is ALSO the reason the nav stylesheet itself owns what a column nav does on a narrow viewport: this attribute is resolved server-side and cannot respond to viewport width, so the responsive half has to live with the selector it modifies. A rule in another component's stylesheet reaching in to change .nav's flex-direction would break the invariant that no two stylesheets style the same selector." .
+
+cmp:x-side-nav-group a cmp:WrapperComponent ; cmp:tagName "x-side-nav-group" ; cmp:outputElement "div" ; cmp:hasAriaRole cmp:role-group ; cmp:ownsComponent cmp:x-side-nav-item ;
+    cmp:hasAttribute
+        [ a cmp:ComponentAttribute ; cmp:attributeName "label" ; cmp:attributeRequired true ] ;
+    rdfs:comment "An indented set of links under the nav entry they belong to. Needed because cmp:x-side-nav was flat: a console whose sections are themselves groups of things (a stack of layers, each holding its own datasets) had no way to show that one entry contains the next, and a flat list of thirteen links reads as thirteen peers. `label` is REQUIRED for the same reason it is required on the parent nav: cmp:role-group carries no implicit name, and an unnamed group is announced as just \"group\", which is worse than no grouping at all because it adds a level without saying what the level is. Uses cmp:role-group rather than nesting a second cmp:x-side-nav inside the first: a nav landmark inside a nav landmark is two landmarks for one region, and the APG landmark guidance treats duplicate landmarks as a navigation hazard rather than a hierarchy. Indentation is nav.css's job, not this tag's." .
+
+cmp:x-side-nav-item a cmp:LeafComponent ; cmp:tagName "x-side-nav-item" ; cmp:outputElement "a" ; cmp:hasAriaRole cmp:role-link ;
+    cmp:hasAttribute
+        [ a cmp:ComponentAttribute ; cmp:attributeName "href" ; cmp:attributeRequired true ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "label" ; cmp:attributeRequired true ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "count" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "current" ; cmp:attributeRequired false ] ;
+    rdfs:comment "One section link. `current` emits aria-current=\"page\", which nav.css ALREADY styles (.nav__item[aria-current=\"page\"]) — the state was designed before anything could set it. Modeled as a boolean attribute rather than the caller writing aria-current directly, so \"which section am I in\" stays one fact the renderer owns instead of a raw ARIA attribute every call site can spell differently. `count` is advisory and optional: a section with nothing behind it yet renders without one rather than showing a zero, because a zero reads as an empty inbox while a missing count reads as not-yet-built, and on this console several sections are genuinely the latter." .
+
+cmp:x-cta a cmp:WrapperComponent ; cmp:tagName "x-cta" ; cmp:outputElement "div" ;
+    rdfs:comment "Wraps .section-cta: centers a single CTA below a section's content. Deliberately distinct from cmp:x-cta-row (a flex row of several equal-width buttons) — text.css's own comment draws the same line between the two classes; conflating them into one tag with a variant attribute would lose that the two are different LAYOUTS (centered single item vs. equal-width row), not one layout with a count difference. No hasAriaRole, same gap as cmp:x-column/cmp:x-section: an unlabeled <div> carries no implicit landmark role." .
+
+cmp:x-cta-row a cmp:WrapperComponent ; cmp:tagName "x-cta-row" ; cmp:outputElement "div" ;
+    rdfs:comment "Wraps .cta-row — see cmp:x-cta's own comment for why this is a separate tag, not a variant of it. No hasAriaRole, same gap as cmp:x-cta." .
+
+cmp:x-heading-row a cmp:WrapperComponent ; cmp:tagName "x-heading-row" ; cmp:outputElement "div" ;
+    rdfs:comment "Wraps .heading-row: a section heading paired with a short marker (e.g. cmp:x-tag's \"Partner\" label beside a section title) on the same line. No hasAriaRole, same gap as cmp:x-cta." .
+
+cmp:x-live-region a cmp:WrapperComponent ; cmp:tagName "x-live-region" ; cmp:outputElement "div" ;
+    cmp:hasAttribute
+        [ a cmp:ComponentAttribute ; cmp:attributeName "role" ; cmp:attributeRequired true ] ;
+    rdfs:comment "An announced region: content that changes while focus is elsewhere, so assistive technology has to be told rather than the user being expected to look. `role` selects cmp:role-status (advisory: in progress, elapsed, sent) or cmp:role-alert (important and time-sensitive: it failed). No single hasAriaRole for the same reason cmp:x-field has none — the real role is the caller's runtime choice. Deliberately carries NO aria-live or aria-atomic attribute: both roles already imply them, see those two individuals. First needed by /reps, where a rep holding the phone at their side has to know recording is running without looking at it." .
+
+cmp:x-note a cmp:WrapperComponent ; cmp:tagName "x-note" ; cmp:outputElement "p" ;
+    rdfs:comment "Wraps .text-muted-note — a modest muted aside, distinct in size and treatment from both cmp:x-prose's muted variant (larger, meant for body-length text) and cmp:x-footnote's .footnote (smaller, lower-opacity fine print). text.css's own comment already draws this exact three-way distinction; this tag makes the third one reachable without hand-written markup." .
+
+
+[] a owl:AllDisjointClasses ;
+    owl:members ( cmp:LeafComponent cmp:WrapperComponent aria:Role ) .
+
+
+
+cmp:x-map a cmp:WrapperComponent ; cmp:tagName "x-map" ; cmp:outputElement "svg" ; cmp:ownsComponent cmp:x-hex , cmp:x-map-route ;
+    cmp:hasAttribute
+        [ a cmp:ComponentAttribute ; cmp:attributeName "viewbox" ; cmp:attributeRequired true ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "label" ; cmp:attributeRequired true ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "width" ; cmp:attributeRequired false ] ;
+    rdfs:comment "A hex map. `viewbox` is computed from the cells by the caller's own geometry helper rather than guessed -- a guessed viewBox is why maps get clipped on one edge. `label` is required and becomes the accessible name: an SVG with no name is an unlabelled image to a screen reader, and this one carries the shape of the whole ontology. `width` is the viewBox's own width in user units; the stylesheet caps the map there so a cell renders at the size the caller chose rather than at whatever a fixed column width divided by the content happened to give. Without it every hex shrinks as the map gains tiles." .
+
+cmp:x-hex a cmp:LeafComponent ; cmp:tagName "x-hex" ; cmp:outputElement "g" ;
+    cmp:hasAttribute
+        [ a cmp:ComponentAttribute ; cmp:attributeName "points" ; cmp:attributeRequired true ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "x" ; cmp:attributeRequired true ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "y" ; cmp:attributeRequired true ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "label" ; cmp:attributeRequired true ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "castle" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "unspecified" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "kind" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "hue" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "count" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "title" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "href" ; cmp:attributeRequired false ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "innerpoints" ; cmp:attributeRequired false ] ;
+    rdfs:comment "One cell. `points` and `x`/`y` come from the caller's own geometry helper; the component never computes a position. `castle` marks the centre of a kingdom. `kind` is ours or borrowed and selects the hue -- hue because Bertin found shape is the only visual variable that is NEVER selective, so a namespace cannot be encoded by silhouette. `count` is PRINTED rather than drawn: hexes in a lattice are all one size, and encoding magnitude by area would ask a reader to estimate it, which testing says they do badly and worse as the range grows. `href` makes the cell a link, used by islands so a dug source can actually be opened -- the value is the document's own IRI from the ontology, never a path assembled at render time. `innerpoints` draws a second polygon inside the first, which is how a double outline is made -- SVG has no double stroke. Like `points` it is computed by the caller and passed in; a component that worked out its own geometry would be a second source of truth for the layout." .
+
+cmp:x-map-route a cmp:LeafComponent ; cmp:tagName "x-map-route" ; cmp:outputElement "line" ;
+    cmp:hasAttribute
+        [ a cmp:ComponentAttribute ; cmp:attributeName "x1" ; cmp:attributeRequired true ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "y1" ; cmp:attributeRequired true ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "x2" ; cmp:attributeRequired true ] ,
+        [ a cmp:ComponentAttribute ; cmp:attributeName "y2" ; cmp:attributeRequired true ] ;
+    rdfs:comment "A route between two cells. Endpoints come from the caller like every other coordinate on the map. It is decorative in the accessibility sense -- the relationship it draws is already carried by the island's own link and title, so the line is aria-hidden rather than being announced as a second, wordless copy of the same fact." .

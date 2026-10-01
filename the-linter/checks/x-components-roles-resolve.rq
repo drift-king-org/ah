@@ -1,0 +1,9 @@
+# Audits @apricotter/x-components' own model, loaded on its own: every ARIA
+# role a component carries is a role the model itself describes.
+PREFIX cmp: <https://apricotter.com/ns/components#>
+
+SELECT ?component ?role WHERE {
+  ?component cmp:hasAriaRole ?role .
+  FILTER NOT EXISTS { ?role a ?type }
+}
+ORDER BY ?component

@@ -1,0 +1,25 @@
+# The facts drift-king.org shows next to the letter: when it was signed, the
+# DocuSign envelope, and the letter as DocuSign produced it once signed (its
+# address on the site and its sha256). All read from the signing
+# prov:Activity in ah.ttl, never typed into a page. ?base is bound by the
+# caller. What the signing generated is found by prov:wasGeneratedBy; only a
+# file with a published copy is shown, so the certificate, which is not
+# published, never is.
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX prov:    <http://www.w3.org/ns/prov#>
+
+SELECT ?base ?signed_on ?envelope ?signed_url ?signed_sha256 WHERE {
+  ?signing a prov:Activity ;
+    prov:used [ prov:specializationOf <https://drift-king.org/intent/letter-of-intent.md> ] ;
+    prov:endedAtTime ?when ;
+    dcterms:identifier ?id .
+  FILTER (strstarts(?id, "docusign-dev:envelope:"))
+  ?pdf prov:wasGeneratedBy ?signing ; dcterms:identifier ?hash .
+  ?copy prov:wasDerivedFrom ?pdf .
+  BIND (concat(str(?base), "site/public/") AS ?public)
+  FILTER (strstarts(str(?copy), ?public))
+  BIND (substr(str(?when), 1, 10) AS ?signed_on)
+  BIND (strafter(?id, "docusign-dev:envelope:") AS ?envelope)
+  BIND (concat("/", strafter(str(?copy), ?public)) AS ?signed_url)
+  BIND (strafter(?hash, "sha256:") AS ?signed_sha256)
+}

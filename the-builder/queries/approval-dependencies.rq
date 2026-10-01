@@ -1,0 +1,22 @@
+# The packages a release approval names, and every package they bring in turn: each
+# with its exact version and the integrity npm gave it. The approval names the root
+# (dcterms:references); what it dcterms:requires, and what that requires, comes
+# from not-ah. A package with no integrity is not listed here, and
+# the-linter's checks on not-ah report it instead. ?step is bound by the caller.
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX p-plan:  <http://purl.org/net/p-plan#>
+PREFIX sd:      <https://w3id.org/okn/o/sd#>
+
+SELECT ?step ?name ?version ?integrity WHERE {
+  ?step p-plan:hasInputVar ?var .
+  ?doc p-plan:correspondsToVariable ?var ;
+    dcterms:conformsTo <https://spec.commonmark.org/> ;
+    dcterms:references ?root .
+  ?root dcterms:requires* ?package .
+  ?package a sd:SoftwareVersion ;
+    sd:name ?name ;
+    sd:hasVersionId ?version ;
+    dcterms:identifier ?integrity .
+  FILTER (strstarts(?integrity, "sha512-"))
+}
+ORDER BY ?name

@@ -1,0 +1,7 @@
+@prefix cmp: <https://apricotter.com/ns/components#> .
+
+# Must be found: a role nothing describes.
+cmp:x-canary a cmp:LeafComponent ; cmp:hasAriaRole cmp:role-nowhere .
+# Must stay clean: a role the model describes.
+cmp:role-here a cmp:Role .
+cmp:x-whole a cmp:LeafComponent ; cmp:hasAriaRole cmp:role-here .

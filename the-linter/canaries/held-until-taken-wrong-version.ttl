@@ -1,0 +1,16 @@
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix p-plan:  <http://purl.org/net/p-plan#> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
+@prefix sd:      <https://w3id.org/okn/o/sd#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+
+<https://drift-king.org/not-ah/canary/held-until-taken-wrong-version/step> a p-plan:Step ; dcterms:requires <https://drift-king.org/not-ah/canary/held-until-taken-wrong-version/take> ; dcterms:references <https://drift-king.org/not-ah/canary/held-until-taken-wrong-version/version-a> ;
+    dcterms:description "A step that waits for a version to be taken." .
+<https://drift-king.org/not-ah/canary/held-until-taken-wrong-version/take> a p-plan:Step ; p-plan:hasOutputVar <https://drift-king.org/not-ah/canary/held-until-taken-wrong-version/taking-var> .
+<https://drift-king.org/not-ah/canary/held-until-taken-wrong-version/version-a> a sd:SoftwareVersion .
+<https://drift-king.org/not-ah/canary/held-until-taken-wrong-version/version-b> a sd:SoftwareVersion .
+<https://drift-king.org/not-ah/canary/held-until-taken-wrong-version/taking> p-plan:correspondsToVariable <https://drift-king.org/not-ah/canary/held-until-taken-wrong-version/taking-var> ; dcterms:subject <https://drift-king.org/not-ah/canary/held-until-taken-wrong-version/version-b> .
+<https://drift-king.org/not-ah/canary/held-until-taken-wrong-version/signing> a prov:Activity ; prov:used [ prov:specializationOf <https://drift-king.org/not-ah/canary/held-until-taken-wrong-version/taking> ] ;
+    prov:endedAtTime "2026-01-01T00:00:00Z"^^xsd:dateTime ; prov:wasAssociatedWith <https://drift-king.org/not-ah/canary/held-until-taken-wrong-version/person> ;
+    dcterms:identifier "docusign-dev:envelope:canary" .
+<https://drift-king.org/not-ah/canary/held-until-taken-wrong-version/person> a prov:Person .

@@ -1,0 +1,167 @@
+https://drift-king.org/not-ah/the-linter/code-strings-named/real-step: FAILED -- expected http://www.w3.org/ns/earl#passed, got http://www.w3.org/ns/earl#failed (query https://drift-king.org/the-linter/checks/code-strings-named.rq, subject https://drift-king.org/ah.ttl)
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/pid1/src/main.rs:17 pid1: failed to install {signal:?} handler: {e} ?line=17
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/pid1/src/main.rs:27 pid1: failed to block signals ?line=27
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/pid1/src/main.rs:56 {{"pid": {}, "started": "{}", "location": "{}", "durable_object": "{}"}}CLOUDFLARE_LOCATIONCLOUDFLARE_DURABLE_OBJECT_ID ?line=56
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/pid1/src/main.rs:63 HTTP/1.1 200 OKr
+Content-Type: application/jsonr
+Content-Length: {}r
+r
+{} ?line=63
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/pid1/src/main.rs:77 pid1: clock before epoch ?line=77
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/pid1/src/main.rs:81 pid1: failed to bind :8080 ?line=81
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/pid1/src/main.rs:87 pid1: started pid={} ?line=87
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/worker/src/index.js:5 5m ?line=5
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/worker/src/index.js:9 @context ?line=9
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/worker/src/index.js:10 @type ?line=10
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/worker/src/index.js:10 sosa:Observation ?line=10
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/worker/src/index.js:11 @id ?line=11
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/worker/src/index.js:11 dk:ah/cloudflare-pid-rs/worker ?line=11
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/worker/src/index.js:11 sosa:madeBySensor ?line=11
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/worker/src/index.js:12 @id ?line=12
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/worker/src/index.js:12 dk:ah/cloudflare-pid-rs/image/v2 ?line=12
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/worker/src/index.js:12 sosa:hasFeatureOfInterest ?line=12
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/worker/src/index.js:13 @id ?line=13
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/worker/src/index.js:13 dk:ah/cloudflare-pid-rs/property/exit ?line=13
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/worker/src/index.js:13 sosa:observedProperty ?line=13
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/worker/src/index.js:14 dk:ah/cloudflare-pid-rs/exitCode ?line=14
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/worker/src/index.js:14 dk:ah/cloudflare-pid-rs/reason ?line=14
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/worker/src/index.js:14 sosa:hasResult ?line=14
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/worker/src/index.js:15 sosa:resultTime ?line=15
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/worker/src/index.js:40 Accept ?line=40
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/worker/src/index.js:42 text/html ?line=42
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/worker/src/index.js:44 one ?line=44
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/worker/src/index.js:46 one ?line=46
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/worker/src/index.js:49 content-type ?line=49
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/worker/src/index.js:49 text/html; charset=utf-8 ?line=49
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:16 base ?line=16
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:52 the-builder: failed to read {path}: {e} ?line=52
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:54 {name}=" ?line=54
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:60 <uri  ?line=60
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:63 /> ?line=63
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:65 name ?line=65
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:65 uri ?line=65
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:72 the-builder: the catalog does not map {iri} ?line=72
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:94 xml:base="" ?line=94
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:95 xml:base="http://www.w3.org/ns/earl#" ?line=95
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:182 the-builder: {AH_TTL} has no {VANN_PREFERRED_NAMESPACE_URI} ?line=182
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:190  ?line=190
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:190 SELECT ?line=190
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:191  ?line=191
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:191 WHERE ?line=191
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:201 the-builder: failed to read query {iri}: {e} ?line=201
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:207 the-builder: {query_iri} is not a SELECT query ?line=207
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:230 ?{k}={} ?line=230
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:232   ?line=232
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:247 the-builder: bad query {query_iri}: {e} ?line=247
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:252 the-builder: query {query_iri} failed: {e} ?line=252
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:268 plan ?line=268
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:272 step ?line=272
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:273 title ?line=273
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:274 command ?line=274
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:275 copy ?line=275
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:275 true ?line=275
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:276 render ?line=276
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:276 true ?line=276
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:283 plan ?line=283
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:286 before ?line=286
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:286 step ?line=286
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:312 the-builder: cycle detected among steps; cannot order ?line=312
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:347 step ?line=347
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:350 conformsTo ?line=350
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:350 entity ?line=350
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:356 test ?line=356
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:357 subject ?line=357
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:360 outcome ?line=360
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:362 the-builder: no earl:Assertion for test {test} subject {subject}; nothing to hold the run to ?line=362
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:372 test ?line=372
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:373 subject ?line=373
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:382 .rs ?line=382
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:383 the-linter/rules/strings-rust.yml ?line=383
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:384 .js ?line=384
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:385 the-linter/rules/strings-js.yml ?line=385
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:404 the-builder: query step {step} has no input conforming to SPARQL 1.1 Query ?line=404
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:409 the-builder: query step {step} has no subject input besides its query ?line=409
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:434 {step}: OPEN GAP -- expected {expected}, got {actual} (query {query_iri}, subject {subject_iri}) ?line=434
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:436   {} ?line=436
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:440 {step}: FAILED -- expected {expected}, got {actual} (query {query_iri}, subject {subject_iri}) ?line=440
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:442   {} ?line=442
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:446 {step}: {actual} (expected) ?line=446
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:449   {} ?line=449
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:463 https://drift-king.org/not-ah/the-linter/disk-scan/{i} ?line=463
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:517  ?line=517
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:517 text ?line=517
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:518 line ?line=518
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:518 range ?line=518
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:518 start ?line=518
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:519 byteOffset ?line=519
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:519 range ?line=519
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:519 start ?line=519
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:520  ?line=520
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:520 / ?line=520
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:520 file ?line=520
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:528 https://drift-king.org/not-ah/the-linter/extracted-strings/{kind_name}/{file}-{byte_start} ?line=528
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:529 https://drift-king.org/{file} ?line=529
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:544 ast-grep ?line=544
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:545 --json=compact ?line=545
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:545 --rule ?line=545
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:545 scan ?line=545
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:551 {class}.value ?line=551
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:552 {class}.line ?line=552
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:558 -c ?line=558
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:558 C:\Program Files\Git\bin\bash.exe ?line=558
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:560 -c ?line=560
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:560 sh ?line=560
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:563 the-builder: command failed: {command} ?line=563
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:576 step ?line=576
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:577 base ?line=577
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:580 source ?line=580
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:581 target ?line=581
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:582 sha256 ?line=582
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:584 HEAD:{source} ?line=584
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:584 git ?line=584
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:584 show ?line=584
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:586 the-builder: git show HEAD:{source} failed ?line=586
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:594 sha256sum ?line=594
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:600 the-builder: {target} expected sha256 {expected_sha256} but got {actual_sha256} ?line=600
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:603   published {target} (sha256 {actual_sha256}) ?line=603
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:613 
+ ?line=613
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:613 r
+ ?line=613
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:614 
+
+ ?line=614
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:615  ?line=615
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:616 #  ?line=616
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:618   ?line=618
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:631 step ?line=631
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:632 base ?line=632
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:640 input ?line=640
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:641 role ?line=641
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:642 target ?line=642
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:658 title ?line=658
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:660 paragraphs ?line=660
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:666 text ?line=666
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:673 the-builder: render step {step} has an input with unknown role {role} ?line=673
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:679 the-builder: render step {step} has no template input ?line=679
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:683 the-builder: render step {step} has no output target ?line=683
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:689 the-builder: {template_path} failed to compile: {e} ?line=689
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:693 the-builder: {template_path} failed to render: {e} ?line=693
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:699   rendered {target} ?line=699
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:711 the-builder: --catalog <path> is required; there is no default ?line=711
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:728 {title}
+  $ {} ?line=728
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:741 (skipped -- failed check upstream: {}) {} ?line=741
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:747 {} ?line=747
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:750 --exclude-standard ?line=750
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:750 -co ?line=750
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:750 git ?line=750
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:750 ls-files ?line=750
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:754 step ?line=754
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:755 base ?line=755
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:758 folder ?line=758
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:759 rule ?line=759
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:760 class ?line=760
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:766 {} ?line=766
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:770 {} ?line=770
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/the-builder/src/main.rs:782 the-builder: one or more checks failed; see FAILED lines above ?line=782

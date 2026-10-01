@@ -1,0 +1,233 @@
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix oa:      <http://www.w3.org/ns/oa#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+
+# A part of ah.ttl, imported by it. What the signed list and the signed
+# next-version document wanted of x-components 0.2.0, each quoted as signed with the
+# place it was taken from, and the checks that prove it: a check named here is one
+# whose result on the candidate the model holds (ah/x-components-0.2.0-checks.ttl,
+# and the-builder's own). A wanted line that names no check is not checked.
+<https://drift-king.org/ah/x-components-0.2.0-wanted.ttl>
+    a owl:Ontology , prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    dcterms:title "x-components 0.2.0: what was wanted, and which checks prove it" .
+
+<https://drift-king.org/ah/x-components/0.2.0/position> a owl:DatatypeProperty ;
+    rdfs:label "position" ;
+    rdfs:range xsd:integer ;
+    rdfs:comment "The place a thing takes among its siblings, counting from 1: a line or an ask in the signed document it is part of, or a signed document among the documents an approval quotes." .
+<https://drift-king.org/intent/x-components-what-good-looks-like-v2.md> <https://drift-king.org/ah/x-components/0.2.0/position> 1 .
+<https://drift-king.org/approvals/x-components-next-version.md> <https://drift-king.org/ah/x-components/0.2.0/position> 2 .
+
+<https://drift-king.org/approvals/x-components-0.2.0-release.md> dcterms:references
+    <https://drift-king.org/ah/x-components/0.2.0/want/L01> ,
+    <https://drift-king.org/ah/x-components/0.2.0/want/L02> ,
+    <https://drift-king.org/ah/x-components/0.2.0/want/L03> ,
+    <https://drift-king.org/ah/x-components/0.2.0/want/L04> ,
+    <https://drift-king.org/ah/x-components/0.2.0/want/L05> ,
+    <https://drift-king.org/ah/x-components/0.2.0/want/L06> ,
+    <https://drift-king.org/ah/x-components/0.2.0/want/L07> ,
+    <https://drift-king.org/ah/x-components/0.2.0/want/L08> ,
+    <https://drift-king.org/ah/x-components/0.2.0/want/L09> ,
+    <https://drift-king.org/ah/x-components/0.2.0/want/L10> ,
+    <https://drift-king.org/ah/x-components/0.2.0/want/L11> ,
+    <https://drift-king.org/ah/x-components/0.2.0/want/L12> ,
+    <https://drift-king.org/ah/x-components/0.2.0/want/L13> ,
+    <https://drift-king.org/ah/x-components/0.2.0/want/L14> ,
+    <https://drift-king.org/ah/x-components/0.2.0/want/L15> ,
+    <https://drift-king.org/ah/x-components/0.2.0/want/L16> ,
+    <https://drift-king.org/ah/x-components/0.2.0/want/A1> ,
+    <https://drift-king.org/ah/x-components/0.2.0/want/A2> ,
+    <https://drift-king.org/ah/x-components/0.2.0/want/A3> ,
+    <https://drift-king.org/ah/x-components/0.2.0/want/A4> ,
+    <https://drift-king.org/ah/x-components/0.2.0/want/A5> ,
+    <https://drift-king.org/ah/x-components/0.2.0/want/A6> .
+
+<https://drift-king.org/the-linter/checks/x-components-components-whole.rq> dcterms:relation <https://drift-king.org/the-linter/canaries/x-components-components-whole.ttl> .
+<https://drift-king.org/the-linter/checks/x-components-roles-resolve.rq> dcterms:relation <https://drift-king.org/the-linter/canaries/x-components-roles-resolve.ttl> .
+<https://drift-king.org/the-linter/checks/x-components-words-clean.rq> dcterms:relation <https://drift-king.org/the-linter/canaries/x-components-words-clean.ttl> .
+
+<https://drift-king.org/ah/x-components/0.2.0/want/L01> a prov:Entity , oa:Annotation ;
+    dcterms:isPartOf <https://drift-king.org/intent/x-components-what-good-looks-like-v2.md> ;
+    <https://drift-king.org/ah/x-components/0.2.0/position> 1 ;
+    rdfs:label "What good looks like, version 2, line 1" ;
+    skos:notation "L01" ;
+    rdf:value "The repository holds exactly the files the model lists, and the letter of intent as signed." ;
+    oa:hasTarget [ a oa:SpecificResource ; oa:hasSource <https://drift-king.org/intent/x-components-what-good-looks-like-v2.md> ; oa:hasSelector [ a oa:TextPositionSelector ; oa:start 238 ; oa:end 329 ] ] ;
+    dcterms:references <https://drift-king.org/ah/x-components/0.2.0/check/xc-01> .
+<https://drift-king.org/ah/x-components/0.2.0/want/L02> a prov:Entity , oa:Annotation ;
+    dcterms:isPartOf <https://drift-king.org/intent/x-components-what-good-looks-like-v2.md> ;
+    <https://drift-king.org/ah/x-components/0.2.0/position> 2 ;
+    rdfs:label "What good looks like, version 2, line 2" ;
+    skos:notation "L02" ;
+    rdf:value "Every hash is of committed bytes, never of a checkout." ;
+    oa:hasTarget [ a oa:SpecificResource ; oa:hasSource <https://drift-king.org/intent/x-components-what-good-looks-like-v2.md> ; oa:hasSelector [ a oa:TextPositionSelector ; oa:start 334 ; oa:end 388 ] ] ;
+    dcterms:references <https://drift-king.org/ah/x-components/0.2.0/check/xc-02> .
+<https://drift-king.org/ah/x-components/0.2.0/want/L03> a prov:Entity , oa:Annotation ;
+    dcterms:isPartOf <https://drift-king.org/intent/x-components-what-good-looks-like-v2.md> ;
+    <https://drift-king.org/ah/x-components/0.2.0/position> 3 ;
+    rdfs:label "What good looks like, version 2, line 3" ;
+    skos:notation "L03" ;
+    rdf:value "The tarball holds the package's files list, package.json, README and LICENSE, and nothing else." ;
+    oa:hasTarget [ a oa:SpecificResource ; oa:hasSource <https://drift-king.org/intent/x-components-what-good-looks-like-v2.md> ; oa:hasSelector [ a oa:TextPositionSelector ; oa:start 393 ; oa:end 488 ] ] ;
+    dcterms:references <https://drift-king.org/ah/x-components/0.2.0/check/xc-03> .
+<https://drift-king.org/ah/x-components/0.2.0/want/L04> a prov:Entity , oa:Annotation ;
+    dcterms:isPartOf <https://drift-king.org/intent/x-components-what-good-looks-like-v2.md> ;
+    <https://drift-king.org/ah/x-components/0.2.0/position> 4 ;
+    rdfs:label "What good looks like, version 2, line 4" ;
+    skos:notation "L04" ;
+    rdf:value "package.json names @apricotter/x-components, Apache-2.0, the exact repository address, public access, its exports, and Node 22.14.0 or later." ;
+    oa:hasTarget [ a oa:SpecificResource ; oa:hasSource <https://drift-king.org/intent/x-components-what-good-looks-like-v2.md> ; oa:hasSelector [ a oa:TextPositionSelector ; oa:start 493 ; oa:end 634 ] ] ;
+    dcterms:references <https://drift-king.org/ah/x-components/0.2.0/check/xc-04> .
+<https://drift-king.org/ah/x-components/0.2.0/want/L05> a prov:Entity , oa:Annotation ;
+    dcterms:isPartOf <https://drift-king.org/intent/x-components-what-good-looks-like-v2.md> ;
+    <https://drift-king.org/ah/x-components/0.2.0/position> 5 ;
+    rdfs:label "What good looks like, version 2, line 5" ;
+    skos:notation "L05" ;
+    rdf:value "Every action the release workflow runs is pinned to the commit its tag names. The workflow may write an identity token and read the repository, nothing more, and runs in the npm environment." ;
+    oa:hasTarget [ a oa:SpecificResource ; oa:hasSource <https://drift-king.org/intent/x-components-what-good-looks-like-v2.md> ; oa:hasSelector [ a oa:TextPositionSelector ; oa:start 639 ; oa:end 829 ] ] ;
+    dcterms:references <https://drift-king.org/ah/x-components/0.2.0/check/xc-05> .
+<https://drift-king.org/ah/x-components/0.2.0/want/L06> a prov:Entity , oa:Annotation ;
+    dcterms:isPartOf <https://drift-king.org/intent/x-components-what-good-looks-like-v2.md> ;
+    <https://drift-king.org/ah/x-components/0.2.0/position> 6 ;
+    rdfs:label "What good looks like, version 2, line 6" ;
+    skos:notation "L06" ;
+    rdf:value "The model and the code name the same components." ;
+    oa:hasTarget [ a oa:SpecificResource ; oa:hasSource <https://drift-king.org/intent/x-components-what-good-looks-like-v2.md> ; oa:hasSelector [ a oa:TextPositionSelector ; oa:start 834 ; oa:end 882 ] ] ;
+    dcterms:references <https://drift-king.org/ah/x-components/0.2.0/check/xc-06> , <https://drift-king.org/the-linter/checks/x-components-components-whole.rq> .
+<https://drift-king.org/ah/x-components/0.2.0/want/L07> a prov:Entity , oa:Annotation ;
+    dcterms:isPartOf <https://drift-king.org/intent/x-components-what-good-looks-like-v2.md> ;
+    <https://drift-king.org/ah/x-components/0.2.0/position> 7 ;
+    rdfs:label "What good looks like, version 2, line 7" ;
+    skos:notation "L07" ;
+    rdf:value "The generated file is exactly what component.ttl generates." ;
+    oa:hasTarget [ a oa:SpecificResource ; oa:hasSource <https://drift-king.org/intent/x-components-what-good-looks-like-v2.md> ; oa:hasSelector [ a oa:TextPositionSelector ; oa:start 887 ; oa:end 946 ] ] ;
+    dcterms:references <https://drift-king.org/ah/x-components/0.2.0/check/xc-07> .
+<https://drift-king.org/ah/x-components/0.2.0/want/L08> a prov:Entity , oa:Annotation ;
+    dcterms:isPartOf <https://drift-king.org/intent/x-components-what-good-looks-like-v2.md> ;
+    <https://drift-king.org/ah/x-components/0.2.0/position> 8 ;
+    rdfs:label "What good looks like, version 2, line 8" ;
+    skos:notation "L08" ;
+    rdf:value "The ontology loads by itself. It parses, every ARIA role it names resolves, and every ontology of ours it imports ships in the package. W3C standards are imported by their own names, for the consumer to vendor." ;
+    oa:hasTarget [ a oa:SpecificResource ; oa:hasSource <https://drift-king.org/intent/x-components-what-good-looks-like-v2.md> ; oa:hasSelector [ a oa:TextPositionSelector ; oa:start 951 ; oa:end 1161 ] ] ;
+    dcterms:references <https://drift-king.org/ah/x-components/0.2.0/check/xc-08> , <https://drift-king.org/the-linter/checks/x-components-roles-resolve.rq> .
+<https://drift-king.org/ah/x-components/0.2.0/want/L09> a prov:Entity , oa:Annotation ;
+    dcterms:isPartOf <https://drift-king.org/intent/x-components-what-good-looks-like-v2.md> ;
+    <https://drift-king.org/ah/x-components/0.2.0/position> 9 ;
+    rdfs:label "What good looks like, version 2, line 9" ;
+    skos:notation "L09" ;
+    rdf:value "Nothing internal. No comment in the code, and nothing in the files, refers to another repository, file, page, product, person or dated history." ;
+    oa:hasTarget [ a oa:SpecificResource ; oa:hasSource <https://drift-king.org/intent/x-components-what-good-looks-like-v2.md> ; oa:hasSelector [ a oa:TextPositionSelector ; oa:start 1166 ; oa:end 1309 ] ] ;
+    dcterms:references <https://drift-king.org/ah/x-components/0.2.0/check/xc-09> , <https://drift-king.org/the-linter/checks/x-components-words-clean.rq> .
+<https://drift-king.org/ah/x-components/0.2.0/want/L10> a prov:Entity , oa:Annotation ;
+    dcterms:isPartOf <https://drift-king.org/intent/x-components-what-good-looks-like-v2.md> ;
+    <https://drift-king.org/ah/x-components/0.2.0/position> 10 ;
+    rdfs:label "What good looks like, version 2, line 10" ;
+    skos:notation "L10" ;
+    rdf:value "No site is a default. No brand, host or link is written in for a site that does not pass it." ;
+    oa:hasTarget [ a oa:SpecificResource ; oa:hasSource <https://drift-king.org/intent/x-components-what-good-looks-like-v2.md> ; oa:hasSelector [ a oa:TextPositionSelector ; oa:start 1315 ; oa:end 1407 ] ] ;
+    dcterms:references <https://drift-king.org/ah/x-components/0.2.0/check/xc-10> .
+<https://drift-king.org/ah/x-components/0.2.0/want/L11> a prov:Entity , oa:Annotation ;
+    dcterms:isPartOf <https://drift-king.org/intent/x-components-what-good-looks-like-v2.md> ;
+    <https://drift-king.org/ah/x-components/0.2.0/position> 11 ;
+    rdfs:label "What good looks like, version 2, line 11" ;
+    skos:notation "L11" ;
+    rdf:value "A link needs the site's domain. Without it, the expander refuses." ;
+    oa:hasTarget [ a oa:SpecificResource ; oa:hasSource <https://drift-king.org/intent/x-components-what-good-looks-like-v2.md> ; oa:hasSelector [ a oa:TextPositionSelector ; oa:start 1413 ; oa:end 1478 ] ] ;
+    dcterms:references <https://drift-king.org/ah/x-components/0.2.0/check/xc-11> , <https://drift-king.org/ah/x-components/0.2.0/check/xc-21> .
+<https://drift-king.org/ah/x-components/0.2.0/want/L12> a prov:Entity , oa:Annotation ;
+    dcterms:isPartOf <https://drift-king.org/intent/x-components-what-good-looks-like-v2.md> ;
+    <https://drift-king.org/ah/x-components/0.2.0/position> 12 ;
+    rdfs:label "What good looks like, version 2, line 12" ;
+    skos:notation "L12" ;
+    rdf:value "No known defect ships unless it is a signed gap." ;
+    oa:hasTarget [ a oa:SpecificResource ; oa:hasSource <https://drift-king.org/intent/x-components-what-good-looks-like-v2.md> ; oa:hasSelector [ a oa:TextPositionSelector ; oa:start 1484 ; oa:end 1532 ] ] ;
+    dcterms:references <https://drift-king.org/ah/x-components/0.2.0/check/xc-12> , <https://drift-king.org/ah/x-components/0.2.0/check/xc-12a> , <https://drift-king.org/ah/x-components/0.2.0/check/xc-12b> .
+<https://drift-king.org/ah/x-components/0.2.0/want/L13> a prov:Entity , oa:Annotation ;
+    dcterms:isPartOf <https://drift-king.org/intent/x-components-what-good-looks-like-v2.md> ;
+    <https://drift-king.org/ah/x-components/0.2.0/position> 13 ;
+    rdfs:label "What good looks like, version 2, line 13" ;
+    skos:notation "L13" ;
+    rdf:value "Every commit names the commit it was projected from." ;
+    oa:hasTarget [ a oa:SpecificResource ; oa:hasSource <https://drift-king.org/intent/x-components-what-good-looks-like-v2.md> ; oa:hasSelector [ a oa:TextPositionSelector ; oa:start 1538 ; oa:end 1590 ] ] ;
+    dcterms:references <https://drift-king.org/ah/x-components/0.2.0/check/xc-13> .
+<https://drift-king.org/ah/x-components/0.2.0/want/L14> a prov:Entity , oa:Annotation ;
+    dcterms:isPartOf <https://drift-king.org/intent/x-components-what-good-looks-like-v2.md> ;
+    <https://drift-king.org/ah/x-components/0.2.0/position> 14 ;
+    rdfs:label "What good looks like, version 2, line 14" ;
+    skos:notation "L14" ;
+    rdf:value "The README follows the house copy rules: no em dash, no puffed-up word, no copula-dodging, no negative parallelism and no filler transition. Code blocks and inline code are not copy." ;
+    oa:hasTarget [ a oa:SpecificResource ; oa:hasSource <https://drift-king.org/intent/x-components-what-good-looks-like-v2.md> ; oa:hasSelector [ a oa:TextPositionSelector ; oa:start 1596 ; oa:end 1778 ] ] ;
+    dcterms:references <https://drift-king.org/ah/x-components/0.2.0/check/xc-14> .
+<https://drift-king.org/ah/x-components/0.2.0/want/L15> a prov:Entity , oa:Annotation ;
+    dcterms:isPartOf <https://drift-king.org/intent/x-components-what-good-looks-like-v2.md> ;
+    <https://drift-king.org/ah/x-components/0.2.0/position> 15 ;
+    rdfs:label "What good looks like, version 2, line 15" ;
+    skos:notation "L15" ;
+    rdf:value "The classes a component emits are part of the contract. The model names them, the code emits exactly those, and renaming one is a new major version." ;
+    oa:hasTarget [ a oa:SpecificResource ; oa:hasSource <https://drift-king.org/intent/x-components-what-good-looks-like-v2.md> ; oa:hasSelector [ a oa:TextPositionSelector ; oa:start 1784 ; oa:end 1932 ] ] ;
+    dcterms:references <https://drift-king.org/ah/x-components/0.2.0/check/xc-15> , <https://drift-king.org/ah/x-components/0.2.0/check/xc-19> .
+<https://drift-king.org/ah/x-components/0.2.0/want/L16> a prov:Entity , oa:Annotation ;
+    dcterms:isPartOf <https://drift-king.org/intent/x-components-what-good-looks-like-v2.md> ;
+    <https://drift-king.org/ah/x-components/0.2.0/position> 16 ;
+    rdfs:label "What good looks like, version 2, line 16" ;
+    skos:notation "L16" ;
+    rdf:value "No visible words are defaults. Every word a component shows comes from the site that uses it." ;
+    oa:hasTarget [ a oa:SpecificResource ; oa:hasSource <https://drift-king.org/intent/x-components-what-good-looks-like-v2.md> ; oa:hasSelector [ a oa:TextPositionSelector ; oa:start 1938 ; oa:end 2031 ] ] ;
+    dcterms:references <https://drift-king.org/ah/x-components/0.2.0/check/xc-16> , <https://drift-king.org/ah/x-components/0.2.0/check/xc-18> .
+<https://drift-king.org/ah/x-components/0.2.0/want/A1> a prov:Entity , oa:Annotation ;
+    dcterms:isPartOf <https://drift-king.org/approvals/x-components-next-version.md> ;
+    <https://drift-king.org/ah/x-components/0.2.0/position> 1 ;
+    rdfs:label "The next version asks for a ticker" ;
+    skos:notation "A1" ;
+    rdf:value "A ticker: a band of short phrases that scrolls, and stands still for anyone who asks for less motion." ;
+    skos:note "The ticker is the tape in 0.2.0." ;
+    oa:hasTarget [ a oa:SpecificResource ; oa:hasSource <https://drift-king.org/approvals/x-components-next-version.md> ; oa:hasSelector [ a oa:TextPositionSelector ; oa:start 533 ; oa:end 634 ] ] ;
+    dcterms:references <https://drift-king.org/ah/x-components/0.2.0/check/xc-17> , <https://drift-king.org/ah/x-components/0.2.0/check/xc-18> , <https://drift-king.org/ah/x-components/0.2.0/check/xc-19> , <https://drift-king.org/ah/x-components/0.2.0/check/xc-20> , <https://drift-king.org/ah/x-components/0.2.0/check/xc-21> .
+<https://drift-king.org/ah/x-components/0.2.0/want/A2> a prov:Entity , oa:Annotation ;
+    dcterms:isPartOf <https://drift-king.org/approvals/x-components-next-version.md> ;
+    <https://drift-king.org/ah/x-components/0.2.0/position> 2 ;
+    rdfs:label "The next version asks for paired line panes" ;
+    skos:notation "A2" ;
+    rdf:value "Paired line panes: two numbered lists of lines side by side, where one line can be marked and a stamp can sit across a pane." ;
+    oa:hasTarget [ a oa:SpecificResource ; oa:hasSource <https://drift-king.org/approvals/x-components-next-version.md> ; oa:hasSelector [ a oa:TextPositionSelector ; oa:start 635 ; oa:end 759 ] ] ;
+    dcterms:references <https://drift-king.org/ah/x-components/0.2.0/check/xc-23> .
+<https://drift-king.org/ah/x-components/0.2.0/want/A3> a prov:Entity , oa:Annotation ;
+    dcterms:isPartOf <https://drift-king.org/approvals/x-components-next-version.md> ;
+    <https://drift-king.org/ah/x-components/0.2.0/position> 3 ;
+    rdfs:label "The next version asks for a sticker" ;
+    skos:notation "A3" ;
+    rdf:value "A sticker: a short label, set at an angle over an image." ;
+    oa:hasTarget [ a oa:SpecificResource ; oa:hasSource <https://drift-king.org/approvals/x-components-next-version.md> ; oa:hasSelector [ a oa:TextPositionSelector ; oa:start 760 ; oa:end 816 ] ] ;
+    dcterms:references <https://drift-king.org/ah/x-components/0.2.0/check/xc-24> .
+<https://drift-king.org/ah/x-components/0.2.0/want/A4> a prov:Entity , oa:Annotation ;
+    dcterms:isPartOf <https://drift-king.org/approvals/x-components-next-version.md> ;
+    <https://drift-king.org/ah/x-components/0.2.0/position> 4 ;
+    rdfs:label "The next version asks for a seal" ;
+    skos:notation "A4" ;
+    rdf:value "A seal: a round mark holding a line or two of text, set beside a block of text." ;
+    oa:hasTarget [ a oa:SpecificResource ; oa:hasSource <https://drift-king.org/approvals/x-components-next-version.md> ; oa:hasSelector [ a oa:TextPositionSelector ; oa:start 817 ; oa:end 896 ] ] ;
+    dcterms:references <https://drift-king.org/ah/x-components/0.2.0/check/xc-25> .
+<https://drift-king.org/ah/x-components/0.2.0/want/A5> a prov:Entity , oa:Annotation ;
+    dcterms:isPartOf <https://drift-king.org/approvals/x-components-next-version.md> ;
+    <https://drift-king.org/ah/x-components/0.2.0/position> 5 ;
+    rdfs:label "The next version asks that the classes a component emits are the contract" ;
+    skos:notation "A5" ;
+    rdf:value "The classes a component emits are part of the contract: the model names them, a check proves the code emits exactly those, and renaming one is a new major version." ;
+    oa:hasTarget [ a oa:SpecificResource ; oa:hasSource <https://drift-king.org/approvals/x-components-next-version.md> ; oa:hasSelector [ a oa:TextPositionSelector ; oa:start 951 ; oa:end 1114 ] ] ;
+    dcterms:references <https://drift-king.org/ah/x-components/0.2.0/check/xc-15> , <https://drift-king.org/ah/x-components/0.2.0/check/xc-19> .
+<https://drift-king.org/ah/x-components/0.2.0/want/A6> a prov:Entity , oa:Annotation ;
+    dcterms:isPartOf <https://drift-king.org/approvals/x-components-next-version.md> ;
+    <https://drift-king.org/ah/x-components/0.2.0/position> 6 ;
+    rdfs:label "The next version asks that no visible words are defaults" ;
+    skos:notation "A6" ;
+    rdf:value "And no visible words are defaults: every word a component shows comes from the site that uses it." ;
+    oa:hasTarget [ a oa:SpecificResource ; oa:hasSource <https://drift-king.org/approvals/x-components-next-version.md> ; oa:hasSelector [ a oa:TextPositionSelector ; oa:start 1115 ; oa:end 1212 ] ] ;
+    dcterms:references <https://drift-king.org/ah/x-components/0.2.0/check/xc-16> , <https://drift-king.org/ah/x-components/0.2.0/check/xc-18> .
+
+<https://drift-king.org/approvals/x-components-0.2.0-release.md> dcterms:references <https://drift-king.org/ah/x-components/0.2.0/candidate> .

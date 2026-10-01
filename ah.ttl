@@ -1,0 +1,135 @@
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix dcat:    <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
+@prefix sd:      <https://w3id.org/okn/o/sd#> .
+@prefix vann:    <http://purl.org/vocab/vann/> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix earl:    <http://www.w3.org/ns/earl#> .
+@prefix sosa:    <http://www.w3.org/ns/sosa/> .
+@prefix p-plan:  <http://purl.org/net/p-plan#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix oa:      <http://www.w3.org/ns/oa#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+
+# This document. Not the catalog it describes: that has its own IRI below.
+<https://drift-king.org/ah.ttl>
+    a owl:Ontology , p-plan:Entity , earl:TestSubject , prov:Entity ;
+    # The namespace every name of ours lives under. Code reads it from here,
+    # so no program has our address written into it.
+    vann:preferredNamespaceUri "https://drift-king.org/" ;
+    # DCAT by its real name. Fetched from w3.org for now; a catalog-v001.xml
+    # will later map this name to a dug local copy, once there is one.
+    owl:imports <http://www.w3.org/ns/dcat> ,
+        # DCMI Terms by its real name, for dcterms:requires and the rest.
+        <http://purl.org/dc/terms/> ,
+        # SDO by its real name, for sd:hasExecutionCommand and its class.
+        <https://w3id.org/okn/o/sd> ,
+        # VANN by its real name, for vann:preferredNamespaceUri.
+        <http://purl.org/vocab/vann/> ,
+        # SOSA by its real name, for the observer: what the Worker sees happen.
+        <http://www.w3.org/ns/sosa/> ,
+        # EARL by its real name. Used since M9 (test results) but never
+        # formally imported until now -- caught while wiring M3's checks,
+        # which need EARL's own domain/range statements loaded to be safe.
+        <http://www.w3.org/ns/earl#> ,
+        # PROV by its real name. Same gap: reached only by accident, via
+        # DCAT's own owl:imports of prov-o#, never declared as ours.
+        <http://www.w3.org/ns/prov#> ,
+        # P-Plan by its real name, for the plan the-builder actually runs.
+        <http://purl.org/net/p-plan#> ,
+        # Web Annotation by its real name. Vendored since M1 but never used
+        # until M3.1's gap node (oa:hasTarget/SpecificResource/
+        # TextPositionSelector, pointing at the intent it waives).
+        <http://www.w3.org/ns/oa#> ,
+        # SKOS, for the names the code shares with the model (the-builder/names).
+        <http://www.w3.org/2004/02/skos/core> ,
+        # Its parts: ah.ttl is only the root, and imports the rest.
+        <https://drift-king.org/ah/the-builder.ttl> ,
+        <https://drift-king.org/ah/cloudflare-pid-rs.ttl> ,
+        <https://drift-king.org/ah/site.ttl> ,
+        <https://drift-king.org/ah/signings.ttl> ,
+        <https://drift-king.org/ah/x-components-0.2.0-checks.ttl> ,
+        <https://drift-king.org/ah/x-components-0.2.0-wanted.ttl> ,
+        # SHACL, to close the model off: shapes for what each record must hold.
+        <http://www.w3.org/ns/shacl#> ,
+        # ah holds its opposite. One way only: not-ah.ttl does not import ah.
+        <https://drift-king.org/not-ah.ttl> ,
+        # The signing plan: how a human approval is signed in DocuSign and
+        # recorded. Its own file under plans/, so it can be signed on its own.
+        <https://drift-king.org/plans/docusign-approval.ttl> ,
+        # Its version 2, which replaces it (ah/signings.ttl says so).
+        <https://drift-king.org/plans/docusign-approval-v2.ttl> ,
+        # How a directive is carried out: a patch, a published package, a push.
+        <https://drift-king.org/plans/patch-and-verify.ttl> ,
+        <https://drift-king.org/plans/verify-published.ttl> ,
+        <https://drift-king.org/plans/push-and-tag.ttl> .
+
+<https://drift-king.org/ah>
+    a dcat:Catalog ;
+    dcterms:title "the-everything" ;
+    dcat:catalog <https://drift-king.org/not-ah> ;
+    dcat:resource <https://drift-king.org/catalog-v001.xml> ;
+    dcterms:requires <https://drift-king.org/ah/cloudflare-pid-rs> ,
+        <https://drift-king.org/ah/the-builder> .
+
+# Written by Protégé, not by us. It will map import names (like DCAT's) to
+# local files.
+<https://drift-king.org/catalog-v001.xml>
+    a dcat:Resource ;
+    dcterms:title "Protégé import catalog" ;
+    dcterms:conformsTo <urn:oasis:names:tc:entity:xmlns:xml:catalog> .
+
+<https://drift-king.org/.gitignore> dcterms:isPartOf <https://drift-king.org/ah> ;
+    rdfs:comment "target/, node_modules/, .wrangler/, .tools/, site/public/, cloudflare-pid-rs/worker/wrangler.jsonc -- build output, fetched dependencies, a downloaded binary, the rendered site, and the Worker configuration the deploy writes with the account in it; none are sources." .
+
+<https://drift-king.org/.gitattributes> dcterms:isPartOf <https://drift-king.org/ah> ;
+    rdfs:comment "* -text: git must never rewrite any file's bytes on checkout or commit. A narrower proof/** -text was tried first and silently matched nothing -- the pattern anchors to the repo root because of the slash before **, so it never reached cloudflare-pid-rs/proof/. Whole-repo -text plus repo-local core.autocrlf=false is what actually holds." .
+
+<https://drift-king.org/ah/agent/lead-architect>
+    a prov:Person ;
+    rdfs:label "Lead Architect" ;
+    rdfs:comment "Signer of intent/letter-of-intent.md. Approves gaps and packets." .
+<https://drift-king.org/Gemini_Generated_Image_75wd8p75wd8p75wd.jpg>
+    dcterms:isPartOf <https://drift-king.org/ah/cloudflare-pid-rs> ;
+    rdfs:comment "Gemini-generated source image for the Worker's branded HTML page." .
+
+<https://drift-king.org/Gemini_Generated_Image_69bpe169bpe169bp.jpg>
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    rdfs:comment "Reference art shared during the project; not used by anything built so far." .
+
+# Favicons: one ffmpeg run over the crowned mascot icon. Padded to square
+# (the larger dimension, ffmpeg's own centring expressions, transparent
+# fill since the source already carries real alpha), lanczos-scaled to
+# each size. The manifest is written by hand.
+<https://drift-king.org/Gemini_Generated_Image_32yn0v32yn0v32yn.jpg>
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    rdfs:comment "Gemini-generated crowned mascot; superseded as the favicon source by Drift_King_Icon.png. Not used by anything built now." .
+
+<https://drift-king.org/Drift_King_Icon.png>
+    dcterms:isPartOf <https://drift-king.org/ah/cloudflare-pid-rs> ;
+    rdfs:comment "1567x1910 RGBA, real alpha transparency. Source of the favicons." .
+
+# What ah lists, not-ah never lists. The inverse is stated in not-ah.ttl.
+[ a owl:Restriction ;
+  owl:onProperty [ owl:inverseOf dcat:resource ] ;
+  owl:hasValue <https://drift-king.org/ah> ]
+  owl:disjointWith
+[ a owl:Restriction ;
+  owl:onProperty [ owl:inverseOf dcat:resource ] ;
+  owl:hasValue <https://drift-king.org/not-ah> ] .
+
+# DCMI declares requires only as rdf:Property, so OWL cannot tell it links
+# two things and Protégé files it as an annotation. This names it a relation.
+# A statement about DCMI's term, not ours: the one foreign subject here.
+dcterms:requires a owl:ObjectProperty .
+
+# ---------------------------------------------------------------------------
+# The designer's model review of 2026-09-29, filed exactly as received and
+# published as a readable page, so each response can link to the line it
+# answers (a #:~:text= fragment highlights it). Compliance's responses are
+# published for signing once read (ah/docusign-approval/human-reads).
+# ---------------------------------------------------------------------------
+<https://drift-king.org/not-ah/agent/designer>
+    a prov:SoftwareAgent ;
+    rdfs:label "the designer" .

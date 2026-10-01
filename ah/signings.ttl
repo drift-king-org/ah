@@ -1,0 +1,1573 @@
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix dcat:    <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
+@prefix sd:      <https://w3id.org/okn/o/sd#> .
+@prefix vann:    <http://purl.org/vocab/vann/> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix earl:    <http://www.w3.org/ns/earl#> .
+@prefix sosa:    <http://www.w3.org/ns/sosa/> .
+@prefix p-plan:  <http://purl.org/net/p-plan#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix oa:      <http://www.w3.org/ns/oa#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+
+# A part of ah.ttl, imported by it. ah.ttl is the root: its namespace,
+# its imports and its agents. The checks run on all the parts together.
+<https://drift-king.org/ah/signings.ttl>
+    a owl:Ontology , prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    dcterms:title "the signings: gaps, approvals and envelopes, only ever added to" .
+
+<https://drift-king.org/intent/letter-of-intent.md> dcterms:isPartOf <https://drift-king.org/ah> ;
+    rdfs:comment "The founding intent, signed by the lead architect: nothing is built or run unless the model names it." .
+
+<https://drift-king.org/.claude/skills/docusign-approval/SKILL.md> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    prov:wasAttributedTo <https://drift-king.org/not-ah/agent/reviewer> ;
+    dcterms:references <https://drift-king.org/ah/docusign-approval/plan> ;
+    rdfs:comment "Says only how to walk the current signing plan: the one nothing replaces. The steps live in the plan, not here." .
+<https://drift-king.org/approvals/gap-code-strings-named.txt>
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    rdfs:comment "What goes to DocuSign to sign the gap above. Until it comes back signed (a prov:Activity with prov:endedAtTime, prov:wasAssociatedWith a prov:Person, and a docusign-dev:envelope:... dcterms:identifier), known-gap.rq finds nothing for this pair and code-strings-named/real-step fails the build. That is correct, not a bug." .
+
+# ---------------------------------------------------------------------------
+# The code-strings-named gap (M3.1): a fact about the build's current state,
+# not about the-linter's own machinery, so it lives here, not in not-ah.ttl.
+# Also an earl:Assertion for (code-strings-named.rq, ah.ttl) -- expected-
+# outcome.rq excludes it (it is not earl:assertedBy not-ah/the-linter), and
+# known-gap.rq requires the signing prov:Activity below before it counts.
+# Writing this node is free; it does not excuse the failure on its own.
+# ---------------------------------------------------------------------------
+<https://drift-king.org/not-ah/the-linter/gap/code-strings-named-cloudflare-pid-rs>
+    a earl:Assertion , prov:Entity , oa:Annotation ;
+    earl:test <https://drift-king.org/the-linter/checks/code-strings-named.rq> ;
+    earl:subject <https://drift-king.org/ah.ttl> ;
+    earl:result [ a earl:TestResult ; earl:outcome earl:failed ] ;
+    rdfs:label "code-strings-named: unnamed strings in cloudflare-pid-rs and the-builder" ;
+    dcterms:title "Unnamed strings in the code" ;
+    rdfs:comment "First found when M3 actually ran this check for real: 7 in cloudflare-pid-rs/pid1/src/main.rs, 23 in cloudflare-pid-rs/worker/src/index.js (M3-code-strings-named-gap.txt, since superseded, then corrected to 30 real findings in M3.1 after fixing code-strings-named.rq's own blind spot -- M3.1-code-strings-named-gap.txt). M3.7 put the-builder/src in scope too: 127 more, 157 in all, itemized in the-builder/proof/code-strings-named-all.txt (the-builder's own output, the current evidence)." ;
+    prov:wasDerivedFrom [ a prov:Entity ;
+        prov:specializationOf <https://drift-king.org/ah.ttl> ;
+        dcterms:identifier "sha256:002faadcc1bc5114c6e08594189acf23f735c372aaddf28c876d79def7ea7117" ;
+        rdfs:comment "ah.ttl as committed at M3 (f9a7855) -- the version that had this finding." ] ;
+    oa:hasTarget [ a oa:SpecificResource ;
+        oa:hasSource <https://drift-king.org/intent/letter-of-intent.md> ;
+        oa:hasSelector [ a oa:TextPositionSelector ; oa:start 67 ; oa:end 117 ] ;
+        rdfs:comment "\"Nothing is built or run unless the model names it.\" -- the intent span this gap waives, for now." ] ;
+    prov:wasAttributedTo <https://drift-king.org/not-ah/agent/coder> .
+
+# ---------------------------------------------------------------------------
+# The second code-strings-named gap (M3.2, added by the reviewer): the check
+# has never scanned the-builder/src. The folders it reads are written into
+# main.rs, not named here. earl:untested, not failed: nothing ran. It excuses
+# no failure; it records that this part of the code is unchecked.
+# ---------------------------------------------------------------------------
+<https://drift-king.org/not-ah/the-linter/gap/code-strings-named-the-builder>
+    a earl:Assertion , prov:Entity , oa:Annotation ;
+    earl:test <https://drift-king.org/the-linter/checks/code-strings-named.rq> ;
+    earl:subject <https://drift-king.org/the-builder/src/main.rs> ;
+    earl:result [ a earl:TestResult ; earl:outcome earl:failed ] ;
+    rdfs:label "code-strings-named: unnamed strings in the-builder/src" ;
+    dcterms:title "Unnamed strings in the-builder" ;
+    rdfs:comment "M3.7 put the-builder/src in scope for real (code-scope.rq, ingest_source_folder): 127 findings, itemized in the-builder/proof/code-strings-named-all.txt alongside pid1/src (7) and worker/src (23), 157 in all. No longer untested -- this and the cloudflare-pid-rs gap now cover the same real-step; either closes when the strings are named and the check passes." ;
+    prov:wasDerivedFrom [ a prov:Entity ;
+        prov:specializationOf <https://drift-king.org/the-builder/src/main.rs> ;
+        dcterms:identifier "sha256:61ab286743d15760677ba2932660db36f2e903e9da0181669413f1ecd4a1ee64" ;
+        rdfs:comment "main.rs as committed at M3.7, after fixing the extracted-strings node-IRI collision (a bare per-call index collided across folders sharing a class) -- every milestone that touches main.rs has to redo this update, since its hash and this citation can't both be fixed in the same commit that changes the file." ] ;
+    oa:hasTarget [ a oa:SpecificResource ;
+        oa:hasSource <https://drift-king.org/intent/letter-of-intent.md> ;
+        oa:hasSelector [ a oa:TextPositionSelector ; oa:start 67 ; oa:end 117 ] ] ;
+    prov:wasAttributedTo <https://drift-king.org/not-ah/agent/reviewer> .
+
+<https://drift-king.org/approvals/gap-code-strings-named-the-builder.txt>
+    a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    prov:wasAttributedTo <https://drift-king.org/not-ah/agent/reviewer> ;
+    rdfs:comment "What the lead architect signs for the gap above, by walking ah/docusign-approval/plan." .
+
+# Replaced (reviewer, M3.8): the two gaps above were presented as .txt pages
+# on pid1.drift-king.org, citing main.rs by its sha256, so every commit that
+# touched main.rs broke its own citation. One gap now covers all the code,
+# written as a CommonMark document and published on drift-king.org, and it
+# cites the check, never the code it checks. pid1's publish-approvals step
+# is removed with them.
+<https://drift-king.org/not-ah/the-linter/gap/code-strings-named-cloudflare-pid-rs>
+    rdfs:seeAlso <https://drift-king.org/approvals/gap-code-strings.md> .
+<https://drift-king.org/approvals/gap-code-strings.md>
+    dcterms:subject <https://drift-king.org/not-ah/the-linter/gap/code-strings-named-cloudflare-pid-rs> ;
+    dcterms:replaces <https://drift-king.org/approvals/gap-code-strings-named.txt> ,
+        <https://drift-king.org/approvals/gap-code-strings-named-the-builder.txt> .
+<https://drift-king.org/not-ah/the-linter/gap/code-strings-named-the-builder>
+    dcterms:isReplacedBy <https://drift-king.org/not-ah/the-linter/gap/code-strings-named-cloudflare-pid-rs> .
+<https://drift-king.org/approvals/gap-code-strings-named.txt>
+    dcterms:isReplacedBy <https://drift-king.org/approvals/gap-code-strings.md> .
+<https://drift-king.org/approvals/gap-code-strings-named-the-builder.txt>
+    dcterms:isReplacedBy <https://drift-king.org/approvals/gap-code-strings.md> .
+
+# The letter's signing, read back from DocuSign on 2026-09-28 (envelope #2).
+# The code-strings gap, signed (reviewer, M3.12). Read back from DocuSign
+# before this was written: completed, both signers in routing order, and both
+# custom fields equal to the sha256s below. It used the gap node itself, so
+# known-gap.rq counts it: code-strings-named/real-step becomes an open gap,
+# the run passes, and every step that ships stays held until the check
+# returns 0. Drift King Compliance signed first (recipient 1, in compliance@'s
+# own signing session, 2026-09-29T00:15:32.527Z); the lead architect approved
+# second.
+<https://drift-king.org/ah/signing/gap-code-strings>
+    a prov:Activity ;
+    prov:used <https://drift-king.org/not-ah/the-linter/gap/code-strings-named-cloudflare-pid-rs> ,
+        [ a prov:Entity ;
+          prov:specializationOf <https://drift-king.org/approvals/gap-code-strings.md> ;
+          dcterms:identifier "sha256:41371d68b1f602a1f8c75c4d9f3250707bbe3fed4b13b1b3711e55c84488858e" ] ,
+        [ a prov:Entity ;
+          prov:specializationOf <https://drift-king.org/site/public/approvals/gap-code-strings-approval.html> ;
+          dcterms:identifier "sha256:9622ec3d8485a5ee7d590c405a8d5e76db018c51fe29ddb34244c3a65433fb57" ] ;
+    prov:wasAssociatedWith <https://drift-king.org/ah/agent/compliance> ,
+        <https://drift-king.org/ah/agent/lead-architect> ;
+    prov:endedAtTime "2026-09-29T00:16:10.23Z"^^xsd:dateTime ;
+    dcterms:identifier "docusign-dev:envelope:172422ea-2599-8f10-81dd-3a650a991c0f" ;
+    # Opens only for users of the demo account; never linked from the site.
+    rdfs:seeAlso <https://apps-d.docusign.com/send/documents/details/172422ea-2599-8f10-81dd-3a650a991c0f> .
+
+# golden test-001 (reviewer, M3.10): the first envelope that completed, a
+# sandbox test. Its document says it is not binding and approves nothing, so
+# it used no gap, no packet and no file of this repo, and no check may count
+# it. The sha256 is the one its page showed for the ah-workbench tree at the
+# 2026-09-27 sync; the recipe behind it was ambiguous and has not been
+# reproduced, so it records what was shown, not what it proves. The document
+# is written in the lead architect's voice (before that rule existed), so it
+# is never published.
+<https://drift-king.org/ah/golden/test-001>
+    a prov:Entity ;
+    rdfs:label "golden test-001: the ah-workbench tree, 2026-09-27 sync" .
+<https://drift-king.org/ah/signing/golden-test-001>
+    a prov:Activity ;
+    prov:used [ a prov:Entity ;
+        prov:specializationOf <https://drift-king.org/ah/golden/test-001> ;
+        dcterms:identifier "sha256:29ffb76f4869b37586e322e39131a9edbbaabfa7ff473a3e177a2900f53586bf" ] ;
+    prov:wasAssociatedWith <https://drift-king.org/ah/agent/lead-architect> ;
+    prov:endedAtTime "2026-09-27T14:44:27Z"^^xsd:dateTime ;
+    dcterms:identifier "docusign-dev:envelope:a5712256-0b4b-873e-80fc-52dd87931b3f" ;
+    rdfs:comment "A sandbox test. Not binding; approves nothing." ;
+    # Opens only for users of the demo account; never linked from the site.
+    rdfs:seeAlso <https://apps-d.docusign.com/send/documents/details/a5712256-0b4b-873e-80fc-52dd87931b3f> .
+
+<https://drift-king.org/ah/signing/letter-of-intent>
+    a prov:Activity ;
+    prov:used [ a prov:Entity ;
+        prov:specializationOf <https://drift-king.org/intent/letter-of-intent.md> ;
+        dcterms:identifier "sha256:0c5ede6bce924501a740c2a130c0db8e04f3ff9235994598e798d66cf3cb94a0" ] ;
+    prov:wasAssociatedWith <https://drift-king.org/ah/agent/lead-architect> ;
+    prov:endedAtTime "2026-09-28T14:24:53.52Z"^^xsd:dateTime ;
+    dcterms:identifier "docusign-dev:envelope:1e69220d-5145-8177-814d-e2cb509f1cbe" ;
+    # The envelope in DocuSign's own app. Opens only for users of the demo
+    # account, so it is never linked from the public site.
+    rdfs:seeAlso <https://apps-d.docusign.com/send/documents/details/1e69220d-5145-8177-814d-e2cb509f1cbe> .
+
+<https://drift-king.org/intent/letter-of-intent.md>
+    a prov:Entity , p-plan:Entity ;
+    dcterms:conformsTo <https://spec.commonmark.org/> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/letter-text> .
+
+# ---------------------------------------------------------------------------
+# The code-strings gap, as presented for approval (reviewer, 2026-09-28).
+# Written and signed by Drift King Compliance; the lead architect's only mark
+# is their DocuSign signature on the approval page. Published on the site with
+# every file it names, so each link on the page opens the exact bytes.
+# ---------------------------------------------------------------------------
+<https://drift-king.org/approvals/gap-code-strings.md>
+    a prov:Entity , p-plan:Entity , oa:Annotation ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    dcterms:conformsTo <https://spec.commonmark.org/> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/gap-text> ;
+    oa:hasTarget [ a oa:SpecificResource ;
+        oa:hasSource <https://drift-king.org/intent/letter-of-intent.md> ;
+        oa:hasSelector [ a oa:TextPositionSelector ; oa:start 67 ; oa:end 117 ] ] .
+
+# The approval page is generated, never hand-written (reviewer): rendered from
+# the gap itself and the model, by the approval template.
+<https://drift-king.org/approvals/gap-code-strings.md>
+    rdfs:label "The gap, exactly as above" ;
+    dcterms:references <https://drift-king.org/intent/letter-of-intent.md> ,
+        <https://drift-king.org/the-linter/checks/code-strings-named.rq> .
+<https://drift-king.org/intent/letter-of-intent.md> rdfs:label "The letter of intent, exact bytes" .
+
+# The letter as DocuSign produced it once signed (reviewer, M3.9): the
+# combined PDF of envelope 1e69220d, downloaded by the lead architect from the
+# demo account. Fetched, so pinned by the sha256 it had when fetched; the
+# signing made it. The approval page links it next to the exact bytes, whose
+# sha256 is the one the envelope recorded.
+<https://drift-king.org/intent/letter-of-intent-signed.pdf>
+    a dcat:Distribution , prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    rdfs:label "The letter of intent, as signed in DocuSign" ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/application/pdf> ;
+    dcat:downloadURL "https://demo.docusign.net/restapi/v2.1/accounts/1e940daa-75c0-4d68-b817-e309b88f5f5c/envelopes/1e69220d-5145-8177-814d-e2cb509f1cbe/documents/combined"^^xsd:anyURI ;
+    dcterms:identifier "sha256:9cbedc4f52c396994af03b2f60c41c251f76dee1b658cd82ce3f29ebadefe1a3" ;
+    prov:wasGeneratedBy <https://drift-king.org/ah/signing/letter-of-intent> .
+<https://drift-king.org/approvals/gap-code-strings.md>
+    dcterms:references <https://drift-king.org/intent/letter-of-intent-signed.pdf> .
+# DocuSign's certificate of completion for the same envelope. It records the
+# letter's sha256 as an envelope field, but it also shows IP addresses, so it
+# is not published: DocuSign holds it, and a client can have it on request.
+<https://demo.docusign.net/restapi/v2.1/accounts/1e940daa-75c0-4d68-b817-e309b88f5f5c/envelopes/1e69220d-5145-8177-814d-e2cb509f1cbe/documents/certificate>
+    a prov:Entity ;
+    rdfs:label "The letter's certificate of completion, from DocuSign" ;
+    dcterms:accessRights [ a dcterms:RightsStatement ;
+        rdfs:label "Not published, because it shows IP addresses. A client can have it on request: it is DocuSign's record of envelope 1e69220d-5145-8177-814d-e2cb509f1cbe, and it records the letter's sha256." ] ;
+    prov:wasGeneratedBy <https://drift-king.org/ah/signing/letter-of-intent> .
+<https://drift-king.org/approvals/gap-code-strings.md>
+    dcterms:references <https://demo.docusign.net/restapi/v2.1/accounts/1e940daa-75c0-4d68-b817-e309b88f5f5c/envelopes/1e69220d-5145-8177-814d-e2cb509f1cbe/documents/certificate> .
+<https://drift-king.org/the-linter/checks/code-strings-named.rq> rdfs:label "The check" .
+
+<https://drift-king.org/reviews/model-fixes.md>
+    a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    dcterms:conformsTo <https://spec.commonmark.org/> ;
+    dcterms:identifier "sha256:976588f3d28dc7eac921f356f8c2ba59d8e139138905954ea9ab013fc6c64131" ;
+    prov:wasAttributedTo <https://drift-king.org/not-ah/agent/designer> ;
+    rdfs:label "The review, exactly as received" ;
+    rdfs:comment "The designer's review of the model at M3.13. Filed unchanged." ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/review-text> .
+
+<https://drift-king.org/approvals/model-review-responses.md>
+    a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    dcterms:conformsTo <https://spec.commonmark.org/> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    dcterms:subject <https://drift-king.org/reviews/model-fixes.md> ;
+    rdfs:label "The responses, exactly as above" ;
+    rdfs:comment "Read by the lead architect on 2026-09-29, then published for signing." ;
+    dcterms:references <https://drift-king.org/reviews/model-fixes.md> ,
+        <https://drift-king.org/intent/letter-of-intent.md> ,
+        <https://drift-king.org/intent/letter-of-intent-signed.pdf> ,
+        <https://drift-king.org/plans/docusign-approval.ttl> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/review-responses-text> ;
+    oa:hasTarget [ a oa:SpecificResource ;
+        oa:hasSource <https://drift-king.org/intent/letter-of-intent.md> ;
+        oa:hasSelector [ a oa:TextPositionSelector ; oa:start 379 ; oa:end 436 ] ] ,
+      [ a oa:SpecificResource ;
+        oa:hasSource <https://drift-king.org/intent/letter-of-intent.md> ;
+        oa:hasSelector [ a oa:TextPositionSelector ; oa:start 559 ; oa:end 607 ] ] .
+<https://drift-king.org/approvals/model-review-responses.md> a p-plan:Entity , oa:Annotation .
+
+<https://drift-king.org/plans/docusign-approval.ttl> rdfs:label "The signing plan, exact bytes" .
+
+# The model review responses, signed (envelope #9). Compliance signed first
+# (routing 1, 2026-09-29T16:52:04.45Z); the lead architect approved second
+# (routing 2). Read back: status completed, both custom fields equal to the
+# sha256s below. The responses' subject is the review, not a gap, so this
+# signing uses no gap node.
+<https://drift-king.org/ah/signing/model-review-responses>
+    a prov:Activity ;
+    prov:used [ a prov:Entity ;
+          prov:specializationOf <https://drift-king.org/approvals/model-review-responses.md> ;
+          dcterms:identifier "sha256:e93c7b69c6f80d650185467680c2cec5c102fbc57ea7d616a10717ca406e8485" ] ,
+        [ a prov:Entity ;
+          prov:specializationOf <https://drift-king.org/site/public/approvals/model-review-responses-approval.html> ;
+          dcterms:identifier "sha256:a5a5fbacb6c65e99a819bf8dee9c717742a074576d5508a587aacc12cedcb707" ] ;
+    prov:wasAssociatedWith <https://drift-king.org/ah/agent/compliance> ,
+        <https://drift-king.org/ah/agent/lead-architect> ;
+    prov:endedAtTime "2026-09-29T16:52:32.997Z"^^xsd:dateTime ;
+    dcterms:identifier "docusign-dev:envelope:abc22588-8d3d-8ceb-806f-b1dfb1921d53" ;
+    # Opens only for users of the demo account; never linked from the site.
+    rdfs:seeAlso <https://apps-d.docusign.com/send/documents/details/abc22588-8d3d-8ceb-806f-b1dfb1921d53> .
+
+# ---------------------------------------------------------------------------
+# The code-strings gap, closed (Compliance). code-strings-named.rq passes on
+# every folder it reads, with its canary still failing first, and the build
+# that ran it shipped pid1. A new document, never an edit of the signed gap.
+# ---------------------------------------------------------------------------
+<https://drift-king.org/approvals/gap-code-strings-closed.md>
+    a prov:Entity , p-plan:Entity , oa:Annotation ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    dcterms:conformsTo <https://spec.commonmark.org/> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    dcterms:subject <https://drift-king.org/not-ah/the-linter/gap/code-strings-named-cloudflare-pid-rs> ;
+    rdfs:label "The closing, exactly as above" ;
+    dcterms:references <https://drift-king.org/intent/letter-of-intent.md> ,
+        <https://drift-king.org/approvals/gap-code-strings.md> ,
+        <https://drift-king.org/the-linter/checks/code-strings-named.rq> ,
+        <https://drift-king.org/the-linter/rules/strings-rust.yml> ,
+        <https://drift-king.org/the-linter/rules/strings-js.yml> ,
+        <https://drift-king.org/the-linter/canaries/unnamed-string-rust.rs> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/gap-closed-text> ;
+    oa:hasTarget [ a oa:SpecificResource ;
+        oa:hasSource <https://drift-king.org/intent/letter-of-intent.md> ;
+        oa:hasSelector [ a oa:TextPositionSelector ; oa:start 67 ; oa:end 117 ] ] .
+
+<https://drift-king.org/the-linter/rules/strings-rust.yml> rdfs:label "The rule for Rust strings, exact bytes" .
+<https://drift-king.org/the-linter/rules/strings-js.yml> rdfs:label "The rule for JavaScript strings, exact bytes" .
+<https://drift-king.org/the-linter/canaries/unnamed-string-rust.rs> rdfs:label "The canary, exact bytes" .
+
+# The code-strings gap, closed and signed (envelope #10). Compliance signed
+# first (routing 1, 2026-09-29T19:00:56.957Z); the lead architect approved
+# second (routing 2). Read back: status completed, both custom fields equal to
+# the sha256s below. The closing's subject is the gap, so the signing used it,
+# as the signing plan's record step says. The gap itself says it was
+# invalidated by this signing: from here it is ended, not excused.
+<https://drift-king.org/ah/signing/gap-code-strings-closed>
+    a prov:Activity ;
+    prov:used <https://drift-king.org/not-ah/the-linter/gap/code-strings-named-cloudflare-pid-rs> ,
+        [ a prov:Entity ;
+          prov:specializationOf <https://drift-king.org/approvals/gap-code-strings-closed.md> ;
+          dcterms:identifier "sha256:99bba9e8b3597a61fca1cd278ea33bee7364016a8bf535edbc22e18d9afd8b94" ] ,
+        [ a prov:Entity ;
+          prov:specializationOf <https://drift-king.org/site/public/approvals/gap-code-strings-closed-approval.html> ;
+          dcterms:identifier "sha256:4147dea0a97bc639177b71d11a0eee9d1d41c62bd6849c859beba02f58d0dc11" ] ;
+    prov:wasAssociatedWith <https://drift-king.org/ah/agent/compliance> ,
+        <https://drift-king.org/ah/agent/lead-architect> ;
+    prov:endedAtTime "2026-09-29T19:01:41.223Z"^^xsd:dateTime ;
+    dcterms:identifier "docusign-dev:envelope:81692f46-b63f-85ac-800e-53c9919a1d6b" ;
+    # Opens only for users of the demo account; never linked from the site.
+    rdfs:seeAlso <https://apps-d.docusign.com/send/documents/details/81692f46-b63f-85ac-800e-53c9919a1d6b> .
+
+# The gap, ended by its closing signing (envelope #10). Stated on the gap
+# itself, so whoever reads the gap reads that it is closed, and when.
+<https://drift-king.org/not-ah/the-linter/gap/code-strings-named-cloudflare-pid-rs>
+    prov:wasInvalidatedBy <https://drift-king.org/ah/signing/gap-code-strings-closed> ;
+    prov:invalidatedAtTime "2026-09-29T19:01:41.223Z"^^xsd:dateTime .
+
+# ---------------------------------------------------------------------------
+# x-components: its letter of intent, and the list of checks it names as what
+# good looks like (Compliance). Signed together: the letter is the document,
+# the list is a file its approval page names by sha256.
+# ---------------------------------------------------------------------------
+<https://drift-king.org/intent/x-components-letter-of-intent.md>
+    a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    dcterms:conformsTo <https://spec.commonmark.org/> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    dcterms:subject <https://github.com/Apricotter/x-components> ;
+    rdfs:label "The x-components letter, exactly as above" ;
+    dcterms:references <https://drift-king.org/intent/x-components-what-good-looks-like.md> ,
+        <https://drift-king.org/intent/letter-of-intent.md> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/xc-letter-text> .
+<https://drift-king.org/intent/x-components-what-good-looks-like.md>
+    a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    dcterms:conformsTo <https://spec.commonmark.org/> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    dcterms:subject <https://github.com/Apricotter/x-components> ;
+    rdfs:label "What good looks like, exact bytes" ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/xc-good-text> .
+
+<https://drift-king.org/site/public/intent/x-components-letter-of-intent.md> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:28ac8e5d0889bc2276db3126ec6f0c0c883ad883d9f4977660cc0429109f44bb" ;
+    prov:wasDerivedFrom <https://drift-king.org/intent/x-components-letter-of-intent.md> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/intent/x-components-what-good-looks-like.md> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:e483eb804a7790e19867aff8a8b9e7adca335b54715cd4655e4637581c519867" ;
+    prov:wasDerivedFrom <https://drift-king.org/intent/x-components-what-good-looks-like.md> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+
+<https://drift-king.org/ah/site/var/xc-letter-text> a p-plan:Variable ; rdfs:label "the x-components letter of intent, as text" .
+<https://drift-king.org/ah/site/var/xc-letter-html> a p-plan:Variable ; rdfs:label "site/public/intent/x-components-letter-of-intent.html" .
+<https://drift-king.org/ah/site/var/xc-letter-approval> a p-plan:Variable ; rdfs:label "site/public/intent/x-components-letter-of-intent-approval.html" .
+<https://drift-king.org/ah/site/var/xc-good-text> a p-plan:Variable ; rdfs:label "what good looks like for x-components, as text" .
+<https://drift-king.org/ah/site/var/xc-good-html> a p-plan:Variable ; rdfs:label "site/public/intent/x-components-what-good-looks-like.html" .
+<https://drift-king.org/ah/site/render-xc-letter>
+    a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/var/document-template> ,
+        <https://drift-king.org/ah/site/var/xc-letter-text> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/xc-letter-html> ;
+    dcterms:title "render the x-components letter page" .
+<https://drift-king.org/site/public/intent/x-components-letter-of-intent.html> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/document.mustache> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/xc-letter-html> .
+<https://drift-king.org/ah/site/render-xc-good>
+    a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/var/document-template> ,
+        <https://drift-king.org/ah/site/var/xc-good-text> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/xc-good-html> ;
+    dcterms:title "render the x-components what-good-looks-like page" .
+<https://drift-king.org/site/public/intent/x-components-what-good-looks-like.html> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/document.mustache> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/xc-good-html> .
+<https://drift-king.org/ah/site/render-xc-letter-approval>
+    a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/var/approval-template> ,
+        <https://drift-king.org/ah/site/var/approval-files> ,
+        <https://drift-king.org/ah/site/var/xc-letter-text> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/xc-letter-approval> ;
+    dcterms:title "render the x-components letter's approval page" .
+<https://drift-king.org/site/public/intent/x-components-letter-of-intent-approval.html> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/approval.mustache> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/xc-letter-approval> .
+<https://drift-king.org/ah/site/deploy>
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/render-xc-letter> ,
+        <https://drift-king.org/ah/site/render-xc-good> ,
+        <https://drift-king.org/ah/site/render-xc-letter-approval> .
+
+# The client's approver, for client work (x-components is Apricotter's).
+# Identifier only: no name goes in the model.
+<https://drift-king.org/ah/agent/client/apricotter>
+    a prov:Organization ;
+    rdfs:label "Apricotter" ;
+    dcterms:identifier "docusign-demo:user:6bf64f29-7199-45ac-85d5-591229d2005f" ;
+    rdfs:comment "Approves client work second, after Compliance, as the client." .
+
+# The x-components letter of intent, signed (envelope #11). Compliance signed
+# first (routing 1, 2026-09-29T22:43:54.767Z); the client approved second
+# (routing 2). Read back: status completed, both custom fields equal to the
+# sha256s below. A departure from the signing plan's send step, which names
+# the lead architect as the only second signer: this is client work, so the
+# client's approver signed. The plan's next version says so.
+<https://drift-king.org/ah/signing/x-components-letter-of-intent>
+    a prov:Activity ;
+    prov:used [ a prov:Entity ;
+          prov:specializationOf <https://drift-king.org/intent/x-components-letter-of-intent.md> ;
+          dcterms:identifier "sha256:28ac8e5d0889bc2276db3126ec6f0c0c883ad883d9f4977660cc0429109f44bb" ] ,
+        [ a prov:Entity ;
+          prov:specializationOf <https://drift-king.org/site/public/intent/x-components-letter-of-intent-approval.html> ;
+          dcterms:identifier "sha256:e688cfd97b1e96c297677e19710f441d542d715b801d11d33d32bef05280477b" ] ;
+    prov:wasAssociatedWith <https://drift-king.org/ah/agent/compliance> ,
+        <https://drift-king.org/ah/agent/client/apricotter> ;
+    prov:endedAtTime "2026-09-29T22:46:02.83Z"^^xsd:dateTime ;
+    dcterms:identifier "docusign-dev:envelope:e951248e-80ee-81b0-80b0-d726689f1dcb" ;
+    # Opens only for users of the demo account; never linked from the site.
+    rdfs:seeAlso <https://apps-d.docusign.com/send/documents/details/e951248e-80ee-81b0-80b0-d726689f1dcb> .
+
+# ---------------------------------------------------------------------------
+# The signing plan, version 2 (Compliance). A new file, never an edit of the
+# signed version 1, which stays loaded as the record of what was signed then.
+# ---------------------------------------------------------------------------
+<https://drift-king.org/ah/docusign-approval/plan> dcterms:isReplacedBy <https://drift-king.org/ah/docusign-approval/v2/plan> .
+<https://drift-king.org/plans/docusign-approval.ttl> dcterms:isReplacedBy <https://drift-king.org/plans/docusign-approval-v2.ttl> .
+<https://drift-king.org/plans/docusign-approval-v2.ttl> rdfs:label "The signing plan, version 2, exact bytes" .
+<https://drift-king.org/.claude/skills/docusign-approval/SKILL.md> rdfs:label "The skill that walks it, exact bytes" ;
+    dcterms:references <https://drift-king.org/ah/docusign-approval/v2/plan> ;
+    dcterms:identifier "sha256:ebc400f260bd6e9f4e98cabb8d1407a2910161f09c31ad7f119adceb4e978b13" ;
+    rdfs:comment "The successor of the skill the signing-plan-v2 packet names (not-ah/private/docusign-approval-skill-as-signed): the same words with the path of the lead architect's machine taken out. A new file, not yet signed." .
+
+<https://drift-king.org/approvals/signing-plan-v2.md>
+    a prov:Entity , p-plan:Entity , oa:Annotation ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    dcterms:conformsTo <https://spec.commonmark.org/> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    dcterms:subject <https://drift-king.org/ah/docusign-approval/v2/plan> ;
+    rdfs:label "The change, exactly as above" ;
+    dcterms:references <https://drift-king.org/plans/docusign-approval-v2.ttl> ,
+        <https://drift-king.org/plans/docusign-approval.ttl> ,
+        <https://drift-king.org/.claude/skills/docusign-approval/SKILL.md> ,
+        <https://drift-king.org/intent/letter-of-intent.md> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/plan-v2-text> ;
+    oa:hasTarget [ a oa:SpecificResource ;
+        oa:hasSource <https://drift-king.org/intent/letter-of-intent.md> ;
+        oa:hasSelector [ a oa:TextPositionSelector ; oa:start 438 ; oa:end 472 ] ] .
+
+<https://drift-king.org/site/public/approvals/signing-plan-v2.md> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:0f8ea0799c993309daf0081cbaaa81c97aa7d9c5f3775e4616d2cb0bc75bf019" ;
+    prov:wasDerivedFrom <https://drift-king.org/approvals/signing-plan-v2.md> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/plans/docusign-approval-v2.ttl> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:d8acb3983ba284210401bdfdafdf30eeed324bef4e2f120546af686ca9c11672" ;
+    prov:wasDerivedFrom <https://drift-king.org/plans/docusign-approval-v2.ttl> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/skills/docusign-approval/SKILL.md> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:ebc400f260bd6e9f4e98cabb8d1407a2910161f09c31ad7f119adceb4e978b13" ;
+    prov:wasDerivedFrom <https://drift-king.org/.claude/skills/docusign-approval/SKILL.md> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+
+<https://drift-king.org/ah/site/var/plan-v2-text> a p-plan:Variable ; rdfs:label "the signing plan, version 2, as a change to sign" .
+<https://drift-king.org/ah/site/var/plan-v2-html> a p-plan:Variable ; rdfs:label "site/public/approvals/signing-plan-v2.html" .
+<https://drift-king.org/ah/site/var/plan-v2-approval> a p-plan:Variable ; rdfs:label "site/public/approvals/signing-plan-v2-approval.html" .
+<https://drift-king.org/ah/site/render-plan-v2>
+    a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/var/document-template> ,
+        <https://drift-king.org/ah/site/var/plan-v2-text> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/plan-v2-html> ;
+    dcterms:title "render the signing plan version 2 page" .
+<https://drift-king.org/site/public/approvals/signing-plan-v2.html> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/document.mustache> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/plan-v2-html> .
+<https://drift-king.org/ah/site/render-plan-v2-approval>
+    a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/var/approval-template> ,
+        <https://drift-king.org/ah/site/var/approval-files> ,
+        <https://drift-king.org/ah/site/var/plan-v2-text> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/plan-v2-approval> ;
+    dcterms:title "render the signing plan version 2's approval page" .
+<https://drift-king.org/site/public/approvals/signing-plan-v2-approval.html> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/approval.mustache> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/plan-v2-approval> .
+<https://drift-king.org/ah/site/deploy>
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/render-plan-v2> ,
+        <https://drift-king.org/ah/site/render-plan-v2-approval> .
+
+# The signing plan, version 2, signed (envelope #12), the first signing walked
+# by it. Compliance signed first (routing 1, 2026-09-29T23:11:57.55Z); the lead
+# architect approved second (routing 2). Read back: status completed, both
+# custom fields equal to the sha256s below.
+<https://drift-king.org/ah/signing/signing-plan-v2>
+    a prov:Activity ;
+    prov:used [ a prov:Entity ;
+          prov:specializationOf <https://drift-king.org/approvals/signing-plan-v2.md> ;
+          dcterms:identifier "sha256:0f8ea0799c993309daf0081cbaaa81c97aa7d9c5f3775e4616d2cb0bc75bf019" ] ,
+        [ a prov:Entity ;
+          prov:specializationOf <https://drift-king.org/site/public/approvals/signing-plan-v2-approval.html> ;
+          dcterms:identifier "sha256:55883c4f93b92d801ef71c7248b3dd43da306f41a450fb8acadce02e42e9beb5" ] ;
+    prov:wasAssociatedWith <https://drift-king.org/ah/agent/compliance> ,
+        <https://drift-king.org/ah/agent/lead-architect> ;
+    prov:endedAtTime "2026-09-29T23:13:09.003Z"^^xsd:dateTime ;
+    dcterms:identifier "docusign-dev:envelope:e5162f6a-a0ca-87bd-80fc-b962fe9f1da2" ;
+    # Opens only for users of the demo account; never linked from the site.
+    rdfs:seeAlso <https://apps-d.docusign.com/send/documents/details/e5162f6a-a0ca-87bd-80fc-b962fe9f1da2> .
+
+# ---------------------------------------------------------------------------
+# What Drift King asks of x-components' next version (Compliance). Client
+# work: Apricotter's approver signs second.
+# ---------------------------------------------------------------------------
+<https://drift-king.org/approvals/x-components-next-version.md>
+    a prov:Entity , p-plan:Entity , oa:Annotation ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    dcterms:conformsTo <https://spec.commonmark.org/> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    dcterms:subject <https://drift-king.org/not-ah/npm/apricotter-x-components> ;
+    rdfs:label "The request, exactly as above" ;
+    dcterms:references <https://drift-king.org/intent/x-components-letter-of-intent.md> ,
+        <https://drift-king.org/intent/x-components-what-good-looks-like.md> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/xc-next-text> ;
+    oa:hasTarget [ a oa:SpecificResource ;
+        oa:hasSource <https://drift-king.org/intent/x-components-letter-of-intent.md> ;
+        oa:hasSelector [ a oa:TextPositionSelector ; oa:start 163 ; oa:end 194 ] ] .
+
+<https://drift-king.org/site/public/approvals/x-components-next-version.md> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:df4f254e0227b7090b178476d60d108f126176b7d4c913aeb24b825f322b5553" ;
+    prov:wasDerivedFrom <https://drift-king.org/approvals/x-components-next-version.md> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+
+<https://drift-king.org/ah/site/var/xc-next-text> a p-plan:Variable ; rdfs:label "what Drift King asks of x-components' next version, as text" .
+<https://drift-king.org/ah/site/var/xc-next-html> a p-plan:Variable ; rdfs:label "site/public/approvals/x-components-next-version.html" .
+<https://drift-king.org/ah/site/var/xc-next-approval> a p-plan:Variable ; rdfs:label "site/public/approvals/x-components-next-version-approval.html" .
+<https://drift-king.org/ah/site/render-xc-next>
+    a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/var/document-template> ,
+        <https://drift-king.org/ah/site/var/xc-next-text> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/xc-next-html> ;
+    dcterms:title "render the x-components next-version request page" .
+<https://drift-king.org/site/public/approvals/x-components-next-version.html> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/document.mustache> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/xc-next-html> .
+<https://drift-king.org/ah/site/render-xc-next-approval>
+    a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/var/approval-template> ,
+        <https://drift-king.org/ah/site/var/approval-files> ,
+        <https://drift-king.org/ah/site/var/xc-next-text> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/xc-next-approval> ;
+    dcterms:title "render the x-components next-version request's approval page" .
+<https://drift-king.org/site/public/approvals/x-components-next-version-approval.html> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/approval.mustache> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/xc-next-approval> .
+<https://drift-king.org/ah/site/deploy>
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/render-xc-next> ,
+        <https://drift-king.org/ah/site/render-xc-next-approval> .
+
+# What Drift King asks of x-components' next version, signed (envelope #13).
+# Client work: Compliance signed first (routing 1, 2026-09-30T00:08:18.897Z);
+# the client approved second (routing 2). Read back: status completed, both
+# custom fields equal to the sha256s below.
+<https://drift-king.org/ah/signing/x-components-next-version>
+    a prov:Activity ;
+    prov:used [ a prov:Entity ;
+          prov:specializationOf <https://drift-king.org/approvals/x-components-next-version.md> ;
+          dcterms:identifier "sha256:df4f254e0227b7090b178476d60d108f126176b7d4c913aeb24b825f322b5553" ] ,
+        [ a prov:Entity ;
+          prov:specializationOf <https://drift-king.org/site/public/approvals/x-components-next-version-approval.html> ;
+          dcterms:identifier "sha256:5c6d2c599206cef1c58dc2b5ce18a5ea2fa1bba9d73ee26659c0e2b2d0d4270d" ] ;
+    prov:wasAssociatedWith <https://drift-king.org/ah/agent/compliance> ,
+        <https://drift-king.org/ah/agent/client/apricotter> ;
+    prov:endedAtTime "2026-09-30T00:09:15.82Z"^^xsd:dateTime ;
+    dcterms:identifier "docusign-dev:envelope:42292699-e52f-8bdc-810d-752c979f1d66" ;
+    # Opens only for users of the demo account; never linked from the site.
+    rdfs:seeAlso <https://apps-d.docusign.com/send/documents/details/42292699-e52f-8bdc-810d-752c979f1d66> .
+
+# ---------------------------------------------------------------------------
+# The x-components 0.1.0 release approval (Compliance). Client work: Apricotter's
+# approver signs second. Its page lists the candidate, the audit's checks and
+# canaries, the letter and the list, each by sha256.
+# ---------------------------------------------------------------------------
+<https://drift-king.org/approvals/x-components-0.1.0-release.md>
+    a prov:Entity , p-plan:Entity , oa:Annotation ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    dcterms:conformsTo <https://spec.commonmark.org/> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    dcterms:subject <https://drift-king.org/not-ah/npm/apricotter-x-components> ;
+    rdfs:label "The release approval, exactly as above" ;
+    dcterms:references <https://drift-king.org/ah/site/x-components/check-provenance> ,
+        <https://drift-king.org/ah/site/x-components/check-no-token> ,
+        <https://drift-king.org/ah/site/x-components/check-pinned> ,
+        <https://drift-king.org/intent/x-components-letter-of-intent.md> ,
+        <https://drift-king.org/intent/x-components-what-good-looks-like.md> ,
+        <https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0-candidate/LICENSE> ,
+        <https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0-candidate/NOTICE> ,
+        <https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0-candidate/README.md> ,
+        <https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0-candidate/package.json> ,
+        <https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0-candidate/component.ttl> ,
+        <https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0-candidate/wai-aria.ttl> ,
+        <https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0-candidate/component-attributes.generated.mjs> ,
+        <https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0-candidate/expand.mjs> ,
+        <https://drift-king.org/the-linter/checks/x-components-components-whole.rq> ,
+        <https://drift-king.org/the-linter/canaries/x-components-components-whole.ttl> ,
+        <https://drift-king.org/the-linter/checks/x-components-roles-resolve.rq> ,
+        <https://drift-king.org/the-linter/canaries/x-components-roles-resolve.ttl> ,
+        <https://drift-king.org/the-linter/checks/x-components-words-clean.rq> ,
+        <https://drift-king.org/the-linter/canaries/x-components-words-clean.ttl> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/xc-release-text> ;
+    oa:hasTarget [ a oa:SpecificResource ;
+        oa:hasSource <https://drift-king.org/intent/x-components-letter-of-intent.md> ;
+        oa:hasSelector [ a oa:TextPositionSelector ; oa:start 557 ; oa:end 630 ] ] .
+
+<https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0-candidate/LICENSE> rdfs:label "The candidate's LICENSE, exact bytes" .
+<https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0-candidate/NOTICE> rdfs:label "The candidate's NOTICE, exact bytes" .
+<https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0-candidate/README.md> rdfs:label "The candidate's README.md, exact bytes" .
+<https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0-candidate/package.json> rdfs:label "The candidate's package.json, exact bytes" .
+<https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0-candidate/component.ttl> rdfs:label "The candidate's component.ttl, exact bytes" .
+<https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0-candidate/wai-aria.ttl> rdfs:label "The candidate's wai-aria.ttl, exact bytes" .
+<https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0-candidate/component-attributes.generated.mjs> rdfs:label "The candidate's component-attributes.generated.mjs, exact bytes" .
+<https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0-candidate/expand.mjs> rdfs:label "The candidate's expand.mjs, exact bytes" .
+<https://drift-king.org/the-linter/checks/x-components-components-whole.rq> rdfs:label "The check that every component names its tag and the element it becomes, exact bytes" .
+<https://drift-king.org/the-linter/canaries/x-components-components-whole.ttl> rdfs:label "The canary for: every component names its tag and the element it becomes, exact bytes" .
+<https://drift-king.org/the-linter/checks/x-components-roles-resolve.rq> rdfs:label "The check that every ARIA role a component carries is one its model describes, exact bytes" .
+<https://drift-king.org/the-linter/canaries/x-components-roles-resolve.ttl> rdfs:label "The canary for: every ARIA role a component carries is one its model describes, exact bytes" .
+<https://drift-king.org/the-linter/checks/x-components-words-clean.rq> rdfs:label "The check that no label or comment in its model names anything internal, exact bytes" .
+<https://drift-king.org/the-linter/canaries/x-components-words-clean.ttl> rdfs:label "The canary for: no label or comment in its model names anything internal, exact bytes" .
+
+<https://drift-king.org/site/public/approvals/x-components-0.1.0-release.md> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:e34f4aa01227d3d4fe1da0602ae442d72957180a3df3169478745f5ccb553c01" ;
+    prov:wasDerivedFrom <https://drift-king.org/approvals/x-components-0.1.0-release.md> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/the-linter/checks/x-components-components-whole.rq> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:81d18888496393fd01d899dbc0808296e3b3c66d6824e95953fbd4cee671087b" ;
+    prov:wasDerivedFrom <https://drift-king.org/the-linter/checks/x-components-components-whole.rq> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/the-linter/canaries/x-components-components-whole.ttl> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:b47be5a4f8a160e55ee2060bfef8a542a27f9c0dbd280b0115fc529782f70926" ;
+    prov:wasDerivedFrom <https://drift-king.org/the-linter/canaries/x-components-components-whole.ttl> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/the-linter/checks/x-components-roles-resolve.rq> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:08ad90f0b353122a7bd77e0b7add98689aa2cb6dc6cffcf630c2145f8bc408b8" ;
+    prov:wasDerivedFrom <https://drift-king.org/the-linter/checks/x-components-roles-resolve.rq> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/the-linter/canaries/x-components-roles-resolve.ttl> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:183d99bf994bf68194d3b965fbfe04b911ad1abad12c7cf1bb00b971a47c83b1" ;
+    prov:wasDerivedFrom <https://drift-king.org/the-linter/canaries/x-components-roles-resolve.ttl> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/the-linter/checks/x-components-words-clean.rq> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:dc80c97ee467cdce483320f17a7b060022de1e2a6d9806654e6340979514ff02" ;
+    prov:wasDerivedFrom <https://drift-king.org/the-linter/checks/x-components-words-clean.rq> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/the-linter/canaries/x-components-words-clean.ttl> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:ce4bc0e680c2acb9b2c3dac203180a17a69a8e32b260db2fed0704af1a167b1e" ;
+    prov:wasDerivedFrom <https://drift-king.org/the-linter/canaries/x-components-words-clean.ttl> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+
+<https://drift-king.org/ah/site/var/xc-release-text> a p-plan:Variable ; rdfs:label "the x-components 0.1.0 release approval, as text" .
+<https://drift-king.org/ah/site/var/xc-release-html> a p-plan:Variable ; rdfs:label "site/public/approvals/x-components-0.1.0-release.html" .
+<https://drift-king.org/ah/site/render-xc-release>
+    a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/var/document-template> ,
+        <https://drift-king.org/ah/site/var/xc-release-text> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/xc-release-html> ;
+    dcterms:title "render the x-components 0.1.0 release page" .
+<https://drift-king.org/site/public/approvals/x-components-0.1.0-release.html> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/document.mustache> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/xc-release-html> .
+# The approval page exactly as signed in envelope #14, pinned. Kept in signed/,
+# not approvals/, which holds only documents. It is no longer
+# rendered: the post-publish checks will change what a render shows, and a
+# signed page is served as signed. The copy step checks its sha256 on every build.
+<https://drift-king.org/signed/approvals/x-components-0.1.0-release-approval.html>
+    a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    dcterms:identifier "sha256:2a14cd5a6a128525745ab938d7ee90ab0879b6e2ba5f2c9281876973c0ea5af9" ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/approval-results.mustache> ,
+        <https://drift-king.org/approvals/x-components-0.1.0-release.md> .
+<https://drift-king.org/site/public/approvals/x-components-0.1.0-release-approval.html> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:2a14cd5a6a128525745ab938d7ee90ab0879b6e2ba5f2c9281876973c0ea5af9" ;
+    prov:wasDerivedFrom <https://drift-king.org/signed/approvals/x-components-0.1.0-release-approval.html> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/ah/site/deploy>
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/render-xc-release> .
+
+# The x-components 0.1.0 release approval, signed (envelope #14). Client work:
+# Compliance signed first (routing 1, 2026-09-30T00:50:49.653Z); the client
+# approved second (routing 2). Read back: status completed, both custom fields
+# equal to the sha256s below. It approves tagging v0.1.0, not taking the
+# version into Drift King.
+<https://drift-king.org/ah/signing/x-components-0.1.0-release>
+    a prov:Activity ;
+    prov:used [ a prov:Entity ;
+          prov:specializationOf <https://drift-king.org/approvals/x-components-0.1.0-release.md> ;
+          dcterms:identifier "sha256:e34f4aa01227d3d4fe1da0602ae442d72957180a3df3169478745f5ccb553c01" ] ,
+        [ a prov:Entity ;
+          prov:specializationOf <https://drift-king.org/site/public/approvals/x-components-0.1.0-release-approval.html> ;
+          dcterms:identifier "sha256:2a14cd5a6a128525745ab938d7ee90ab0879b6e2ba5f2c9281876973c0ea5af9" ] ;
+    prov:wasAssociatedWith <https://drift-king.org/ah/agent/compliance> ,
+        <https://drift-king.org/ah/agent/client/apricotter> ;
+    prov:endedAtTime "2026-09-30T00:51:32.67Z"^^xsd:dateTime ;
+    dcterms:identifier "docusign-dev:envelope:adce2156-2118-88d9-8084-c23e839f1d82" ;
+    # Opens only for users of the demo account; never linked from the site.
+    rdfs:seeAlso <https://apps-d.docusign.com/send/documents/details/adce2156-2118-88d9-8084-c23e839f1d82> .
+
+<https://drift-king.org/ah/signing/drift-king-design>
+    a prov:Activity ;
+    prov:used [ a prov:Entity ;
+          prov:specializationOf <https://drift-king.org/approvals/drift-king-design.md> ;
+          dcterms:identifier "sha256:9a0026cdd0e34834f726da15f93420d73fd601b27231ba8bfeb221667d8f77fb" ] ,
+        [ a prov:Entity ;
+          prov:specializationOf <https://drift-king.org/site/public/approvals/drift-king-design-approval.html> ;
+          dcterms:identifier "sha256:8408f140c87128e0ed629619daaa7d681e94890adb25e3d64a546bc9184fcce9" ] ;
+    prov:wasAssociatedWith <https://drift-king.org/ah/agent/compliance> ,
+        <https://drift-king.org/ah/agent/lead-architect> ;
+    prov:endedAtTime "2026-09-30T17:31:41.973Z"^^xsd:dateTime ;
+    dcterms:identifier "docusign-dev:envelope:e9e727c5-745c-84cb-8102-e76d029a1ead" ;
+    # Opens only for users of the demo account; never linked from the site.
+    rdfs:seeAlso <https://apps-d.docusign.com/send/documents/details/e9e727c5-745c-84cb-8102-e76d029a1ead> .
+
+# Signed on 2026-09-30 (envelope #15) and logged, but never recorded here until the
+# read-back of 2026-09-30T18:00Z. The first example of the open-agreements gap.
+<https://drift-king.org/ah/signing/x-components-list-v2>
+    a prov:Activity ;
+    prov:used [ a prov:Entity ;
+          prov:specializationOf <https://drift-king.org/approvals/x-components-list-v2.md> ;
+          dcterms:identifier "sha256:ce09ef2450f21233af7bd2c0325602e7465df6f3476dc4b8f1dbbe6c7c1f9924" ] ,
+        [ a prov:Entity ;
+          prov:specializationOf <https://drift-king.org/site/public/approvals/x-components-list-v2-approval.html> ;
+          dcterms:identifier "sha256:a0e702580f1b5bb05c1f89d48001c9399d57826b3f8324e470b88c22421a31f2" ] ;
+    prov:wasAssociatedWith <https://drift-king.org/ah/agent/compliance> ,
+        <https://drift-king.org/ah/agent/client/apricotter> ;
+    prov:endedAtTime "2026-09-30T14:24:26.893Z"^^xsd:dateTime ;
+    dcterms:identifier "docusign-dev:envelope:8d9f2ff7-7339-8ec1-81b8-eb645c9c1ef8" ;
+    # Opens only for users of the demo account; never linked from the site.
+    rdfs:seeAlso <https://apps-d.docusign.com/send/documents/details/8d9f2ff7-7339-8ec1-81b8-eb645c9c1ef8> .
+
+# Signed on 2026-09-30 (envelope #16) and logged, but never recorded here until the
+# read-back of 2026-09-30T18:00Z. The second example of the open-agreements gap.
+<https://drift-king.org/ah/signing/patch-and-verify-plan>
+    a prov:Activity ;
+    prov:used [ a prov:Entity ;
+          prov:specializationOf <https://drift-king.org/approvals/patch-and-verify-plan.md> ;
+          dcterms:identifier "sha256:8c353aaad7bf556f88701ac3d9de9f8fc68ad7c75947ca290c17a9fe98b457d2" ] ,
+        [ a prov:Entity ;
+          prov:specializationOf <https://drift-king.org/site/public/approvals/patch-and-verify-plan-approval.html> ;
+          dcterms:identifier "sha256:e060a0556217888edb59f4dc0b41402d09365cd592d4b16865e080ca38b12ba9" ] ;
+    prov:wasAssociatedWith <https://drift-king.org/ah/agent/compliance> ,
+        <https://drift-king.org/ah/agent/lead-architect> ;
+    prov:endedAtTime "2026-09-30T14:26:29.927Z"^^xsd:dateTime ;
+    dcterms:identifier "docusign-dev:envelope:102e2ac9-44cb-8cdf-8136-c6f6b4921e1a" ;
+    # Opens only for users of the demo account; never linked from the site.
+    rdfs:seeAlso <https://apps-d.docusign.com/send/documents/details/102e2ac9-44cb-8cdf-8136-c6f6b4921e1a> .
+
+# The open-agreements gap, signed (envelope #18). It accepts the gap, so the
+# signing uses the gap node itself and known-gap.rq counts it.
+<https://drift-king.org/ah/signing/gap-open-agreements>
+    a prov:Activity ;
+    prov:used [ a prov:Entity ;
+          prov:specializationOf <https://drift-king.org/approvals/gap-open-agreements.md> ;
+          dcterms:identifier "sha256:f12b26b9b36385cb4c82d17240c9161e31c18726e60a62ea05a2212c6e0c2c18" ] ,
+        [ a prov:Entity ;
+          prov:specializationOf <https://drift-king.org/site/public/approvals/gap-open-agreements-approval.html> ;
+          dcterms:identifier "sha256:fc63aca0e76ae44b440b1d4d5c2cd835fe1617e2d2e6eb2bc13436b8a37b58d3" ] ,
+        <https://drift-king.org/not-ah/the-linter/gap/open-agreements> ;
+    prov:wasAssociatedWith <https://drift-king.org/ah/agent/compliance> ,
+        <https://drift-king.org/ah/agent/lead-architect> ;
+    prov:endedAtTime "2026-09-30T18:22:21.933Z"^^xsd:dateTime ;
+    dcterms:identifier "docusign-dev:envelope:26b72ea8-544c-80be-819e-79edda911ee4" ;
+    # Opens only for users of the demo account; never linked from the site.
+    rdfs:seeAlso <https://apps-d.docusign.com/send/documents/details/26b72ea8-544c-80be-819e-79edda911ee4> .
+
+# The console agreement, signed. Its subject is the open-agreements gap, which it
+# answers and does not close, so the signing uses no gap node.
+<https://drift-king.org/ah/signing/console>
+    a prov:Activity ;
+    prov:used [ a prov:Entity ;
+          prov:specializationOf <https://drift-king.org/approvals/console.md> ;
+          dcterms:identifier "sha256:1a2fce825758bfc350f20e51b06f85e404767e444ff38c193e631b31e12771e7" ] ,
+        [ a prov:Entity ;
+          prov:specializationOf <https://drift-king.org/site/public/approvals/console-approval.html> ;
+          dcterms:identifier "sha256:1f301d7bb05fe8b5858fe3b0054a3ca09d4ae55cf553ad68b3e3a1bdbeaa2a55" ] ;
+    prov:wasAssociatedWith <https://drift-king.org/ah/agent/compliance> ,
+        <https://drift-king.org/ah/agent/lead-architect> ;
+    prov:endedAtTime "2026-10-01T17:26:01.267Z"^^xsd:dateTime ;
+    dcterms:identifier "docusign-dev:envelope:51812445-9bb5-83c3-80cd-937767a00119" ;
+    # Opens only for users of the demo account; never linked from the site.
+    rdfs:seeAlso <https://apps-d.docusign.com/send/documents/details/51812445-9bb5-83c3-80cd-937767a00119> .
+
+# The ship gap, signed. It accepts the gap, so the signing uses the gap node
+# itself and known-gap.rq counts it.
+<https://drift-king.org/ah/signing/gap-ship-agreements>
+    a prov:Activity ;
+    prov:used [ a prov:Entity ;
+          prov:specializationOf <https://drift-king.org/approvals/gap-ship-agreements.md> ;
+          dcterms:identifier "sha256:681c793574fc82fa8708c72f1995a7fcb20db539fa3b4cd4f1cbc9d8b1e2deb5" ] ,
+        [ a prov:Entity ;
+          prov:specializationOf <https://drift-king.org/site/public/approvals/gap-ship-agreements-approval.html> ;
+          dcterms:identifier "sha256:b3137c989958ebd21e55cc0af4f1e851616ea2f4cc907183f86dbc6ac198315f" ] ,
+        <https://drift-king.org/not-ah/the-linter/gap/ship-agreements> ;
+    prov:wasAssociatedWith <https://drift-king.org/ah/agent/compliance> ,
+        <https://drift-king.org/ah/agent/lead-architect> ;
+    prov:endedAtTime "2026-10-01T17:27:07.123Z"^^xsd:dateTime ;
+    dcterms:identifier "docusign-dev:envelope:4fb8261a-24a8-8e09-80f5-77c039a2013d" ;
+    # Opens only for users of the demo account; never linked from the site.
+    rdfs:seeAlso <https://apps-d.docusign.com/send/documents/details/4fb8261a-24a8-8e09-80f5-77c039a2013d> .
+
+# ---------------------------------------------------------------------------
+# How a directive is carried out (Compliance): three procedures, and the skill
+# that walks them. A procedure is a plan walked one step after another; the
+# signing plans are procedures too.
+# ---------------------------------------------------------------------------
+<https://drift-king.org/ah/Procedure>
+    a owl:Class ;
+    rdfs:subClassOf p-plan:Plan ;
+    rdfs:label "procedure" ;
+    rdfs:comment "A plan a person or an agent walks, one step after another, as a skill finds it in the model: one chain, every step saying what to do." .
+<https://drift-king.org/ah/docusign-approval/plan> a <https://drift-king.org/ah/Procedure> .
+<https://drift-king.org/ah/docusign-approval/v2/plan> a <https://drift-king.org/ah/Procedure> .
+<https://drift-king.org/ah/patch-and-verify/plan> a <https://drift-king.org/ah/Procedure> .
+<https://drift-king.org/ah/verify-published/plan> a <https://drift-king.org/ah/Procedure> .
+<https://drift-king.org/ah/push-and-tag/plan> a <https://drift-king.org/ah/Procedure> .
+<https://drift-king.org/ah.ttl> rdfs:label "The model: ah.ttl, and everything it imports" .
+
+<https://drift-king.org/plans/patch-and-verify.ttl> rdfs:label "The patch-and-verify plan, exact bytes" .
+<https://drift-king.org/plans/verify-published.ttl> rdfs:label "The verify-published plan, exact bytes" .
+<https://drift-king.org/plans/push-and-tag.ttl> rdfs:label "The push-and-tag plan, exact bytes" .
+<https://drift-king.org/.claude/skills/patch-and-verify/SKILL.md> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    rdfs:label "The skill that walks them, exact bytes" ;
+    dcterms:references <https://drift-king.org/ah/patch-and-verify/plan> ,
+        <https://drift-king.org/ah/verify-published/plan> ,
+        <https://drift-king.org/ah/push-and-tag/plan> ;
+    dcterms:identifier "sha256:1bf33650c8b898571c4a939e5444df12e39ad0a7a2f7603562ef1b6201d57e98" ;
+    rdfs:comment "Says only how to walk the current plan for a task: the one nothing replaces. The steps live in the plans, not here." .
+<https://drift-king.org/the-linter/checks/procedure-chain.rq> rdfs:label "The check that every procedure is one chain, exact bytes" .
+<https://drift-king.org/the-linter/canaries/procedure-chain.ttl> rdfs:label "The canary for: every procedure is one chain, exact bytes" .
+
+<https://drift-king.org/approvals/patch-and-verify-plan.md>
+    a prov:Entity , p-plan:Entity , oa:Annotation ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    dcterms:conformsTo <https://spec.commonmark.org/> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    dcterms:subject <https://drift-king.org/ah/patch-and-verify/plan> ;
+    rdfs:label "The plans, exactly as above" ;
+    dcterms:references <https://drift-king.org/intent/letter-of-intent.md> ,
+        <https://drift-king.org/plans/patch-and-verify.ttl> ,
+        <https://drift-king.org/plans/verify-published.ttl> ,
+        <https://drift-king.org/plans/push-and-tag.ttl> ,
+        <https://drift-king.org/.claude/skills/patch-and-verify/SKILL.md> ,
+        <https://drift-king.org/the-linter/checks/procedure-chain.rq> ,
+        <https://drift-king.org/the-linter/canaries/procedure-chain.ttl> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/pv-plan-text> ;
+    oa:hasTarget [ a oa:SpecificResource ;
+        oa:hasSource <https://drift-king.org/intent/letter-of-intent.md> ;
+        oa:hasSelector [ a oa:TextPositionSelector ; oa:start 67 ; oa:end 117 ] ] .
+
+<https://drift-king.org/site/public/approvals/patch-and-verify-plan.md> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:8c353aaad7bf556f88701ac3d9de9f8fc68ad7c75947ca290c17a9fe98b457d2" ;
+    prov:wasDerivedFrom <https://drift-king.org/approvals/patch-and-verify-plan.md> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/plans/patch-and-verify.ttl> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:586f6a1930b22ed5e159d2b03dd35c9c7da1bb485e8007c113d76dc4a4fbe563" ;
+    prov:wasDerivedFrom <https://drift-king.org/plans/patch-and-verify.ttl> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/plans/verify-published.ttl> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:49b5125c81bd7d30b188d80203f6d8f6ff07f852b0d0ed5e53c89a445a19ec78" ;
+    prov:wasDerivedFrom <https://drift-king.org/plans/verify-published.ttl> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/plans/push-and-tag.ttl> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:4a46b840ca7619eed9d6c8e7b620f0f0b1a5cfc6555040280cdce7a19208ca1b" ;
+    prov:wasDerivedFrom <https://drift-king.org/plans/push-and-tag.ttl> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/skills/patch-and-verify/SKILL.md> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:1bf33650c8b898571c4a939e5444df12e39ad0a7a2f7603562ef1b6201d57e98" ;
+    prov:wasDerivedFrom <https://drift-king.org/.claude/skills/patch-and-verify/SKILL.md> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/the-linter/checks/procedure-chain.rq> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:947771df419399dcbe66b18fb1313d81509bf6339b9eda36ec6e3ee304328136" ;
+    prov:wasDerivedFrom <https://drift-king.org/the-linter/checks/procedure-chain.rq> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/the-linter/canaries/procedure-chain.ttl> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:3fb1ae730701c6a54688cf14e7c3d734b26c908ed826c417880589bee6129f7f" ;
+    prov:wasDerivedFrom <https://drift-king.org/the-linter/canaries/procedure-chain.ttl> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+
+<https://drift-king.org/ah/site/var/pv-plan-text> a p-plan:Variable ; rdfs:label "the patch-and-verify plans, as a change to sign" .
+<https://drift-king.org/ah/site/var/pv-plan-html> a p-plan:Variable ; rdfs:label "site/public/approvals/patch-and-verify-plan.html" .
+<https://drift-king.org/ah/site/render-pv-plan>
+    a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/var/document-template> ,
+        <https://drift-king.org/ah/site/var/pv-plan-text> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/pv-plan-html> ;
+    dcterms:title "render the patch-and-verify plans page" .
+<https://drift-king.org/site/public/approvals/patch-and-verify-plan.html> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/document.mustache> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/pv-plan-html> .
+# The approval page exactly as signed in envelope
+# 102e2ac9-44cb-8cdf-8136-c6f6b4921e1a (#16), pinned. Kept in signed/, not
+# approvals/, which holds only documents. It is no longer rendered: what a render
+# shows changes with the checks, and a signed page is served as signed. The copy
+# step checks its sha256 on every build.
+<https://drift-king.org/signed/approvals/patch-and-verify-plan-approval.html>
+    a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    dcterms:identifier "sha256:e060a0556217888edb59f4dc0b41402d09365cd592d4b16865e080ca38b12ba9" ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/approval-results.mustache> ,
+        <https://drift-king.org/approvals/patch-and-verify-plan.md> .
+<https://drift-king.org/site/public/approvals/patch-and-verify-plan-approval.html> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:e060a0556217888edb59f4dc0b41402d09365cd592d4b16865e080ca38b12ba9" ;
+    prov:wasDerivedFrom <https://drift-king.org/signed/approvals/patch-and-verify-plan-approval.html> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/ah/site/deploy>
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/render-pv-plan> .
+
+# ---------------------------------------------------------------------------
+# What good looks like for x-components, version 2 (Compliance). Client work:
+# Apricotter's approver signs second. A new file, never an edit of version 1,
+# which stays loaded as the record of what was signed then.
+# ---------------------------------------------------------------------------
+<https://drift-king.org/intent/x-components-what-good-looks-like.md> dcterms:isReplacedBy <https://drift-king.org/intent/x-components-what-good-looks-like-v2.md> .
+<https://drift-king.org/intent/x-components-what-good-looks-like-v2.md>
+    a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    dcterms:conformsTo <https://spec.commonmark.org/> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    prov:wasRevisionOf <https://drift-king.org/intent/x-components-what-good-looks-like.md> ;
+    dcterms:subject <https://github.com/Apricotter/x-components> ;
+    rdfs:label "What good looks like, version 2, exact bytes" ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/xc-good-v2-text> .
+<https://drift-king.org/approvals/x-components-list-v2.md>
+    a prov:Entity , p-plan:Entity , oa:Annotation ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    dcterms:conformsTo <https://spec.commonmark.org/> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    dcterms:subject <https://drift-king.org/intent/x-components-what-good-looks-like-v2.md> ;
+    rdfs:label "The change, exactly as above" ;
+    dcterms:references <https://drift-king.org/intent/x-components-what-good-looks-like-v2.md> ,
+        <https://drift-king.org/intent/x-components-what-good-looks-like.md> ,
+        <https://drift-king.org/intent/x-components-letter-of-intent.md> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/xc-list-v2-text> ;
+    oa:hasTarget [ a oa:SpecificResource ;
+        oa:hasSource <https://drift-king.org/intent/x-components-letter-of-intent.md> ;
+        oa:hasSelector [ a oa:TextPositionSelector ; oa:start 475 ; oa:end 556 ] ] .
+
+<https://drift-king.org/site/public/intent/x-components-what-good-looks-like-v2.md> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:d5e3ddc4e1defd93e63f4b3152da111e06a9747a84301fa9399e4fc65cec9c7d" ;
+    prov:wasDerivedFrom <https://drift-king.org/intent/x-components-what-good-looks-like-v2.md> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/approvals/x-components-list-v2.md> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:ce09ef2450f21233af7bd2c0325602e7465df6f3476dc4b8f1dbbe6c7c1f9924" ;
+    prov:wasDerivedFrom <https://drift-king.org/approvals/x-components-list-v2.md> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+
+<https://drift-king.org/ah/site/var/xc-good-v2-text> a p-plan:Variable ; rdfs:label "what good looks like for x-components, version 2, as text" .
+<https://drift-king.org/ah/site/var/xc-list-v2-text> a p-plan:Variable ; rdfs:label "what good looks like, version 2, as a change to sign" .
+<https://drift-king.org/ah/site/var/xc-good-v2-html> a p-plan:Variable ; rdfs:label "site/public/intent/x-components-what-good-looks-like-v2.html" .
+<https://drift-king.org/ah/site/render-xc-good-v2>
+    a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/var/document-template> ,
+        <https://drift-king.org/ah/site/var/xc-good-v2-text> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/xc-good-v2-html> ;
+    dcterms:title "render the x-components what-good-looks-like version 2 page" .
+<https://drift-king.org/site/public/intent/x-components-what-good-looks-like-v2.html> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/document.mustache> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/xc-good-v2-html> .
+<https://drift-king.org/ah/site/var/xc-list-v2-html> a p-plan:Variable ; rdfs:label "site/public/approvals/x-components-list-v2.html" .
+<https://drift-king.org/ah/site/render-xc-list-v2>
+    a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/var/document-template> ,
+        <https://drift-king.org/ah/site/var/xc-list-v2-text> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/xc-list-v2-html> ;
+    dcterms:title "render the x-components list version 2 change page" .
+<https://drift-king.org/site/public/approvals/x-components-list-v2.html> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/document.mustache> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/xc-list-v2-html> .
+<https://drift-king.org/ah/site/var/xc-list-v2-approval> a p-plan:Variable ; rdfs:label "site/public/approvals/x-components-list-v2-approval.html" .
+<https://drift-king.org/ah/site/render-xc-list-v2-approval>
+    a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/var/approval-template> ,
+        <https://drift-king.org/ah/site/var/approval-files> ,
+        <https://drift-king.org/ah/site/var/xc-list-v2-text> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/xc-list-v2-approval> ;
+    dcterms:title "render the x-components list version 2 change's approval page" .
+<https://drift-king.org/site/public/approvals/x-components-list-v2-approval.html> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/approval.mustache> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/xc-list-v2-approval> .
+<https://drift-king.org/ah/site/deploy>
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/render-xc-good-v2> ,
+        <https://drift-king.org/ah/site/render-xc-list-v2> ,
+        <https://drift-king.org/ah/site/render-xc-list-v2-approval> .
+
+# ---------------------------------------------------------------------------
+# The design for the landing page (Compliance). Drift King's own work: the lead
+# architect signs second. Its page lists the designer's zip with its sha256, and
+# the letter the approval quotes. The zip is the artifact, and this pins it.
+# ---------------------------------------------------------------------------
+<https://drift-king.org/approvals/drift-king-design.md>
+    a prov:Entity , p-plan:Entity , oa:Annotation ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    dcterms:conformsTo <https://spec.commonmark.org/> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    dcterms:subject <https://drift-king.org/design/drift-king-design-system.zip> ;
+    rdfs:label "The design approval, exactly as above" ;
+    dcterms:references <https://drift-king.org/design/drift-king-design-system.zip> ,
+        <https://drift-king.org/intent/letter-of-intent.md> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/design-text> ;
+    oa:hasTarget [ a oa:SpecificResource ;
+        oa:hasSource <https://drift-king.org/intent/letter-of-intent.md> ;
+        oa:hasSelector [ a oa:TextPositionSelector ; oa:start 198 ; oa:end 265 ] ] .
+
+<https://drift-king.org/site/public/approvals/drift-king-design.md> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:9a0026cdd0e34834f726da15f93420d73fd601b27231ba8bfeb221667d8f77fb" ;
+    prov:wasDerivedFrom <https://drift-king.org/approvals/drift-king-design.md> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/design/drift-king-design-system.zip> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:b898005ef83debb3bce228030463c76b51abcc493c33e776549ad4336331747a" ;
+    prov:wasDerivedFrom <https://drift-king.org/design/drift-king-design-system.zip> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+
+<https://drift-king.org/ah/site/var/design-text> a p-plan:Variable ; rdfs:label "the design approval, as text" .
+<https://drift-king.org/ah/site/var/design-html> a p-plan:Variable ; rdfs:label "site/public/approvals/drift-king-design.html" .
+<https://drift-king.org/ah/site/render-design>
+    a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/var/document-template> ,
+        <https://drift-king.org/ah/site/var/design-text> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/design-html> ;
+    dcterms:title "render the design approval page" .
+<https://drift-king.org/site/public/approvals/drift-king-design.html> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/document.mustache> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/design-html> .
+# The approval page exactly as signed in envelope
+# e9e727c5-745c-84cb-8102-e76d029a1ead, pinned. Kept in signed/, not approvals/,
+# which holds only documents. It is no longer rendered: a signed page is served
+# as signed. The copy step checks its sha256 on every build.
+<https://drift-king.org/signed/approvals/drift-king-design-approval.html>
+    a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    dcterms:identifier "sha256:8408f140c87128e0ed629619daaa7d681e94890adb25e3d64a546bc9184fcce9" ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/approval.mustache> ,
+        <https://drift-king.org/approvals/drift-king-design.md> .
+<https://drift-king.org/site/public/approvals/drift-king-design-approval.html> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:8408f140c87128e0ed629619daaa7d681e94890adb25e3d64a546bc9184fcce9" ;
+    prov:wasDerivedFrom <https://drift-king.org/signed/approvals/drift-king-design-approval.html> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/ah/site/deploy>
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/render-design> .
+
+# ---------------------------------------------------------------------------
+# The open-agreements gap (Compliance), seen by hand on 2026-09-30: the model
+# cannot say which agreements are open, and two signings (#15, #16) had
+# reached DocuSign and not ah. Drift King's own work: the lead architect signs
+# second. Its test is the query that will close it, which does not exist yet;
+# the gap is failed by hand (earl:manual), not by a check that ran.
+# ---------------------------------------------------------------------------
+<https://drift-king.org/not-ah/the-linter/gap/open-agreements>
+    a earl:Assertion , prov:Entity , oa:Annotation ;
+    earl:test <https://drift-king.org/the-linter/checks/open-agreements.rq> ;
+    earl:subject <https://drift-king.org/ah.ttl> ;
+    earl:mode earl:manual ;
+    earl:result [ a earl:TestResult ; earl:outcome earl:failed ] ;
+    rdfs:label "open-agreements: the model cannot say which agreements are open" ;
+    dcterms:title "The model does not know what Drift King is working on" ;
+    oa:hasTarget [ a oa:SpecificResource ;
+        oa:hasSource <https://drift-king.org/intent/letter-of-intent.md> ;
+        oa:hasSelector [ a oa:TextPositionSelector ; oa:start 299 ; oa:end 337 ] ] ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> .
+
+<https://drift-king.org/approvals/gap-open-agreements.md>
+    a prov:Entity , p-plan:Entity , oa:Annotation ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    dcterms:conformsTo <https://spec.commonmark.org/> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    dcterms:subject <https://drift-king.org/not-ah/the-linter/gap/open-agreements> ;
+    rdfs:label "The open-agreements gap, exactly as above" ;
+    dcterms:references <https://drift-king.org/intent/letter-of-intent.md> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/gap-oa-text> ;
+    oa:hasTarget [ a oa:SpecificResource ;
+        oa:hasSource <https://drift-king.org/intent/letter-of-intent.md> ;
+        oa:hasSelector [ a oa:TextPositionSelector ; oa:start 299 ; oa:end 337 ] ] .
+
+<https://drift-king.org/site/public/approvals/gap-open-agreements.md> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:f12b26b9b36385cb4c82d17240c9161e31c18726e60a62ea05a2212c6e0c2c18" ;
+    prov:wasDerivedFrom <https://drift-king.org/approvals/gap-open-agreements.md> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+
+<https://drift-king.org/ah/site/var/gap-oa-text> a p-plan:Variable ; rdfs:label "the open-agreements gap, as text" .
+<https://drift-king.org/ah/site/var/gap-oa-html> a p-plan:Variable ; rdfs:label "site/public/approvals/gap-open-agreements.html" .
+<https://drift-king.org/ah/site/render-gap-oa>
+    a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/var/document-template> ,
+        <https://drift-king.org/ah/site/var/gap-oa-text> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/gap-oa-html> ;
+    dcterms:title "render the open-agreements gap page" .
+<https://drift-king.org/site/public/approvals/gap-open-agreements.html> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/document.mustache> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/gap-oa-html> .
+# The approval page exactly as signed in envelope
+# 26b72ea8-544c-80be-819e-79edda911ee4 (#18), pinned. Kept in signed/, not
+# approvals/, which holds only documents. It is no longer rendered: a signed page
+# is served as signed. The copy step checks its sha256 on every build.
+<https://drift-king.org/signed/approvals/gap-open-agreements-approval.html>
+    a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    dcterms:identifier "sha256:fc63aca0e76ae44b440b1d4d5c2cd835fe1617e2d2e6eb2bc13436b8a37b58d3" ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/approval.mustache> ,
+        <https://drift-king.org/approvals/gap-open-agreements.md> .
+<https://drift-king.org/site/public/approvals/gap-open-agreements-approval.html> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:fc63aca0e76ae44b440b1d4d5c2cd835fe1617e2d2e6eb2bc13436b8a37b58d3" ;
+    prov:wasDerivedFrom <https://drift-king.org/signed/approvals/gap-open-agreements-approval.html> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/ah/site/deploy>
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/render-gap-oa> .
+
+# The check the open-agreements gap names, before it is written: named here,
+# so its address opens on this file and says it does not exist yet.
+<https://drift-king.org/the-linter/checks/open-agreements.rq>
+    rdfs:comment "Not written yet. The query that will close the open-agreements gap: which agreements are open, read from the model." .
+
+# ---------------------------------------------------------------------------
+# The console agreement (Compliance). Drift King's own work: the lead architect
+# signs second. It builds the page that answers the open-agreements gap, so its
+# page lists the letter it quotes and the gap it links. It does not accept or
+# close the gap: that is for the query the gap names.
+# ---------------------------------------------------------------------------
+<https://drift-king.org/approvals/console.md>
+    a prov:Entity , p-plan:Entity , oa:Annotation ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    dcterms:conformsTo <https://spec.commonmark.org/> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    dcterms:subject <https://drift-king.org/not-ah/the-linter/gap/open-agreements> ;
+    rdfs:label "The console agreement, exactly as above" ;
+    dcterms:references <https://drift-king.org/intent/letter-of-intent.md> ,
+        <https://drift-king.org/approvals/gap-open-agreements.md> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/console-text> ;
+    oa:hasTarget [ a oa:SpecificResource ;
+        oa:hasSource <https://drift-king.org/intent/letter-of-intent.md> ;
+        oa:hasSelector [ a oa:TextPositionSelector ; oa:start 299 ; oa:end 337 ] ] .
+
+<https://drift-king.org/site/public/approvals/console.md> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:1a2fce825758bfc350f20e51b06f85e404767e444ff38c193e631b31e12771e7" ;
+    prov:wasDerivedFrom <https://drift-king.org/approvals/console.md> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+
+<https://drift-king.org/ah/site/var/console-text> a p-plan:Variable ; rdfs:label "the console agreement, as text" .
+<https://drift-king.org/ah/site/var/console-html> a p-plan:Variable ; rdfs:label "site/public/approvals/console.html" .
+<https://drift-king.org/ah/site/render-console>
+    a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/var/document-template> ,
+        <https://drift-king.org/ah/site/var/console-text> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/console-html> ;
+    dcterms:title "render the console agreement page" .
+<https://drift-king.org/site/public/approvals/console.html> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/document.mustache> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/console-html> .
+# The approval page exactly as signed in envelope
+# 51812445-9bb5-83c3-80cd-937767a00119, pinned. Kept in signed/, not approvals/, which holds only
+# documents. It is no longer rendered: a signed page is served as signed. The
+# copy step checks its sha256 on every build.
+<https://drift-king.org/signed/approvals/console-approval.html>
+    a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    dcterms:identifier "sha256:1f301d7bb05fe8b5858fe3b0054a3ca09d4ae55cf553ad68b3e3a1bdbeaa2a55" ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/approval.mustache> ,
+        <https://drift-king.org/approvals/console.md> .
+<https://drift-king.org/site/public/approvals/console-approval.html> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:1f301d7bb05fe8b5858fe3b0054a3ca09d4ae55cf553ad68b3e3a1bdbeaa2a55" ;
+    prov:wasDerivedFrom <https://drift-king.org/signed/approvals/console-approval.html> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/ah/site/deploy>
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/render-console> .
+
+# ---------------------------------------------------------------------------
+# The ship gap (Compliance). Drift King's own work: the lead architect signs
+# second. It had no gap node until it was signed: an unsigned gap blocks the ship,
+# so the node was added after the signing, the way the open-agreements gap's was.
+# ---------------------------------------------------------------------------
+<https://drift-king.org/approvals/gap-ship-agreements.md>
+    a prov:Entity , p-plan:Entity , oa:Annotation ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    dcterms:conformsTo <https://spec.commonmark.org/> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    dcterms:subject <https://drift-king.org/not-ah/the-linter/gap/ship-agreements> ;
+    rdfs:label "The ship gap, exactly as above" ;
+    dcterms:references <https://drift-king.org/intent/letter-of-intent.md> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/ship-gap-text> ;
+    oa:hasTarget [ a oa:SpecificResource ;
+        oa:hasSource <https://drift-king.org/intent/letter-of-intent.md> ;
+        oa:hasSelector [ a oa:TextPositionSelector ; oa:start 198 ; oa:end 265 ] ] .
+
+<https://drift-king.org/site/public/approvals/gap-ship-agreements.md> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:681c793574fc82fa8708c72f1995a7fcb20db539fa3b4cd4f1cbc9d8b1e2deb5" ;
+    prov:wasDerivedFrom <https://drift-king.org/approvals/gap-ship-agreements.md> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+
+<https://drift-king.org/ah/site/var/ship-gap-text> a p-plan:Variable ; rdfs:label "the ship gap, as text" .
+<https://drift-king.org/ah/site/var/ship-gap-html> a p-plan:Variable ; rdfs:label "site/public/approvals/gap-ship-agreements.html" .
+<https://drift-king.org/ah/site/render-ship-gap>
+    a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/var/document-template> ,
+        <https://drift-king.org/ah/site/var/ship-gap-text> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/ship-gap-html> ;
+    dcterms:title "render the ship gap page" .
+<https://drift-king.org/site/public/approvals/gap-ship-agreements.html> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/document.mustache> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/ship-gap-html> .
+# The approval page exactly as signed in envelope
+# 4fb8261a-24a8-8e09-80f5-77c039a2013d, pinned. Kept in signed/, not approvals/, which holds only
+# documents. It is no longer rendered: a signed page is served as signed. The
+# copy step checks its sha256 on every build.
+<https://drift-king.org/signed/approvals/gap-ship-agreements-approval.html>
+    a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    dcterms:identifier "sha256:b3137c989958ebd21e55cc0af4f1e851616ea2f4cc907183f86dbc6ac198315f" ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/approval.mustache> ,
+        <https://drift-king.org/approvals/gap-ship-agreements.md> .
+<https://drift-king.org/site/public/approvals/gap-ship-agreements-approval.html> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:b3137c989958ebd21e55cc0af4f1e851616ea2f4cc907183f86dbc6ac198315f" ;
+    prov:wasDerivedFrom <https://drift-king.org/signed/approvals/gap-ship-agreements-approval.html> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/ah/site/deploy>
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/render-ship-gap> .
+
+# ---------------------------------------------------------------------------
+# The ship gap's node (Compliance), added now that it is signed: an agreement
+# cannot go live on its own, because the site ships as one upload. Its test is
+# the check that will close it, which does not exist yet; the gap is failed by
+# hand (earl:manual), not by a check that ran. It is closed in a later change,
+# never in the one that opens it.
+# ---------------------------------------------------------------------------
+<https://drift-king.org/not-ah/the-linter/gap/ship-agreements>
+    a earl:Assertion , prov:Entity , oa:Annotation ;
+    earl:test <https://drift-king.org/the-linter/checks/agreements-ship-alone.rq> ;
+    earl:subject <https://drift-king.org/ah.ttl> ;
+    earl:mode earl:manual ;
+    earl:result [ a earl:TestResult ; earl:outcome earl:failed ] ;
+    rdfs:label "ship-agreements: an agreement cannot go live on its own" ;
+    dcterms:title "Publishing an agreement ships every projection committed since the last ship" ;
+    oa:hasTarget [ a oa:SpecificResource ;
+        oa:hasSource <https://drift-king.org/intent/letter-of-intent.md> ;
+        oa:hasSelector [ a oa:TextPositionSelector ; oa:start 198 ; oa:end 265 ] ] ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> .
+
+# The check the ship gap names, before it is written: named here, so its address
+# opens on this file and says it does not exist yet.
+<https://drift-king.org/the-linter/checks/agreements-ship-alone.rq>
+    rdfs:comment "Not written yet. The check that will close the ship gap: an agreement upload holds only agreements, their approval pages and what they link, and a canary with one projection in it must fail it." .
+
+# ---------------------------------------------------------------------------
+# The file-provenance gap (Compliance). Drift King's own work: the lead architect
+# signs second. It has no gap node yet: an unsigned gap blocks the ship, so the
+# node is added after the signing, the way the open-agreements gap's was.
+# ---------------------------------------------------------------------------
+<https://drift-king.org/approvals/gap-file-provenance.md>
+    a prov:Entity , p-plan:Entity , oa:Annotation ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    dcterms:conformsTo <https://spec.commonmark.org/> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    rdfs:label "The file-provenance gap, exactly as above" ;
+    dcterms:references <https://drift-king.org/intent/letter-of-intent.md> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/file-prov-gap-text> ;
+    oa:hasTarget [ a oa:SpecificResource ;
+        oa:hasSource <https://drift-king.org/intent/letter-of-intent.md> ;
+        oa:hasSelector [ a oa:TextPositionSelector ; oa:start 438 ; oa:end 472 ] ] .
+
+<https://drift-king.org/site/public/approvals/gap-file-provenance.md> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:1d360c25061070670566aa15610bc4a1edf21f254adbe4e8a29dfb950d107ff7" ;
+    prov:wasDerivedFrom <https://drift-king.org/approvals/gap-file-provenance.md> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+
+<https://drift-king.org/ah/site/var/file-prov-gap-text> a p-plan:Variable ; rdfs:label "the file-provenance gap, as text" .
+<https://drift-king.org/ah/site/var/file-prov-gap-html> a p-plan:Variable ; rdfs:label "site/public/approvals/gap-file-provenance.html" .
+<https://drift-king.org/ah/site/var/file-prov-gap-approval> a p-plan:Variable ; rdfs:label "site/public/approvals/gap-file-provenance-approval.html" .
+<https://drift-king.org/ah/site/render-file-prov-gap>
+    a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/var/document-template> ,
+        <https://drift-king.org/ah/site/var/file-prov-gap-text> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/file-prov-gap-html> ;
+    dcterms:title "render the file-provenance gap page" .
+<https://drift-king.org/site/public/approvals/gap-file-provenance.html> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/document.mustache> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/file-prov-gap-html> .
+<https://drift-king.org/ah/site/render-file-prov-gap-approval>
+    a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/var/approval-template> ,
+        <https://drift-king.org/ah/site/var/approval-files> ,
+        <https://drift-king.org/ah/site/var/file-prov-gap-text> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/file-prov-gap-approval> ;
+    dcterms:title "render the file-provenance gap's approval page" .
+<https://drift-king.org/site/public/approvals/gap-file-provenance-approval.html> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/approval.mustache> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/file-prov-gap-approval> .
+<https://drift-king.org/ah/site/deploy>
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/render-file-prov-gap> ,
+        <https://drift-king.org/ah/site/render-file-prov-gap-approval> .
+
+# ---------------------------------------------------------------------------
+# The x-components 0.2.0 release approval (Compliance), written, not signed. Its
+# approval page lists the nine files npm will publish from the candidate commit,
+# the 23 packages cheerio brings, and what each check found on them, with
+# the sha256 of every file. No signing is recorded until it is signed.
+# ---------------------------------------------------------------------------
+<https://drift-king.org/approvals/x-components-0.2.0-release.md>
+    a prov:Entity , p-plan:Entity , oa:Annotation ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    dcterms:conformsTo <https://spec.commonmark.org/> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    dcterms:subject <https://drift-king.org/not-ah/npm/apricotter-x-components> ;
+    rdfs:label "The release approval, exactly as above" ;
+    dcterms:references <https://drift-king.org/not-ah/npm/cheerio/1.2.0> ,
+        <https://drift-king.org/intent/x-components-letter-of-intent.md> ,
+        <https://drift-king.org/intent/x-components-what-good-looks-like.md> ,
+        <https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/LICENSE> ,
+        <https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/NOTICE> ,
+        <https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/README.md> ,
+        <https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/package.json> ,
+        <https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/component.ttl> ,
+        <https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/wai-aria.ttl> ,
+        <https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/component-attributes.generated.mjs> ,
+        <https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/expand.mjs> ,
+        <https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/static.mjs> ,
+        <https://drift-king.org/the-linter/checks/x-components-components-whole.rq> ,
+        <https://drift-king.org/the-linter/canaries/x-components-components-whole.ttl> ,
+        <https://drift-king.org/the-linter/checks/x-components-roles-resolve.rq> ,
+        <https://drift-king.org/the-linter/canaries/x-components-roles-resolve.ttl> ,
+        <https://drift-king.org/the-linter/checks/x-components-words-clean.rq> ,
+        <https://drift-king.org/the-linter/canaries/x-components-words-clean.ttl> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/xc020-release-text> ;
+    oa:hasTarget [ a oa:SpecificResource ;
+        oa:hasSource <https://drift-king.org/intent/x-components-letter-of-intent.md> ;
+        oa:hasSelector [ a oa:TextPositionSelector ; oa:start 557 ; oa:end 630 ] ] .
+<https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/LICENSE> rdfs:label "The 0.2.0 candidate's LICENSE, exact bytes" .
+<https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/NOTICE> rdfs:label "The 0.2.0 candidate's NOTICE, exact bytes" .
+<https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/README.md> rdfs:label "The 0.2.0 candidate's README.md, exact bytes" .
+<https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/package.json> rdfs:label "The 0.2.0 candidate's package.json, exact bytes" .
+<https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/component.ttl> rdfs:label "The 0.2.0 candidate's component.ttl, exact bytes" .
+<https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/wai-aria.ttl> rdfs:label "The 0.2.0 candidate's wai-aria.ttl, exact bytes" .
+<https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/component-attributes.generated.mjs> rdfs:label "The 0.2.0 candidate's component-attributes.generated.mjs, exact bytes" .
+<https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/expand.mjs> rdfs:label "The 0.2.0 candidate's expand.mjs, exact bytes" .
+<https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/static.mjs> rdfs:label "The 0.2.0 candidate's static.mjs, exact bytes" .
+
+<https://drift-king.org/site/public/approvals/x-components-0.2.0-release.md> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:2b203623117b35d4b9c5adb24e0118f9ab5e4ff17e001ba0a79ec64809b9bcc3" ;
+    prov:wasDerivedFrom <https://drift-king.org/approvals/x-components-0.2.0-release.md> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/ah/site/var/xc020-release-text> a p-plan:Variable ; rdfs:label "the x-components 0.2.0 release approval, as text" .
+<https://drift-king.org/ah/site/var/xc020-release-html> a p-plan:Variable ; rdfs:label "site/public/approvals/x-components-0.2.0-release.html" .
+<https://drift-king.org/ah/site/var/xc020-release-approval> a p-plan:Variable ; rdfs:label "site/public/approvals/x-components-0.2.0-release-approval.html" .
+<https://drift-king.org/ah/site/render-xc020-release>
+    a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/var/document-template> ,
+        <https://drift-king.org/ah/site/var/xc020-release-text> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/xc020-release-html> ;
+    dcterms:title "render the x-components 0.2.0 release page" .
+<https://drift-king.org/site/public/approvals/x-components-0.2.0-release.html> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/document.mustache> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/xc020-release-html> .
+<https://drift-king.org/ah/site/render-xc020-release-approval>
+    a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    # Waits for the audit's last check on the candidate, so the page shows what it found.
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/the-linter/x-components-words-clean/real-step-0-2-0> ,
+        <https://drift-king.org/ah/site/check-wanted-quotes> ,
+        <https://drift-king.org/ah/site/render-check-release-wanted> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/var/approval-release-template> ,
+        <https://drift-king.org/ah/site/var/approval-files> ,
+        <https://drift-king.org/ah/site/var/approval-packages> ,
+        <https://drift-king.org/ah/site/var/approval-release-results> ,
+        <https://drift-king.org/ah/site/var/approval-wanted> ,
+        <https://drift-king.org/ah/site/var/approval-unnamed> ,
+        <https://drift-king.org/ah/site/var/xc020-release-text> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/xc020-release-approval> ;
+    dcterms:title "render the x-components 0.2.0 release's approval page" .
+<https://drift-king.org/site/public/approvals/x-components-0.2.0-release-approval.html> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/approval-release.mustache> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/xc020-release-approval> .
+
+# ---------------------------------------------------------------------------
+# The x-components sub-dependency gap (Compliance), written, not signed. No gap
+# node until it is signed: known-gap.rq counts a gap only once a signing used it.
+# ---------------------------------------------------------------------------
+<https://drift-king.org/approvals/gap-x-components-sub-dependencies.md>
+    a prov:Entity , p-plan:Entity , oa:Annotation ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    dcterms:conformsTo <https://spec.commonmark.org/> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    dcterms:subject <https://drift-king.org/not-ah/npm/apricotter-x-components> ;
+    rdfs:label "The x-components sub-dependency gap, exactly as above" ;
+    dcterms:references <https://drift-king.org/intent/x-components-letter-of-intent.md> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/xc-subdeps-gap-text> ;
+    oa:hasTarget [ a oa:SpecificResource ;
+        oa:hasSource <https://drift-king.org/intent/x-components-letter-of-intent.md> ;
+        oa:hasSelector [ a oa:TextPositionSelector ; oa:start 557 ; oa:end 630 ] ] .
+<https://drift-king.org/site/public/approvals/gap-x-components-sub-dependencies.md> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:1869e1e204aefc12b80f7b57365e6899538f8f74836c00ed3d89a9e108bd501c" ;
+    prov:wasDerivedFrom <https://drift-king.org/approvals/gap-x-components-sub-dependencies.md> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/ah/site/var/xc-subdeps-gap-text> a p-plan:Variable ; rdfs:label "the sub-dependency gap, as text" .
+<https://drift-king.org/ah/site/var/xc-subdeps-gap-html> a p-plan:Variable ; rdfs:label "site/public/approvals/gap-x-components-sub-dependencies.html" .
+<https://drift-king.org/ah/site/var/xc-subdeps-gap-approval> a p-plan:Variable ; rdfs:label "site/public/approvals/gap-x-components-sub-dependencies-approval.html" .
+<https://drift-king.org/ah/site/render-xc-subdeps-gap>
+    a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/var/document-template> ,
+        <https://drift-king.org/ah/site/var/xc-subdeps-gap-text> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/xc-subdeps-gap-html> ;
+    dcterms:title "render the sub-dependency gap page" .
+<https://drift-king.org/site/public/approvals/gap-x-components-sub-dependencies.html> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/document.mustache> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/xc-subdeps-gap-html> .
+<https://drift-king.org/ah/site/render-xc-subdeps-gap-approval>
+    a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/var/approval-template> ,
+        <https://drift-king.org/ah/site/var/approval-files> ,
+        <https://drift-king.org/ah/site/var/xc-subdeps-gap-text> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/xc-subdeps-gap-approval> ;
+    dcterms:title "render the sub-dependency gap's approval page" .
+<https://drift-king.org/site/public/approvals/gap-x-components-sub-dependencies-approval.html> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/approval.mustache> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/xc-subdeps-gap-approval> .
+<https://drift-king.org/ah/site/deploy>
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/render-xc020-release> ,
+        <https://drift-king.org/ah/site/render-xc020-release-approval> ,
+        <https://drift-king.org/ah/site/render-xc-subdeps-gap> ,
+        <https://drift-king.org/ah/site/render-xc-subdeps-gap-approval> .
+
+# The directive the lead architect gave for readying 0.2.0 for signing, kept as given.
+<https://drift-king.org/directives/x-components-0.2.0-release.md> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    dcterms:conformsTo <https://spec.commonmark.org/> ;
+    dcterms:identifier "sha256:5af98fafbbd0d6f979c159f6ee2f04d770ec7255c76937bb360e45610c297174" ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/lead-architect> ;
+    rdfs:comment "Readies the release and the sub-dependency gap for signing. It pushes, tags, publishes and ships nothing." .
+
+# The directive that adds to the release one, kept as given: the release approval page shows
+# what was wanted beside what went.
+<https://drift-king.org/directives/x-components-0.2.0-release-page.md> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    dcterms:conformsTo <https://spec.commonmark.org/> ;
+    dcterms:identifier "sha256:917060f6154e3d30c74650931561605c04fbd5240fbfd9a963aab42f8e8bc070" ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/lead-architect> ;
+    rdfs:comment "The release approval page shows what the signed list and the next-version document wanted, beside the checks that prove it. It pushes, tags, publishes and ships nothing." .
+
+# The directive that fixes the release approval page, kept as given: the page reads no meaning from a name,
+# the panes, the sticker and the seal are checked, and a canary that crashes is not a canary.
+<https://drift-king.org/directives/x-components-0.2.0-release-page-fixes.md> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    dcterms:conformsTo <https://spec.commonmark.org/> ;
+    dcterms:identifier "sha256:830f24b16e24639b80cad35679d20080332de3942d32007f80f6167662a5dc7b" ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/lead-architect> ;
+    rdfs:comment "Adds to the release page directive. It pushes, tags, publishes and ships nothing." .
+
+# A directive the lead architect left for the coder, kept as given and not yet carried out: the homepage waits for 0.2.0 to be taken.
+<https://drift-king.org/directives/hold-the-homepage.md> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    dcterms:conformsTo <https://spec.commonmark.org/> ;
+    dcterms:identifier "sha256:0f8525ff77e3653e9407b4dc6c6aa68f4eaebeec5b19e1d2dcdeab6519419132" ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/lead-architect> ;
+    rdfs:comment "The new homepage must not go live until 0.2.0 is taken. Not yet carried out." .
+
+# The folder where Compliance leaves directives for the coder. Each file in it is named in
+# the model, with its sha256, when it is first read; until then it is expected, not a failure.
+# A file anywhere else that no statement names still fails named-by-nobody.
+<https://drift-king.org/ah/IntakeFolder> a owl:Class ;
+    rdfs:label "intake folder" ;
+    rdfs:comment "A folder whose files arrive unnamed and are named in the model when they are first read." .
+<https://drift-king.org/directives/> a prov:Collection , <https://drift-king.org/ah/IntakeFolder> ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    rdfs:label "directives" ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    rdfs:comment "Where Compliance leaves directives for the coder. Each file here is named in the model, with its sha256, when it is first read." .
+
+# A directive left for the coder, named when first read: each file's type comes from the model.
+<https://drift-king.org/directives/headers-from-the-model.md> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/directives/> ;
+    dcterms:conformsTo <https://spec.commonmark.org/> ;
+    dcterms:identifier "sha256:1d402d953ebe33c2cf57372aaafc4b32b13eb42d13ca427717db4778f010010e" ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/lead-architect> ;
+    rdfs:comment "Every published file says its media type, and the headers file is generated from those types." .

@@ -1,0 +1,12 @@
+# Every step whose command reaches outside this machine -- a deploy, a push,
+# a publish, a registry -- is marked a ship step, so a plain run cannot ship
+# it by mistake. A sample of commands, not a proof: a new way to ship needs
+# its word added here, with a canary.
+PREFIX sd: <https://w3id.org/okn/o/sd#>
+
+SELECT ?step ?command WHERE {
+  ?step sd:hasExecutionCommand ?command .
+  FILTER (regex(?command, "wrangler (deploy|versions)|crane|git push|npm (publish|stage)|registries credentials"))
+  FILTER NOT EXISTS { ?step a <https://drift-king.org/ah/the-builder/ShipStep> }
+}
+ORDER BY ?step

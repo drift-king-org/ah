@@ -1,0 +1,7 @@
+@prefix cmp:  <https://apricotter.com/ns/components#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+# Must be found: a comment that points at another repository's file.
+cmp:x-canary rdfs:comment "Split out on 2026-09-19, see CLAUDE.md." .
+# Must stay clean: a comment about the component itself.
+cmp:x-whole rdfs:comment "A card with a heading and a body." .

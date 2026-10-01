@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{head.title}}</title>
+<meta name="description" content="{{head.description}}">
+<link rel="stylesheet" href="/home.css">
+<link rel="icon" href="https://pid1.drift-king.org/favicon.ico">
+</head>
+<body>
+<x-header brand="{{header.brand}}" contact-href="/console" contact-label="{{header.console}}"></x-header>
+<x-section as="div">
+<x-hero heading="{{hero.heading}}" pitch="{{hero.pitch}}" image="/images/kart-cutout.webp"></x-hero>
+{{#hero.stickers}}<x-sticker label="{{label}}"></x-sticker>
+{{/hero.stickers}}</x-section>
+<x-tape-pair control-name="{{tape.control.name}}" pause-label="{{tape.control.pause}}" play-label="{{tape.control.play}}">
+{{#tape.bands}}<x-tape roll separator="{{tape.separator}}">
+{{#items}}{{#href}}<x-tape-item text="{{text}}" href="{{href}}"></x-tape-item>{{/href}}{{^href}}<x-tape-item text="{{text}}"></x-tape-item>{{/href}}
+{{/items}}</x-tape>
+{{/tape.bands}}</x-tape-pair>
+<x-column as="main">
+<x-section as="div">
+<x-statement-card><x-statement-card-text><x-statement-card-lead>{{statement.lead}}</x-statement-card-lead><x-statement-card-follow>{{statement.follow}}</x-statement-card-follow></x-statement-card-text></x-statement-card>
+</x-section>
+<x-section as="section" id="{{spot.id}}" divider media-split>
+<x-section as="div">
+<x-heading>{{spot.heading}}</x-heading>
+<x-prose>{{spot.intro}}</x-prose>
+<x-prose>{{spot.finding}}</x-prose>
+<x-prose muted>{{spot.hint}}</x-prose>
+</x-section>
+<x-section as="div">
+<x-line-panes label="{{spot.panes_label}}">
+<x-line-pane heading="{{spot.signed.heading}}">
+{{#spot.signed.lines}}<x-line text="{{text}}"></x-line>
+{{/spot.signed.lines}}</x-line-pane>
+<x-line-pane heading="{{spot.code.heading}}" stamp="{{spot.code.stamp}}">
+{{#spot.code.lines}}<x-line text="{{text}}" mark="{{mark}}"></x-line>
+{{/spot.code.lines}}</x-line-pane>
+</x-line-panes>
+<x-note>{{spot.caption}}</x-note>
+</x-section>
+</x-section>
+<x-section as="section" divider>
+<x-heading>{{how.heading}}</x-heading>
+<x-statement-list>
+{{#how.steps}}<x-statement><x-statement-claim>{{claim}}</x-statement-claim><x-statement-support>{{support}}</x-statement-support></x-statement>
+{{/how.steps}}</x-statement-list>
+</x-section>
+<x-section as="section" divider>
+<x-heading>{{never.heading}}</x-heading>
+<x-rule-list>
+{{#never.rules}}<x-rule-list-item>{{text}}</x-rule-list-item>
+{{/never.rules}}</x-rule-list>
+</x-section>
+<x-section as="section" divider>
+<x-card-link image="/images/scene.webp" image-alt="{{close.scene_alt}}"></x-card-link>
+<x-heading>{{close.heading}}</x-heading>
+<x-prose muted>{{close.prose}}</x-prose>
+<x-seal line="{{close.seal.line}}" subline="{{close.seal.subline}}"></x-seal>
+<x-cta-row>
+<x-button href="/intent/letter-of-intent" label="{{close.letter}}"></x-button>
+<x-button href="/console" variant="secondary" label="{{close.console}}"></x-button>
+</x-cta-row>
+</x-section>
+</x-column>
+<x-footer brand="{{footer.brand}}" blurb="{{footer.blurb}}" links-heading="{{footer.links_heading}}" copyright="{{footer.copyright}}">
+{{#footer.links}}<x-link href="{{href}}" label="{{label}}"></x-link>
+{{/footer.links}}</x-footer>
+</body>
+</html>

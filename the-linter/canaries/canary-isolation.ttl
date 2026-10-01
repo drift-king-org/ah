@@ -1,0 +1,47 @@
+# Canary for canary-isolation.rq: one step that reads a canary and the real
+# model together. The check must find it. Its own fake plan, so it can never
+# touch ah/the-builder/plan.
+@prefix owl:    <http://www.w3.org/2002/07/owl#> .
+@prefix vann:   <http://purl.org/vocab/vann/> .
+@prefix earl:   <http://www.w3.org/ns/earl#> .
+@prefix p-plan: <http://purl.org/net/p-plan#> .
+
+<https://drift-king.org/ah.ttl> a owl:Ontology ;
+    vann:preferredNamespaceUri "https://drift-king.org/" .
+
+<https://drift-king.org/not-ah/canary/canary-isolation/plan> a p-plan:Plan .
+
+<https://drift-king.org/not-ah/canary/canary-isolation/fake-canary.ttl>
+    p-plan:correspondsToVariable <https://drift-king.org/not-ah/canary/canary-isolation/var/canary> .
+<https://drift-king.org/ah.ttl>
+    p-plan:correspondsToVariable <https://drift-king.org/not-ah/canary/canary-isolation/var/model> .
+
+[ a earl:Assertion ;
+  earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/not-ah/canary/canary-isolation/fake-canary.ttl> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ] ] .
+
+# Must be found: reads both.
+<https://drift-king.org/not-ah/canary/canary-isolation/leaky-step>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/not-ah/canary/canary-isolation/plan> ;
+    p-plan:hasInputVar <https://drift-king.org/not-ah/canary/canary-isolation/var/canary> ,
+                       <https://drift-king.org/not-ah/canary/canary-isolation/var/model> .
+
+# Must stay clean: reads the canary alone.
+<https://drift-king.org/not-ah/canary/canary-isolation/clean-step>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/not-ah/canary/canary-isolation/plan> ;
+    p-plan:hasInputVar <https://drift-king.org/not-ah/canary/canary-isolation/var/canary> .
+
+# Must stay clean: a gap. A failed assertion about the real model, made by an
+# agent, not the-linter, is not a canary. Every step that reads the model
+# alone must not be reported because of it.
+[ a earl:Assertion ;
+  earl:assertedBy <https://drift-king.org/not-ah/canary/canary-isolation/agent> ;
+  earl:subject <https://drift-king.org/ah.ttl> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ] ] .
+<https://drift-king.org/not-ah/canary/canary-isolation/model-step>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/not-ah/canary/canary-isolation/plan> ;
+    p-plan:hasInputVar <https://drift-king.org/not-ah/canary/canary-isolation/var/model> .

@@ -1,0 +1,30 @@
+$ npx wrangler tail --format pretty
+ ⛅️ wrangler 4.142.0
+────────────────────
+Successfully created tail, expires at 2026-09-27T23:42:04Z
+Connected to cloudflare-pid-rs, waiting for logs...
+Alarm @ 9/27/2026, 1:40:38 PM - Canceled
+Alarm @ 9/27/2026, 1:42:58 PM - Ok
+Alarm @ 9/27/2026, 1:45:58 PM - Ok
+Alarm @ 9/27/2026, 1:45:58 PM - Ok
+  (log) Activity expired, signalling container to stop
+Alarm @ 9/27/2026, 1:47:57 PM - Ok
+Alarm @ 9/27/2026, 1:47:57 PM - Canceled
+
+Notes:
+- This is the Durable Object side of the shutdown (the @cloudflare/containers
+  library's own alarm-driven idle check), not the container's own stdout.
+  "Activity expired, signalling container to stop" at ~1:45:58 PM ET is when
+  the DO decided to stop the container after the sleepAfter: "5m" idle
+  timeout, i.e. when it would have sent SIGTERM.
+- wrangler tail does not carry the container's own stdout/stderr. Per
+  Cloudflare, that goes to Workers Logs / Containers observability
+  (dashboard), not any CLI surface this session has access to. The actual
+  "pid1: SIGTERM received, exiting" line and its exact timestamp are NOT
+  captured here. Direct proof of a clean exit was obtained a different way
+  instead — see proof/M6-onstop.txt (Container class onStop hook reporting
+  exitCode=0 reason=exit).
+- Deploy that started the instance: 2026-09-27T17:39:47Z (Application ID
+  a037d97f-6ca2-4cd2-8f30-8f4740bd044e). No manual stop trigger exists via
+  wrangler CLI; this is the natural idle-sleep path, not a forced redeploy
+  (a same-digest redeploy reported "no changes" and did not restart it).

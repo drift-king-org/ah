@@ -1,0 +1,1998 @@
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix dcat:    <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
+@prefix sd:      <https://w3id.org/okn/o/sd#> .
+@prefix vann:    <http://purl.org/vocab/vann/> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix earl:    <http://www.w3.org/ns/earl#> .
+@prefix sosa:    <http://www.w3.org/ns/sosa/> .
+@prefix p-plan:  <http://purl.org/net/p-plan#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix oa:      <http://www.w3.org/ns/oa#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+# A part of ah.ttl, imported by it. ah.ttl is the root: its namespace,
+# its imports and its agents. The checks run on all the parts together.
+<https://drift-king.org/ah/site.ttl>
+    a owl:Ontology , prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    dcterms:title "drift-king.org: the site's copies, renders and deploy" .
+
+# ===========================================================================
+# drift-king.org (added by the reviewer): the public site. Files only, no
+# script. Every page is generated from a template, the model and the commit,
+# so its words cannot drift from what was signed. Its deploy waits only for
+# its own steps, never for the product checks: a signed page, or a gap page
+# that has to be read before it is signed, must go online even while a check
+# fails. pid1's deploy stays gated by every check.
+# ===========================================================================
+<https://drift-king.org/ah/site>
+    a prov:SoftwareAgent ;
+    dcterms:title "drift-king.org" ;
+    dcterms:requires <https://drift-king.org/ah/site/deploy> .
+
+# The source files, all under site/.
+<https://drift-king.org/site/wrangler.jsonc> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:conformsTo <https://developers.cloudflare.com/workers/wrangler/configuration/> ;
+    prov:wasAttributedTo <https://drift-king.org/not-ah/agent/reviewer> .
+<https://drift-king.org/site/templates/index.mustache> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    prov:wasAttributedTo <https://drift-king.org/not-ah/agent/reviewer> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/index-template> ;
+    rdfs:comment "The home page. From the Drift King Wild design the lead architect supplied: the example lines are labeled Example, the letter and its proof come from the model and the signed file, the three lines under What we do not do are quoted from the letter, and there is no script." .
+<https://drift-king.org/site/templates/letter.mustache> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    prov:wasAttributedTo <https://drift-king.org/not-ah/agent/reviewer> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/letter-template> .
+<https://drift-king.org/site/style.css> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:conformsTo <https://www.w3.org/TR/css/> ;
+    prov:wasAttributedTo <https://drift-king.org/not-ah/agent/reviewer> ;
+    rdfs:comment "The design's own tokens and page styles, with its fonts as files instead of embedded data." .
+<https://drift-king.org/site/404.html> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:conformsTo <https://html.spec.whatwg.org/> ;
+    prov:wasAttributedTo <https://drift-king.org/not-ah/agent/reviewer> .
+<https://drift-king.org/site/images/racer.png> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:319d6c42f6e91ac96fa759487583833989a00c06c26898c928a92b50c40141a7" ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/lead-architect> ;
+    rdfs:comment "The kart racer cut-out, taken byte for byte from the Drift King Wild design the lead architect supplied." .
+
+<https://drift-king.org/ah/site/var/letter-text>       a p-plan:Variable ; rdfs:label "the signed letter, as text" .
+<https://drift-king.org/ah/site/var/letter-signing>    a p-plan:Variable ; rdfs:label "the letter's signing: date, envelope, sha256" .
+<https://drift-king.org/ah/site/var/index-template>    a p-plan:Variable ; rdfs:label "the home page template" .
+<https://drift-king.org/ah/site/var/letter-template>   a p-plan:Variable ; rdfs:label "the letter page template" .
+<https://drift-king.org/ah/site/var/letter-html>       a p-plan:Variable ; rdfs:label "site/public/intent/letter-of-intent.html" .
+<https://drift-king.org/ah/site/var/index-html>        a p-plan:Variable ; rdfs:label "site/public/index.html, the home page that is live now" .
+<https://drift-king.org/ah/site/var/copies>            a p-plan:Variable ; rdfs:label "files copied into site/public" .
+<https://drift-king.org/ah/site/var/racer-webp>        a p-plan:Variable ; rdfs:label "site/public/images/racer.webp" .
+<https://drift-king.org/ah/site/var/kart-webp>         a p-plan:Variable ; rdfs:label "site/public/images/kart.webp" .
+
+# The steps.
+<https://drift-king.org/ah/site/render-index>
+    a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/var/index-template> ,
+        <https://drift-king.org/ah/site/var/letter-signing> ,
+        <https://drift-king.org/ah/site/var/letter-text> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/index-html> ;
+    dcterms:title "render the home page that is live now" ;
+    dcterms:description "The home page as it is live, from its own template, the signed letter and its signing. It is published while the new home page is held." .
+<https://drift-king.org/ah/site/render-letter>
+    a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/var/letter-template> ,
+        <https://drift-king.org/ah/site/var/letter-signing> ,
+        <https://drift-king.org/ah/site/var/letter-text> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/letter-html> ;
+    dcterms:title "render the letter page" .
+<https://drift-king.org/ah/site/publish>
+    a <https://drift-king.org/ah/the-builder/CopyStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/copies> ;
+    dcterms:title "copy the signed letter, the styles, the fonts and the 404 page into the site, from the commit" .
+<https://drift-king.org/ah/site/webp-racer>
+    a sd:SoftwareConfiguration , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/racer-webp> ;
+    dcterms:title "convert the racer to webp" ;
+    sd:hasExecutionCommand "mkdir -p site/public/images && ffmpeg -y -i site/images/racer.png -quality 85 site/public/images/racer.webp" ;
+    dcterms:requires <https://drift-king.org/not-ah/ffmpeg> .
+<https://drift-king.org/ah/site/webp-kart>
+    a sd:SoftwareConfiguration , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/kart-webp> ;
+    dcterms:title "convert the orange grove kart to webp" ;
+    sd:hasExecutionCommand "mkdir -p site/public/images && ffmpeg -y -i Gemini_Generated_Image_75wd8p75wd8p75wd.jpg -quality 85 site/public/images/kart.webp" ;
+    dcterms:requires <https://drift-king.org/not-ah/ffmpeg> .
+<https://drift-king.org/ah/site/deploy>
+    a sd:SoftwareConfiguration , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/render-index> ,
+        <https://drift-king.org/ah/site/render-letter> ,
+        <https://drift-king.org/ah/site/publish> ,
+        <https://drift-king.org/ah/site/webp-racer> ,
+        <https://drift-king.org/ah/site/webp-kart> ;
+    dcterms:title "deploy drift-king.org" ;
+    sd:hasExecutionCommand "cd site && npx --yes wrangler@4.145.0 deploy" ;
+    dcterms:requires <https://drift-king.org/not-ah/wrangler> .
+
+# Where drift-king.org is served on the lead architect's machine, to try a
+# change before it ships. Not a step of the-builder: wrangler dev runs until
+# it is stopped. The take-a-release plan starts it, runs its checks against
+# the endpoint, and stops it by its PID. It changes nothing outside this
+# machine, so it is not a ship step.
+<https://drift-king.org/ah/site/endpoint/local>
+    a dcat:DataService ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcat:endpointURL <http://127.0.0.1:8787/> ;
+    rdfs:comment "drift-king.org served on the lead architect's machine, from site/public. Never public." .
+<https://drift-king.org/ah/site/serve-local>
+    a sd:SoftwareConfiguration ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:title "serve drift-king.org on this machine" ;
+    sd:hasExecutionCommand "cd site && npx --yes wrangler@4.145.0 dev --local --port 8787" ;
+    dcterms:requires <https://drift-king.org/not-ah/wrangler> .
+
+# What the steps make, each pointing at its source. The copies carry the
+# sha256 they must have; the rendered pages and webp files are checked by
+# being generated from pinned inputs.
+<https://drift-king.org/site/public/index.html> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/index.mustache> ,
+        <https://drift-king.org/site/templates/home.mustache> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/index-html> ,
+        <https://drift-king.org/ah/site/var/home-html> ;
+    rdfs:comment "While the new home page is held, this is the home page that is live now, rendered from index.mustache. Once 0.2.0 is taken, the expand step writes the new one over it." .
+<https://drift-king.org/site/public/intent/letter-of-intent.html> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/letter.mustache> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/letter-html> .
+<https://drift-king.org/site/public/images/racer.webp> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/site/images/racer.png> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/racer-webp> .
+<https://drift-king.org/site/public/images/kart.webp> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/Gemini_Generated_Image_75wd8p75wd8p75wd.jpg> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/kart-webp> .
+<https://drift-king.org/site/public/intent/letter-of-intent.md> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:0c5ede6bce924501a740c2a130c0db8e04f3ff9235994598e798d66cf3cb94a0" ;
+    prov:wasDerivedFrom <https://drift-king.org/intent/letter-of-intent.md> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/style.css> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:c1d5a9d134342577c746d29d895f34830d3528999177296f8ecf11bb2a738113" ;
+    prov:wasDerivedFrom <https://drift-king.org/site/style.css> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/404.html> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:f07182ae1eb752c0fcd7ebea0e776ac447c4e9a88a18df1402055b33da06233d" ;
+    prov:wasDerivedFrom <https://drift-king.org/site/404.html> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/fonts/bungee-400.woff2> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:126eec706b7931682dbcf6c6efc274132c603f181fbf912678e6cfeb341e721b" ;
+    prov:wasDerivedFrom <https://drift-king.org/site/fonts/bungee-400.woff2> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/fonts/bungee-shade-400.woff2> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:5ac7452cbe7996c88c84998b86227ffbee8afb7ab5bd0b2b2512229dcac7e315" ;
+    prov:wasDerivedFrom <https://drift-king.org/site/fonts/bungee-shade-400.woff2> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/fonts/chakra-petch-400.woff2> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:7d75be85dd1627e27ec151e9a3701e661bc4f8c2a93611bdd92f3a05d6bbd942" ;
+    prov:wasDerivedFrom <https://drift-king.org/site/fonts/chakra-petch-400.woff2> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/fonts/chakra-petch-500.woff2> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:36ad966cb653de70ba37355c41003b02de8940b2df6cbcd46480a6ad8cadd65d" ;
+    prov:wasDerivedFrom <https://drift-king.org/site/fonts/chakra-petch-500.woff2> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/fonts/chakra-petch-600.woff2> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:a5888696e9eb1b4bbbecc8eb3922b8369f49d4bddb72263e033cbd17f399be76" ;
+    prov:wasDerivedFrom <https://drift-king.org/site/fonts/chakra-petch-600.woff2> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/fonts/chakra-petch-700.woff2> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:ce5095dc1cb200aaa939e38067a0677018d10e9f26ec38cdcf1557ac524fc775" ;
+    prov:wasDerivedFrom <https://drift-king.org/site/fonts/chakra-petch-700.woff2> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/fonts/jetbrains-mono.woff2> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:83c005d49d8a6a50474c73a5a36ac0468076e9c4a29da7bdb14995d80560a5be" ;
+    prov:wasDerivedFrom <https://drift-king.org/site/fonts/jetbrains-mono.woff2> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+
+<https://drift-king.org/site/templates/document.mustache>
+    a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    prov:wasAttributedTo <https://drift-king.org/not-ah/agent/reviewer> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/document-template> ;
+    rdfs:comment "A plain readable page for any signed or presented document: its title and paragraphs, nothing else." .
+
+<https://drift-king.org/ah/site/var/gap-text>          a p-plan:Variable ; rdfs:label "the code-strings gap, as text" .
+<https://drift-king.org/ah/site/var/document-template> a p-plan:Variable ; rdfs:label "the plain document template" .
+<https://drift-king.org/ah/site/var/gap-html>          a p-plan:Variable ; rdfs:label "site/public/approvals/gap-code-strings.html" .
+
+<https://drift-king.org/ah/site/render-gap>
+    a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/var/document-template> ,
+        <https://drift-king.org/ah/site/var/gap-text> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/gap-html> ;
+    dcterms:title "render the code-strings gap page" .
+<https://drift-king.org/ah/site/deploy>
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/render-gap> .
+
+<https://drift-king.org/site/public/approvals/gap-code-strings.html> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/document.mustache> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/gap-html> .
+<https://drift-king.org/site/public/approvals/gap-code-strings.md> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:41371d68b1f602a1f8c75c4d9f3250707bbe3fed4b13b1b3711e55c84488858e" ;
+    prov:wasDerivedFrom <https://drift-king.org/approvals/gap-code-strings.md> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+
+<https://drift-king.org/site/public/the-linter/checks/code-strings-named.rq> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:8f964c32a55282d6b46ee75cb95ece08ae2a45ba65ae92d185c2ff37e027358b" ;
+    prov:wasDerivedFrom <https://drift-king.org/the-linter/checks/code-strings-named.rq> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/_headers> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:d515e90c910123b3459e1db8028b1f9ccc5731d6c70636944a2e6186cd3eb2b7" ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/headers.mustache> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/headers-file> ;
+    rdfs:comment "Generated from the media type of each published file, and held to its sha256: a projection checked by byte comparison, like every other." .
+<https://drift-king.org/site/public/intent/letter-of-intent-signed.pdf> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:9cbedc4f52c396994af03b2f60c41c251f76dee1b658cd82ce3f29ebadefe1a3" ;
+    prov:wasDerivedFrom <https://drift-king.org/intent/letter-of-intent-signed.pdf> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+
+<https://drift-king.org/site/templates/approval.mustache>
+    a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    prov:wasAttributedTo <https://drift-king.org/not-ah/agent/reviewer> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/approval-template> ;
+    rdfs:comment "Every approval page: the document's full text, the files it refers to with their sha256, and the four DocuSign markers in white (compliance at /sig1/ /date1/, then the lead architect at /sig2/ /date2/)." .
+
+<https://drift-king.org/ah/site/var/approval-template> a p-plan:Variable ; rdfs:label "the approval page template" .
+<https://drift-king.org/ah/site/var/approval-files>    a p-plan:Variable ; rdfs:label "the files an approval page lists" .
+<https://drift-king.org/ah/site/var/approval-html>     a p-plan:Variable ; rdfs:label "site/public/approvals/gap-code-strings-approval.html" .
+
+<https://drift-king.org/ah/site/render-gap-approval>
+    a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/var/approval-template> ,
+        <https://drift-king.org/ah/site/var/approval-files> ,
+        <https://drift-king.org/ah/site/var/gap-text> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/approval-html> ;
+    dcterms:title "render the code-strings gap's approval page" .
+<https://drift-king.org/ah/site/deploy>
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/render-gap-approval> .
+<https://drift-king.org/site/public/approvals/gap-code-strings-approval.html> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/approval.mustache> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/approval-html> .
+
+# ---------------------------------------------------------------------------
+# Render check (reviewer): the approval template rendered from fixed canary
+# inputs must match a pinned output, byte for byte, before the site deploys.
+# A render step whose output carries a dcterms:identifier sha256 checks it and
+# exits 1 on any difference. A change to the template or the renderer then
+# shows up as a failed check, and the expected file beside the canary shows
+# exactly what should have come out.
+# ---------------------------------------------------------------------------
+<https://drift-king.org/the-linter/canaries/render/approval.md>
+    a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <https://spec.commonmark.org/> ;
+    prov:wasAttributedTo <https://drift-king.org/not-ah/agent/reviewer> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/render-canary-text> ;
+    rdfs:comment "Fixed text for the approval template's render check: escaping, a link line, a paragraph over two lines." .
+<https://drift-king.org/the-linter/canaries/render/approval.expected.html>
+    a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:identifier "sha256:1cb85e07c9ed93cbfd3a801bc20d7a9fba682b40492ef50f4ab45af89e50f1d3" ;
+    prov:wasAttributedTo <https://drift-king.org/not-ah/agent/reviewer> ;
+    rdfs:comment "What the render check must produce, for reading and diffing. Rendered by the reviewer with chevron, a Mustache implementation that follows the official spec. If the-builder's spec-proven crate renders different bytes, compare the two against the spec before pinning either." .
+
+<https://drift-king.org/ah/site/var/render-canary-text> a p-plan:Variable ; rdfs:label "the render canary's text" .
+<https://drift-king.org/ah/site/var/render-canary-rows> a p-plan:Variable ; rdfs:label "the render canary's fixed rows" .
+<https://drift-king.org/ah/site/var/render-canary-html> a p-plan:Variable ; rdfs:label "the render canary's output" .
+
+<https://drift-king.org/ah/site/render-check-approval>
+    a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/var/approval-template> ,
+        <https://drift-king.org/ah/site/var/render-canary-rows> ,
+        <https://drift-king.org/ah/site/var/render-canary-text> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/render-canary-html> ;
+    dcterms:title "render check: the approval template, from fixed canary inputs" .
+<https://drift-king.org/ah/site/render-gap-approval>
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/render-check-approval> .
+<https://drift-king.org/ah/site/deploy>
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/render-check-approval> .
+<https://drift-king.org/ah/site/var/render-canary-signing> a p-plan:Variable ; rdfs:label "the letter and home render canaries' fixed signing row" .
+<https://drift-king.org/ah/site/var/render-canary-letter-html> a p-plan:Variable ; rdfs:label "the letter render canary's output" .
+<https://drift-king.org/ah/site/var/render-canary-index-html> a p-plan:Variable ; rdfs:label "the home render canary's output" .
+
+<https://drift-king.org/ah/site/render-check-letter>
+    a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/var/letter-template> ,
+        <https://drift-king.org/ah/site/var/render-canary-signing> ,
+        <https://drift-king.org/ah/site/var/render-canary-text> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/render-canary-letter-html> ;
+    dcterms:title "render check: the letter template, from fixed canary inputs" .
+
+<https://drift-king.org/ah/site/render-check-index>
+    a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/var/index-template> ,
+        <https://drift-king.org/ah/site/var/render-canary-signing> ,
+        <https://drift-king.org/ah/site/var/render-canary-text> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/render-canary-index-html> ;
+    dcterms:title "render check: the home template, from fixed canary inputs" .
+
+<https://drift-king.org/the-linter/canaries/render/letter.expected.html>
+    a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:identifier "sha256:ae86d276604d766677650f8c0f9b9089ccb479b22dc99dd7ffed6de355892d15" ;
+    prov:wasAttributedTo <https://drift-king.org/not-ah/agent/reviewer> ;
+    rdfs:comment "What the letter render check must produce, for reading and diffing. Rendered by the reviewer with chevron, using the same CommonMark reading as the-builder; that reading reproduces the live letter page byte for byte." .
+<https://drift-king.org/the-linter/canaries/render/index.expected.html>
+    a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:identifier "sha256:ea0d84098f909a3eab7386d2d351afbe5f8d6b1e78f6d85a05d31439e2922749" ;
+    prov:wasAttributedTo <https://drift-king.org/not-ah/agent/reviewer> ;
+    rdfs:comment "What the home render check must produce, for reading and diffing. Rendered the same way. The live home page is no longer rendered from this template, which is kept because signed packets name it; its render check is kept with it." .
+
+<https://drift-king.org/ah/site/render-letter>
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/render-check-letter> .
+<https://drift-king.org/ah/site/render-index>
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/render-check-index> .
+<https://drift-king.org/ah/site/deploy>
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/render-check-letter> ,
+        <https://drift-king.org/ah/site/render-check-index> .
+
+<https://drift-king.org/site/public/reviews/model-fixes.md> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:976588f3d28dc7eac921f356f8c2ba59d8e139138905954ea9ab013fc6c64131" ;
+    prov:wasDerivedFrom <https://drift-king.org/reviews/model-fixes.md> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+
+<https://drift-king.org/ah/site/var/review-text> a p-plan:Variable ; rdfs:label "the model review, as text" .
+<https://drift-king.org/ah/site/var/review-html> a p-plan:Variable ; rdfs:label "site/public/reviews/model-fixes.html" .
+<https://drift-king.org/ah/site/render-review>
+    a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/var/document-template> ,
+        <https://drift-king.org/ah/site/var/review-text> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/review-html> ;
+    dcterms:title "render the model review page" .
+<https://drift-king.org/site/public/reviews/model-fixes.html> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/document.mustache> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/review-html> .
+<https://drift-king.org/ah/site/deploy>
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/render-review> .
+<https://drift-king.org/site/public/plans/docusign-approval.ttl> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:93dd69b28b9aded6f55a2fb785fccda3b56bf1c1a83567e2a195a3b6c22fad7a" ;
+    prov:wasDerivedFrom <https://drift-king.org/plans/docusign-approval.ttl> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/approvals/model-review-responses.md> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:e93c7b69c6f80d650185467680c2cec5c102fbc57ea7d616a10717ca406e8485" ;
+    prov:wasDerivedFrom <https://drift-king.org/approvals/model-review-responses.md> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+
+<https://drift-king.org/ah/site/var/review-responses-text>     a p-plan:Variable ; rdfs:label "the responses to the model review, as text" .
+<https://drift-king.org/ah/site/var/review-responses-html>     a p-plan:Variable ; rdfs:label "site/public/approvals/model-review-responses.html" .
+<https://drift-king.org/ah/site/var/review-responses-approval> a p-plan:Variable ; rdfs:label "site/public/approvals/model-review-responses-approval.html" .
+<https://drift-king.org/ah/site/render-review-responses>
+    a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/var/document-template> ,
+        <https://drift-king.org/ah/site/var/review-responses-text> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/review-responses-html> ;
+    dcterms:title "render the model review responses page" .
+<https://drift-king.org/site/public/approvals/model-review-responses.html> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/document.mustache> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/review-responses-html> .
+<https://drift-king.org/ah/site/render-review-responses-approval>
+    a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/var/approval-template> ,
+        <https://drift-king.org/ah/site/var/approval-files> ,
+        <https://drift-king.org/ah/site/var/review-responses-text> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/review-responses-approval> ;
+    dcterms:title "render the model review responses' approval page" .
+<https://drift-king.org/site/public/approvals/model-review-responses-approval.html> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/approval.mustache> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/review-responses-approval> .
+<https://drift-king.org/ah/site/deploy>
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/render-review-responses> ,
+        <https://drift-king.org/ah/site/render-review-responses-approval> .
+<https://drift-king.org/ah/site/ready-to-deploy>
+    a <https://drift-king.org/ah/the-builder/ReadyStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:title "ready to deploy drift-king.org" .
+<https://drift-king.org/ah/site/deploy>
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/ready-to-deploy> .
+
+# The designer's gap catalog: a design reference, not a page the site
+# publishes. Moved from the repo root (as "Gap Catalog.dc.html", a name with
+# a space that named-by-nobody could not see) to design/, per the
+# x-components plan. The first page to be written in x-* components.
+<https://drift-king.org/design/gap-catalog.dc.html>
+    a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    dcterms:identifier "sha256:8c3897c31d1775809f70f9acccd064c32401c8f7034a95eb95abbeaacd94ff50" ;
+    prov:wasAttributedTo <https://drift-king.org/not-ah/agent/designer> ;
+    rdfs:label "The gap catalog design" .
+
+# The designer's Drift King design system for the landing page, as received:
+# one zip, and the zip is the artifact. Moved from the repo root (as "Drift
+# King Design System2.zip") to design/, the same as the gap catalog. The
+# time is the file's own timestamp as it landed on disk.
+<https://drift-king.org/design/drift-king-design-system.zip>
+    a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    dcterms:identifier "sha256:b898005ef83debb3bce228030463c76b51abcc493c33e776549ad4336331747a" ;
+    prov:wasAttributedTo <https://drift-king.org/not-ah/agent/designer> ;
+    prov:generatedAtTime "2026-09-30T16:56:56Z"^^xsd:dateTime ;
+    rdfs:label "The Drift King design system" .
+
+# The designer's whole project, exported as one zip at 2026-09-30T17:53:53Z:
+# the design system, the console and marketing kits, the landing export, and
+# the designer's own uploads. Named here so it can be found by its provenance;
+# its bytes are not in this repo and are never published, because the uploads
+# folder holds raw screenshots. The lead architect keeps it, outside the repo.
+<https://drift-king.org/not-ah/design/drift-king-design-project.zip>
+    a prov:Entity ;
+    dcterms:identifier "sha256:7d1c7f4fea5f19ce4fe0eb4a712a6f543bf86ab66f53ef3d0b8b789df117fa16" ;
+    prov:wasAttributedTo <https://drift-king.org/not-ah/agent/designer> ;
+    prov:generatedAtTime "2026-09-30T17:53:53Z"^^xsd:dateTime ;
+    rdfs:label "The designer's whole project, not published" .
+
+<https://drift-king.org/site/public/approvals/gap-code-strings-closed.md> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:99bba9e8b3597a61fca1cd278ea33bee7364016a8bf535edbc22e18d9afd8b94" ;
+    prov:wasDerivedFrom <https://drift-king.org/approvals/gap-code-strings-closed.md> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/the-linter/rules/strings-rust.yml> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:92064f93f6c8cdd568d4a634546d1a7a2aee021072f7562475f4e93b3765802d" ;
+    prov:wasDerivedFrom <https://drift-king.org/the-linter/rules/strings-rust.yml> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/the-linter/rules/strings-js.yml> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:475417a70e987acee1389dd9f15600bd5716db4d1b6d611d0d7c4b0ddfb8471f" ;
+    prov:wasDerivedFrom <https://drift-king.org/the-linter/rules/strings-js.yml> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/the-linter/canaries/unnamed-string-rust.rs> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:d9e863250ecef499ee507b0ae21d71700862c6cafef58831d933b48c54c44a9f" ;
+    prov:wasDerivedFrom <https://drift-king.org/the-linter/canaries/unnamed-string-rust.rs> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+
+<https://drift-king.org/ah/site/var/gap-closed-text>     a p-plan:Variable ; rdfs:label "the closing of the code-strings gap, as text" .
+<https://drift-king.org/ah/site/var/gap-closed-html>     a p-plan:Variable ; rdfs:label "site/public/approvals/gap-code-strings-closed.html" .
+<https://drift-king.org/ah/site/var/gap-closed-approval> a p-plan:Variable ; rdfs:label "site/public/approvals/gap-code-strings-closed-approval.html" .
+<https://drift-king.org/ah/site/render-gap-closed>
+    a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/var/document-template> ,
+        <https://drift-king.org/ah/site/var/gap-closed-text> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/gap-closed-html> ;
+    dcterms:title "render the gap-closed page" .
+<https://drift-king.org/site/public/approvals/gap-code-strings-closed.html> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/document.mustache> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/gap-closed-html> .
+<https://drift-king.org/ah/site/render-gap-closed-approval>
+    a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/var/approval-template> ,
+        <https://drift-king.org/ah/site/var/approval-files> ,
+        <https://drift-king.org/ah/site/var/gap-closed-text> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/gap-closed-approval> ;
+    dcterms:title "render the gap-closed approval page" .
+<https://drift-king.org/site/public/approvals/gap-code-strings-closed-approval.html> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/approval.mustache> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/gap-closed-approval> .
+<https://drift-king.org/ah/site/deploy>
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/render-gap-closed> ,
+        <https://drift-king.org/ah/site/render-gap-closed-approval> .
+
+# ah.ttl and its parts on the site, for anyone to pull: exactly the
+# committed bytes. A file can't carry its own sha256, so the pin is the
+# commit; the step prints each hash into the build log. The parts are the
+# .ttl files under ah/ at HEAD, so a new part is published without an edit
+# here. not-ah.ttl is published too: it names no account, only the setting
+# the account is read from.
+<https://drift-king.org/ah/site/var/model-copy> a p-plan:Variable ; rdfs:label "site/public/ah.ttl and site/public/ah/" .
+<https://drift-king.org/ah/site/publish-model>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/model-copy> ;
+    dcterms:title "publish ah.ttl and its parts, as committed" ;
+    sd:hasExecutionCommand "mkdir -p site/public/ah && for f in ah.ttl not-ah.ttl $(git ls-tree --name-only HEAD ah/ | grep '\\.ttl$'); do git show \"HEAD:$f\" > \"site/public/$f\" || exit 1; done && sha256sum site/public/ah.ttl site/public/not-ah.ttl site/public/ah/*.ttl" .
+<https://drift-king.org/site/public/ah.ttl> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/ah.ttl> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/model-copy> .
+<https://drift-king.org/site/public/ah/the-builder.ttl> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/ah/the-builder.ttl> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/model-copy> .
+<https://drift-king.org/site/public/ah/cloudflare-pid-rs.ttl> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/ah/cloudflare-pid-rs.ttl> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/model-copy> .
+<https://drift-king.org/site/public/ah/site.ttl> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/ah/site.ttl> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/model-copy> .
+<https://drift-king.org/site/public/not-ah.ttl> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/not-ah.ttl> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/model-copy> .
+<https://drift-king.org/site/public/ah/signings.ttl> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/ah/signings.ttl> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/model-copy> .
+<https://drift-king.org/site/public/ah/x-components-0.2.0-checks.ttl> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/ah/x-components-0.2.0-checks.ttl> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/model-copy> .
+<https://drift-king.org/site/public/ah/x-components-0.2.0-wanted.ttl> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/ah/x-components-0.2.0-wanted.ttl> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/model-copy> .
+<https://drift-king.org/ah/site/deploy>
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/publish-model> .
+
+# ===========================================================================
+# drift-king.org, written in x-components. Every page is x-* markup, expanded
+# by the pinned @apricotter/x-components at build time into plain files, so
+# the site stays files only, with no script. The site's own style.css styles
+# the class names the components emit; the package carries no styling.
+# Signed pages are the exception: an approval page, and the documents signed
+# with it, are served exactly as signed and never rendered again.
+#
+# This plan is not the builder's yet. Its steps join the builder's plan when
+# 0.1.0 is published, audited and taken.
+# ===========================================================================
+<https://drift-king.org/ah/site>
+    dcterms:requires <https://drift-king.org/not-ah/npm/apricotter-x-components> .
+
+<https://drift-king.org/ah/site/x-components/plan>
+    a p-plan:Plan ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:title "drift-king.org, written in x-components" ;
+    dcterms:description "Take one audited version of @apricotter/x-components, write every page that is not a signed page in its x-* tags, expand them at build time, and ship only when every tag is a component its model defines and none is left unexpanded." .
+
+<https://drift-king.org/ah/site/x-components/var/tarball>  a p-plan:Variable ; rdfs:label "the tarball, as npm published it" .
+<https://drift-king.org/ah/site/x-components/var/audit>    a p-plan:Variable ; rdfs:label "the audit: each line of the letter and list, with the check that proves it on the tarball" .
+<https://drift-king.org/ah/site/x-components/var/taking>   a p-plan:Variable ; rdfs:label "the signed taking of that version" .
+<https://drift-king.org/ah/site/x-components/var/unpacked> a p-plan:Variable ; rdfs:label "the model and the expander, unpacked from the tarball" .
+<https://drift-king.org/ah/site/x-components/var/markup>   a p-plan:Variable ; rdfs:label "each page, rendered as x-* markup" .
+<https://drift-king.org/ah/site/x-components/var/pages>    a p-plan:Variable ; rdfs:label "each page, expanded into plain HTML" .
+
+<https://drift-king.org/ah/site/x-components/keep>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/site/x-components/plan> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/x-components/var/tarball> ;
+    dcterms:title "keep the tarball" ;
+    dcterms:description "Fetch the tarball once, from its download address, and keep it in the repo under vendor/npm/. Its sha256 and npm's integrity go on its node in not-ah.ttl. A build reads the kept file and never the network; a copy whose sha256 differs stops the build." ;
+    dcterms:requires <https://drift-king.org/not-ah/npm/apricotter-x-components> .
+
+<https://drift-king.org/ah/site/x-components/audit>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/site/x-components/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/x-components/keep> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/x-components/var/tarball> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/x-components/var/audit> ;
+    dcterms:title "audit it against its letter" ;
+    dcterms:description "Drift King's own checks, each with its canary, run on the kept tarball. Each claim in the x-components letter and its list points at the check that proves it, as an EARL result on the tarball. A claim no check covers is listed as open. Nothing the package's own checks say is taken on trust." .
+
+<https://drift-king.org/ah/site/x-components/take>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/site/x-components/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/x-components/audit> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/x-components/var/audit> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/x-components/var/taking> ;
+    dcterms:title "take it, signed" ;
+    dcterms:description "Compliance writes what the audit found, for this version, and it is signed by the current signing plan. Drift King's own work, so the lead architect approves. Drift King uses only a version it has taken." ;
+    rdfs:comment "Done by the lead architect, not an agent." .
+
+<https://drift-king.org/ah/site/x-components/unpack>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/site/x-components/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/x-components/take> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/x-components/var/tarball> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/x-components/var/unpacked> ;
+    dcterms:title "unpack the model and the expander" ;
+    dcterms:description "Unpack component.ttl, wai-aria.ttl, component-attributes.generated.mjs and expand.mjs from the kept tarball, each checked by sha256 against the tarball's own. The catalog maps the component model's and WAI-ARIA's names to the unpacked files, and ah.ttl imports the component model, so the checks can read it offline." .
+
+<https://drift-king.org/ah/site/x-components/render>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/site/x-components/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/x-components/unpack> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/x-components/var/markup> ;
+    dcterms:title "render each page as x-* markup" ;
+    dcterms:description "The site's templates are written in x-* tags. The render steps fill them from the model as they do today, and their output is x-* markup, not HTML yet. Signed pages keep their own templates and are not rendered again." .
+
+<https://drift-king.org/ah/site/x-components/expand>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/site/x-components/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/x-components/render> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/x-components/var/markup> ,
+        <https://drift-king.org/ah/site/x-components/var/unpacked> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/x-components/var/pages> ;
+    dcterms:title "expand every page" ;
+    dcterms:description "Run the candidate's static entry point, @apricotter/x-components/static, over each rendered page, with drift-king.org as its site domain and the site's words as its settings, and write the plain HTML to site/public/. The entry point is the package's one walker: it needs no HTML rewriter, and its one dependency, cheerio, is pinned in not-ah.ttl with everything it pulls in. It refuses where the rewriter refuses, and a tag the model does not define." .
+
+<https://drift-king.org/ah/site/x-components/check-tags>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/site/x-components/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/x-components/unpack> ;
+    dcterms:title "every tag on a page is a component the model defines" ;
+    dcterms:description "A check with its canary: every x-* tag in a template is a component in the unpacked component.ttl, and every attribute on it is one that component takes. The canary is a template with one tag the model does not define." .
+
+<https://drift-king.org/ah/site/x-components/check-only-components>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/site/x-components/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/x-components/unpack> ;
+    dcterms:title "a page is made of components and nothing else" ;
+    dcterms:description "A check with its canary: inside the body of every template that is not a signed page's, every element is an x-* tag. Only the document's own head is plain HTML. The canary is a template with one plain div." .
+
+<https://drift-king.org/ah/site/x-components/check-expanded>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/site/x-components/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/x-components/expand> ;
+    dcterms:title "no page ships with a tag left unexpanded" ;
+    dcterms:description "A check with its canary: no published page still holds an x-* tag. The canary is a page with one tag the expander was never given." .
+
+<https://drift-king.org/ah/site/x-components/check-styles>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/site/x-components/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/x-components/expand> ;
+    dcterms:title "the site styles only classes the components emit" ;
+    dcterms:description "A check with its canary: every class style.css styles is one the pinned version emits. It waits for the list's next version, which names the classes as part of the contract. The canary is a rule for a class no component emits." .
+
+# What the home page is made of, in the components 0.2.0 has: the ones the design uses.
+<https://drift-king.org/ah/site/page/home>
+    a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:title "the home page, in x-components" ;
+    dcterms:requires <https://apricotter.com/ns/components#x-header> ,
+        <https://apricotter.com/ns/components#x-hero> ,
+        <https://apricotter.com/ns/components#x-sticker> ,
+        <https://apricotter.com/ns/components#x-tape-pair> ,
+        <https://apricotter.com/ns/components#x-tape> ,
+        <https://apricotter.com/ns/components#x-tape-item> ,
+        <https://apricotter.com/ns/components#x-column> ,
+        <https://apricotter.com/ns/components#x-statement-card> ,
+        <https://apricotter.com/ns/components#x-statement-card-text> ,
+        <https://apricotter.com/ns/components#x-statement-card-lead> ,
+        <https://apricotter.com/ns/components#x-statement-card-follow> ,
+        <https://apricotter.com/ns/components#x-section> ,
+        <https://apricotter.com/ns/components#x-heading> ,
+        <https://apricotter.com/ns/components#x-prose> ,
+        <https://apricotter.com/ns/components#x-line-panes> ,
+        <https://apricotter.com/ns/components#x-line-pane> ,
+        <https://apricotter.com/ns/components#x-line> ,
+        <https://apricotter.com/ns/components#x-note> ,
+        <https://apricotter.com/ns/components#x-statement-list> ,
+        <https://apricotter.com/ns/components#x-statement> ,
+        <https://apricotter.com/ns/components#x-statement-claim> ,
+        <https://apricotter.com/ns/components#x-statement-support> ,
+        <https://apricotter.com/ns/components#x-rule-list> ,
+        <https://apricotter.com/ns/components#x-rule-list-item> ,
+        <https://apricotter.com/ns/components#x-card-link> ,
+        <https://apricotter.com/ns/components#x-seal> ,
+        <https://apricotter.com/ns/components#x-cta-row> ,
+        <https://apricotter.com/ns/components#x-button> ,
+        <https://apricotter.com/ns/components#x-footer> ,
+        <https://apricotter.com/ns/components#x-link> ;
+    dcterms:requires <https://drift-king.org/ah/site/needs/ticker> ,
+        <https://drift-king.org/ah/site/needs/spot-the-drift> ,
+        <https://drift-king.org/ah/site/needs/sticker> ,
+        <https://drift-king.org/ah/site/needs/seal> .
+
+# What the pages needed that 0.1.0 had no component for. Each was asked of
+# x-components' next version, generic, with no Drift King words in it, and 0.2.0
+# has a component that meets it, named on the need.
+<https://drift-king.org/ah/site/needs/ticker>
+    a prov:Entity ; dcterms:title "a scrolling ticker of short phrases" ;
+    dcterms:references <https://apricotter.com/ns/components#x-tape-pair> , <https://apricotter.com/ns/components#x-tape> , <https://apricotter.com/ns/components#x-tape-item> ;
+    rdfs:comment "The two bands under the home page's hero." .
+<https://drift-king.org/ah/site/needs/spot-the-drift>
+    a prov:Entity ; dcterms:title "two numbered line panes side by side, one line marked, with a stamp" ;
+    dcterms:references <https://apricotter.com/ns/components#x-line-panes> , <https://apricotter.com/ns/components#x-line-pane> , <https://apricotter.com/ns/components#x-line> ;
+    rdfs:comment "The home page's intent-versus-code example." .
+<https://drift-king.org/ah/site/needs/sticker>
+    a prov:Entity ; dcterms:title "a rotated sticker label over a hero image" ;
+    dcterms:references <https://apricotter.com/ns/components#x-sticker> ;
+    rdfs:comment "The three labels on the home page's hero." .
+<https://drift-king.org/ah/site/needs/seal>
+    a prov:Entity ; dcterms:title "a round seal beside a block of text" ;
+    dcterms:references <https://apricotter.com/ns/components#x-seal> ;
+    rdfs:comment "The signed-and-hashed seal beside the letter on the home page." .
+
+# The document page (an unsigned document's readable page) in 0.1.0's components.
+<https://drift-king.org/ah/site/page/document>
+    a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:title "a document's readable page, in x-components" ;
+    dcterms:requires <https://apricotter.com/ns/components#x-header> ,
+        <https://apricotter.com/ns/components#x-page-heading> ,
+        <https://apricotter.com/ns/components#x-prose> ,
+        <https://apricotter.com/ns/components#x-link> ,
+        <https://apricotter.com/ns/components#x-footer> .
+
+# The x-components candidate's files, published as kept. The copy step checks
+# each sha256 on every build, so a kept file cannot drift.
+<https://drift-king.org/site/public/vendor/npm/apricotter-x-components/0.1.0-candidate/LICENSE> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4" ;
+    prov:wasDerivedFrom <https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0-candidate/LICENSE> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/vendor/npm/apricotter-x-components/0.1.0-candidate/NOTICE> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:0160e5a552d5eaa44863878679f6907cc127bda9aabb13cf4676caa4d236785e" ;
+    prov:wasDerivedFrom <https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0-candidate/NOTICE> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/vendor/npm/apricotter-x-components/0.1.0-candidate/README.md> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:63fd44af17919c79bc1ebc1a5face9a24cd47a57d1b7b6215e83dccfe1c19cec" ;
+    prov:wasDerivedFrom <https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0-candidate/README.md> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/vendor/npm/apricotter-x-components/0.1.0-candidate/package.json> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:06967a773db45548451bf37046935a31403f7426e5107b1f400b12aba8a01e12" ;
+    prov:wasDerivedFrom <https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0-candidate/package.json> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/vendor/npm/apricotter-x-components/0.1.0-candidate/component.ttl> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:6355b94284a4084e668c9420dd3def85655ebcb4d4bb2f73e65d664368c32fc8" ;
+    prov:wasDerivedFrom <https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0-candidate/component.ttl> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/vendor/npm/apricotter-x-components/0.1.0-candidate/wai-aria.ttl> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:d68deb932b1e5b4df041832daa75a8802804d191560de1a1ceeab60836c24bd6" ;
+    prov:wasDerivedFrom <https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0-candidate/wai-aria.ttl> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/vendor/npm/apricotter-x-components/0.1.0-candidate/component-attributes.generated.mjs> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:172343b2f6f8d588f5db9c9a13804fee86cc44e5d31d4e0cbffc1a49aef7efe9" ;
+    prov:wasDerivedFrom <https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0-candidate/component-attributes.generated.mjs> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/vendor/npm/apricotter-x-components/0.1.0-candidate/expand.mjs> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:9e8c7febbe22e12a2fda9900a775b99479e991441a08b73a27608b9bc27d6a93" ;
+    prov:wasDerivedFrom <https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0-candidate/expand.mjs> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+
+# drift-king.org's deploy is a ship step: a plain run does not deploy.
+<https://drift-king.org/ah/site/deploy> a <https://drift-king.org/ah/the-builder/ShipStep> .
+
+# An approval page that shows what its checks found, as well as its files.
+<https://drift-king.org/site/templates/approval-results.mustache>
+    a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/approval-results-template> ;
+    rdfs:comment "The approval page, plus what each check the document names found in the build that renders it. A new template, so every page already signed keeps rendering from its own." .
+<https://drift-king.org/ah/site/var/approval-results-template> a p-plan:Variable ; rdfs:label "the approval template that shows what its checks found" .
+<https://drift-king.org/ah/site/var/approval-results> a p-plan:Variable ; rdfs:label "what an approval's checks found" .
+
+# The three checks that can only run once 0.1.0 is on npm. Steps of the plan
+# that takes the version; until they run, an approval that names them says so.
+<https://drift-king.org/ah/site/x-components/check-provenance>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/site/x-components/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/x-components/keep> ;
+    dcterms:title "the published tarball is signed and logged: its npm provenance names this repository and commit, and is in Sigstore's Rekor" .
+<https://drift-king.org/ah/site/x-components/check-no-token>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/site/x-components/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/x-components/keep> ;
+    dcterms:title "after the first release, no token can publish: the package allows only its own workflow, staged" .
+<https://drift-king.org/ah/site/x-components/check-pinned>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/site/x-components/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/x-components/keep> ;
+    dcterms:title "Drift King pins one version: the lockfile names exactly the tarball Drift King audited" .
+
+# Every address of ours opens. One that is not a published file answers with
+# a 303 See Other to the published file that defines it, as W3C's "Cool URIs
+# for the Semantic Web" says an address that names a thing should. The list
+# is written from the model on every build, never by hand.
+<https://drift-king.org/site/templates/redirects.mustache>
+    a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/redirects-template> ;
+    rdfs:comment "One line per address: where it is asked for, the file that describes it, and 303." .
+<https://drift-king.org/ah/site/var/redirects-template> a p-plan:Variable ; rdfs:label "the redirects template" .
+<https://drift-king.org/ah/site/var/redirect-rows>      a p-plan:Variable ; rdfs:label "each address and the file that defines it" .
+<https://drift-king.org/ah/site/var/redirects>          a p-plan:Variable ; rdfs:label "site/public/_redirects" .
+<https://drift-king.org/ah/site/render-redirects>
+    a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/var/redirects-template> ,
+        <https://drift-king.org/ah/site/var/redirect-rows> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/redirects> ;
+    dcterms:title "write where each address of ours goes" .
+<https://drift-king.org/site/public/_redirects> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/redirects.mustache> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/redirects> .
+<https://drift-king.org/ah/site/deploy>
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/render-redirects> .
+
+# Where the published folder is served from: drift-king.org. The redirects
+# send an address to the host its defining file is served from.
+# dcat:accessURL's range is rdfs:Resource; drift-king.org is typed cc:Work
+# elsewhere, so it says it is a resource too.
+<https://drift-king.org/> a rdfs:Resource .
+<https://drift-king.org/site/public/> a dcat:Distribution ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcat:accessURL <https://drift-king.org/> .
+
+# The kept x-components 0.1.0 tarball, its attestations and what they say,
+# published as committed, so the addresses provenance.ttl names open.
+<https://drift-king.org/site/public/vendor/npm/apricotter-x-components/0.1.0/x-components-0.1.0.tgz> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:25551bada8787ce72e0f1f66351ae858a55189a9f1c67d1a2943972cb0c125ac" ;
+    prov:wasDerivedFrom <https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0/x-components-0.1.0.tgz> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/vendor/npm/apricotter-x-components/0.1.0/attestations.json> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:410991ca1e6a4cf7d37580ab2d3e5c515b1703eb7fa9dff65f2b83bb3aa33026" ;
+    prov:wasDerivedFrom <https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0/attestations.json> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/vendor/npm/apricotter-x-components/0.1.0/provenance.ttl> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:fe2ac79d1c920395754a7b242b88945204db11837d9cbdf72e5d544456d43cf7" ;
+    prov:wasDerivedFrom <https://drift-king.org/vendor/npm/apricotter-x-components/0.1.0/provenance.ttl> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+
+# Every Turtle canary, published as committed, so each address a canary
+# makes up opens on the canary that describes it.
+<https://drift-king.org/site/public/the-linter/canaries/approvals-are-documents.ttl> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:0fc1e03ab008c22685973bfd6a8ea953bd29bb46e1326b66c31f97526c49f0f6" ;
+    prov:wasDerivedFrom <https://drift-king.org/the-linter/canaries/approvals-are-documents.ttl> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/the-linter/canaries/canary-isolation.ttl> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:039661780949dab4573e2792a9fc95b5d162e43127d5dd81189ff86d980cf01e" ;
+    prov:wasDerivedFrom <https://drift-king.org/the-linter/canaries/canary-isolation.ttl> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/the-linter/canaries/domain-retypes.ttl> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:f6e34d827c4b638372b1577c4855cb641dcc9bb9ad4091f12422e1b6c298d81e" ;
+    prov:wasDerivedFrom <https://drift-king.org/the-linter/canaries/domain-retypes.ttl> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/the-linter/canaries/every-address-opens.ttl> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:5631773b93af62a9ca1ca15a34cc86b4a834f1c4af7c3ba9f74e3f87ad322d3a" ;
+    prov:wasDerivedFrom <https://drift-king.org/the-linter/canaries/every-address-opens.ttl> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/the-linter/canaries/file-provenance.ttl> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:d22314da3813e69b05224da273c9442f93bed232b16aa9c50a3218514dbc0129" ;
+    prov:wasDerivedFrom <https://drift-king.org/the-linter/canaries/file-provenance.ttl> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/the-linter/canaries/iri-names-not-values.ttl> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:796d3136f34a9ded50c3d118c5fd9c5a4d667b332767bbeeca7f5d994f2e17c6" ;
+    prov:wasDerivedFrom <https://drift-king.org/the-linter/canaries/iri-names-not-values.ttl> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/the-linter/canaries/known-gap-unsigned.ttl> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:e05173324229d0fa513a76b3c440ff7ce41f949999fd6f55b2df00aac0b2b94b" ;
+    prov:wasDerivedFrom <https://drift-king.org/the-linter/canaries/known-gap-unsigned.ttl> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/the-linter/canaries/named-by-nobody.ttl> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:1fd27f3889fc21f490446c24cf4c9e7f311697aacc4dba1a2fee73f0aab3431a" ;
+    prov:wasDerivedFrom <https://drift-king.org/the-linter/canaries/named-by-nobody.ttl> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/the-linter/canaries/namespace-terms-defined.ttl> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:c897a00bb95ae0d4ae5b7f620aa172f3a39cf0352bf731b989555788818ff477" ;
+    prov:wasDerivedFrom <https://drift-king.org/the-linter/canaries/namespace-terms-defined.ttl> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/the-linter/canaries/plan-cycle.ttl> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:969727cdb4521f7eccda74a17b89c1b7b7a6d03b9c2fa289f1f7e5b72f34d99e" ;
+    prov:wasDerivedFrom <https://drift-king.org/the-linter/canaries/plan-cycle.ttl> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/the-linter/canaries/provenance-matches.ttl> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:de92ca96ad0b8a5fbc00e247746c92f5224c9bf343b8618545073d7b992a9f91" ;
+    prov:wasDerivedFrom <https://drift-king.org/the-linter/canaries/provenance-matches.ttl> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/the-linter/canaries/range-retypes.ttl> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:568abf88afb57e98387dd2498b7aac53293d95b90ce9530d0507351857b5c6d0" ;
+    prov:wasDerivedFrom <https://drift-king.org/the-linter/canaries/range-retypes.ttl> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/the-linter/canaries/ship-steps-marked.ttl> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:709148860d779cb2c58e0d306b550b6337044e3ddbbc5dddf1a56a30439a95e4" ;
+    prov:wasDerivedFrom <https://drift-king.org/the-linter/canaries/ship-steps-marked.ttl> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/the-linter/canaries/tool-version-pinned.ttl> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:ddd5b919edcaf04f11fa85c98204190f48d77ee2bf80e5c870655a2967949d85" ;
+    prov:wasDerivedFrom <https://drift-king.org/the-linter/canaries/tool-version-pinned.ttl> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/the-linter/canaries/terms-defined-in-vocab.ttl> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:9a2b1eb385837742c71aadcc4461c9fcd7085268238ab971d9368164c6847aeb" ;
+    prov:wasDerivedFrom <https://drift-king.org/the-linter/canaries/terms-defined-in-vocab.ttl> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+
+# ===========================================================================
+# The home page, on the 0.2.0 candidate, built on this machine. Nothing here
+# ships: the candidate is not taken, and no step of this block is a ship step.
+# ===========================================================================
+# The candidate's files, published as kept. The copy step checks each sha256 on
+# every build, so a kept file cannot drift.
+<https://drift-king.org/site/public/vendor/npm/apricotter-x-components/0.2.0-candidate/LICENSE> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4" ;
+    prov:wasDerivedFrom <https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/LICENSE> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/vendor/npm/apricotter-x-components/0.2.0-candidate/NOTICE> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:0160e5a552d5eaa44863878679f6907cc127bda9aabb13cf4676caa4d236785e" ;
+    prov:wasDerivedFrom <https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/NOTICE> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/vendor/npm/apricotter-x-components/0.2.0-candidate/README.md> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:243cd5658d3f1ce298a43b261acef29f4a99b7ffbec8c29272fee961b2b0417e" ;
+    prov:wasDerivedFrom <https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/README.md> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/vendor/npm/apricotter-x-components/0.2.0-candidate/package.json> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:ffe8ad77fee803f232f6c08a9f8482faca091b405e2211abcba9b64eb38dcdba" ;
+    prov:wasDerivedFrom <https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/package.json> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/vendor/npm/apricotter-x-components/0.2.0-candidate/component.ttl> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:4ee45f78781bdb1895a1ac645fc1c27d705a329d052db99441bfd83eaa7e4403" ;
+    prov:wasDerivedFrom <https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/component.ttl> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/vendor/npm/apricotter-x-components/0.2.0-candidate/wai-aria.ttl> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:d68deb932b1e5b4df041832daa75a8802804d191560de1a1ceeab60836c24bd6" ;
+    prov:wasDerivedFrom <https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/wai-aria.ttl> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/vendor/npm/apricotter-x-components/0.2.0-candidate/component-attributes.generated.mjs> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:a3e2ae24f09d065375e5c91204de8d9f26a36c52d7ad0bdc3ffec6f103d243f8" ;
+    prov:wasDerivedFrom <https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/component-attributes.generated.mjs> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/vendor/npm/apricotter-x-components/0.2.0-candidate/expand.mjs> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:2cbb759aa82b9f783edd0b21c0e43a5d83adbbbb34d4f48370847966d051d675" ;
+    prov:wasDerivedFrom <https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/expand.mjs> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/vendor/npm/apricotter-x-components/0.2.0-candidate/static.mjs> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:550974d9b2a57f57924ab9b130d831e9995cc7d37e56e9ec928441bb9289a21c" ;
+    prov:wasDerivedFrom <https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/static.mjs> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+
+# The expander's working folder. The files it runs are the candidate's, copied from
+# the kept bytes with their sha256 checked; the one package it depends on is
+# installed from the lockfile, which npm ci checks against the integrity pinned
+# in not-ah. Both are generated and never committed.
+<https://drift-king.org/site/expander/package.json> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:conformsTo <https://www.rfc-editor.org/rfc/rfc8259> ;
+    dcterms:identifier "sha256:d66509a4f999d94b39714cdc06971a7bd766e78412824c8fa239fd83ea505158" ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    rdfs:comment "The expander's one dependency, cheerio, at one exact version, with undici held at the version that was audited." .
+<https://drift-king.org/site/expander/package-lock.json> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:conformsTo <https://www.rfc-editor.org/rfc/rfc8259> ;
+    dcterms:identifier "sha256:f687340fd856a52213447868e2fd4c0fbcfc77e5eed6a7878475841159b131e7" ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    rdfs:comment "Every package cheerio pulls in, each with its version and integrity, equal to the list pinned in not-ah." .
+<https://drift-king.org/site/expander/x-components/expand.mjs> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:2cbb759aa82b9f783edd0b21c0e43a5d83adbbbb34d4f48370847966d051d675" ;
+    prov:wasDerivedFrom <https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/expand.mjs> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/expander/x-components/static.mjs> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:550974d9b2a57f57924ab9b130d831e9995cc7d37e56e9ec928441bb9289a21c" ;
+    prov:wasDerivedFrom <https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/static.mjs> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/expander/x-components/component-attributes.generated.mjs> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:a3e2ae24f09d065375e5c91204de8d9f26a36c52d7ad0bdc3ffec6f103d243f8" ;
+    prov:wasDerivedFrom <https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/component-attributes.generated.mjs> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/expander/x-components/component.ttl> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:4ee45f78781bdb1895a1ac645fc1c27d705a329d052db99441bfd83eaa7e4403" ;
+    prov:wasDerivedFrom <https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/component.ttl> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/expander/x-components/wai-aria.ttl> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:d68deb932b1e5b4df041832daa75a8802804d191560de1a1ceeab60836c24bd6" ;
+    prov:wasDerivedFrom <https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/wai-aria.ttl> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/ah/site/x-components/var/installed> a p-plan:Variable ; rdfs:label "cheerio and what it pulls in, installed from the lockfile" .
+<https://drift-king.org/ah/site/x-components/install-expander>
+    a sd:SoftwareConfiguration , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/publish> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/x-components/var/installed> ;
+    dcterms:title "install the expander's dependency, cheerio and what it pulls in, as the lockfile names them" ;
+    sd:hasExecutionCommand "cd site/expander && npm ci --ignore-scripts --no-audit --no-fund" ;
+    dcterms:requires <https://drift-king.org/not-ah/npm/cheerio/1.2.0> , <https://drift-king.org/not-ah/node> .
+
+# The home page's copy. Every word on the page is in this file, the site's words
+# for x-components included, and the template holds none. The model names it and
+# holds its sha256, so a changed word is a changed file.
+<https://drift-king.org/ah/site/var/home-content> a p-plan:Variable ; rdfs:label "the home page's copy" .
+<https://drift-king.org/site/content/home.yaml> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:conformsTo <https://yaml.org/spec/1.2.2/> ;
+    dcterms:identifier "sha256:80fc0e547d9011dddb388ee80e478690bf40eaff95be4f5691d64aa6eb5d86e5" ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/home-content> ;
+    rdfs:comment "The home page's words, and the words x-components is given as settings: what a new-tab link says, and what a table cell says with no value or an empty one." .
+
+# ===========================================================================
+# The home page, built from the model, the copy and x-components 0.2.0. The
+# template is x-* tags and names a place in home.yaml for every word; the render
+# fills it; the expander writes plain HTML to site/public/index.html. Nothing
+# is copied from the design's HTML: the kart cut-out and the scene come out of
+# the signed zip, checked by its sha256, and become webp by steps.
+# ===========================================================================
+<https://drift-king.org/ah/site/var/home-template>     a p-plan:Variable ; rdfs:label "the home page template, in x-* tags" .
+<https://drift-king.org/ah/site/var/settings-template> a p-plan:Variable ; rdfs:label "the expander's settings template" .
+<https://drift-king.org/ah/site/var/home-markup>       a p-plan:Variable ; rdfs:label "the home page as x-* markup" .
+<https://drift-king.org/ah/site/var/settings-json>     a p-plan:Variable ; rdfs:label "the expander's settings: the site domain and the site's words" .
+<https://drift-king.org/ah/site/var/home-html>         a p-plan:Variable ; rdfs:label "site/public/index.html" .
+<https://drift-king.org/ah/site/var/home-images>       a p-plan:Variable ; rdfs:label "the kart cut-out and the scene, as webp" .
+
+<https://drift-king.org/site/templates/home.mustache> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/home-template> ;
+    rdfs:comment "The home page: a plain head and a body of x-* tags only. It holds no words; each attribute and each text names a place in site/content/home.yaml." .
+<https://drift-king.org/site/templates/expander-settings.mustache> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/settings-template> ;
+    rdfs:comment "The settings x-components is given: drift-king.org as the site domain, and the three words the home copy holds for every page." .
+<https://drift-king.org/site/expander/markup/index.html> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/home.mustache> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/home-markup> .
+<https://drift-king.org/site/expander/settings.json> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/expander-settings.mustache> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/settings-json> .
+<https://drift-king.org/site/public/images/kart-cutout.webp> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/design/drift-king-design-system.zip> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/home-images> ;
+    rdfs:comment "export/drift-king-landing/assets/kart-sticker-cutout.png from the signed zip." .
+<https://drift-king.org/site/public/images/scene.webp> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/design/drift-king-design-system.zip> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/home-images> ;
+    rdfs:comment "export/drift-king-landing/assets/illustration-drift-king-scene.jpg from the signed zip." .
+
+# The home page's style. A separate file from style.css, which the letter and the
+# document pages still use. It styles only classes the pinned version emits.
+<https://drift-king.org/site/home.css> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:conformsTo <https://www.w3.org/TR/css/> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    rdfs:comment "The home page's styles: the design's colours, fonts and shadows on the classes x-components 0.2.0 emits." .
+<https://drift-king.org/site/public/home.css> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:f01e622b4a7ce0c56cf06b05affae7b823f8b2828b7230d19aee90a7a72c1568" ;
+    prov:wasDerivedFrom <https://drift-king.org/site/home.css> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+
+# The expand step's script, and the checks with their canaries.
+<https://drift-king.org/site/expander/expand-home.mjs> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    rdfs:comment "Reads the markup and the settings, calls the package's expandStatic, writes the page. Decides nothing." .
+<https://drift-king.org/site/checks/lib.mjs> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> .
+<https://drift-king.org/site/checks/check-tags.mjs> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> .
+<https://drift-king.org/site/checks/check-only-components.mjs> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> .
+<https://drift-king.org/site/checks/check-expanded.mjs> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> .
+<https://drift-king.org/site/checks/check-styles.mjs> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> .
+<https://drift-king.org/site/checks/canaries/undefined-tag.mustache> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    rdfs:comment "A template with one tag the model does not define. check-tags must fail on it." .
+<https://drift-king.org/site/checks/canaries/plain-div.mustache> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    rdfs:comment "A template with one plain div in its body. check-only-components must fail on it." .
+<https://drift-king.org/site/checks/canaries/unexpanded.html> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    rdfs:comment "A page with one tag the expander was never given. check-expanded must fail on it." .
+<https://drift-king.org/site/checks/canaries/styles.css> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    rdfs:comment "A rule for a class no component emits. check-styles must fail on it." .
+
+# The steps. A render fills a template from the copy; the expander runs only after
+# its two tag checks, with the canary of each run first and required to fail.
+<https://drift-king.org/ah/site/render-home>
+    a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/var/home-template> ,
+        <https://drift-king.org/ah/site/var/home-content> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/home-markup> ;
+    dcterms:title "render the home page as x-* markup, from its template and its copy" .
+<https://drift-king.org/ah/site/render-home-settings>
+    a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/var/settings-template> ,
+        <https://drift-king.org/ah/site/var/home-content> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/settings-json> ;
+    dcterms:title "render the expander's settings, from the copy" .
+<https://drift-king.org/ah/site/extract-home-images>
+    a sd:SoftwareConfiguration , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/publish> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/home-images> ;
+    dcterms:title "take the kart cut-out and the scene out of the signed design zip, as webp" ;
+    dcterms:description "The zip is the copy the publish step made, its sha256 checked there against the signed one. Two files come out of it and become webp; the design's HTML is not read." ;
+    sd:hasExecutionCommand "mkdir -p site/expander/design site/public/images && unzip -o -j -d site/expander/design site/public/design/drift-king-design-system.zip export/drift-king-landing/assets/kart-sticker-cutout.png export/drift-king-landing/assets/illustration-drift-king-scene.jpg && ffmpeg -y -i site/expander/design/kart-sticker-cutout.png -quality 85 site/public/images/kart-cutout.webp && ffmpeg -y -i site/expander/design/illustration-drift-king-scene.jpg -quality 85 site/public/images/scene.webp" ;
+    dcterms:requires <https://drift-king.org/not-ah/ffmpeg> , <https://drift-king.org/not-ah/unzip> .
+
+<https://drift-king.org/ah/site/check-home-tags>
+    a sd:SoftwareConfiguration , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/publish> ;
+    dcterms:references <https://drift-king.org/ah/site/x-components/check-tags> ;
+    dcterms:title "every tag on the home page is a component the model defines, canary first" ;
+    sd:hasExecutionCommand "node site/checks/check-tags.mjs site/checks/canaries/undefined-tag.mustache site/expander/x-components/component.ttl site/expander/x-components/component-attributes.generated.mjs; test $? -eq 1 && node site/checks/check-tags.mjs site/templates/home.mustache site/expander/x-components/component.ttl site/expander/x-components/component-attributes.generated.mjs" ;
+    dcterms:requires <https://drift-king.org/not-ah/node> .
+<https://drift-king.org/ah/site/check-home-only-components>
+    a sd:SoftwareConfiguration , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    dcterms:references <https://drift-king.org/ah/site/x-components/check-only-components> ;
+    dcterms:title "the home page is made of components and nothing else, canary first" ;
+    sd:hasExecutionCommand "node site/checks/check-only-components.mjs site/checks/canaries/plain-div.mustache; test $? -eq 1 && node site/checks/check-only-components.mjs site/templates/home.mustache" ;
+    dcterms:requires <https://drift-king.org/not-ah/node> .
+<https://drift-king.org/ah/site/expand-home>
+    a sd:SoftwareConfiguration , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/render-index> ,
+        <https://drift-king.org/ah/site/render-home> ,
+        <https://drift-king.org/ah/site/render-home-settings> ,
+        <https://drift-king.org/ah/site/x-components/install-expander> ,
+        <https://drift-king.org/ah/site/check-home-tags> ,
+        <https://drift-king.org/ah/site/check-home-only-components> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/home-html> ;
+    dcterms:references <https://drift-king.org/ah/site/x-components/expand> ;
+    dcterms:title "publish the new home page: expand its x-* markup to plain HTML, with drift-king.org as the site domain" ;
+    dcterms:description "The new home page runs on x-components 0.2.0, which Drift King has not taken: it uses only a version it has taken. Until a signed taking of 0.2.0 exists, this step is held, and the build publishes the home page that is live now, unchanged." ;
+    dcterms:requires <https://drift-king.org/ah/site/x-components/take> ;
+    dcterms:references <https://drift-king.org/not-ah/npm/apricotter-x-components/0.2.0> ;
+    sd:hasExecutionCommand "cd site/expander && node expand-home.mjs markup/index.html settings.json ../public/index.html" ;
+    dcterms:requires <https://drift-king.org/not-ah/node> , <https://drift-king.org/not-ah/npm/cheerio/1.2.0> .
+<https://drift-king.org/ah/site/check-home-expanded>
+    a sd:SoftwareConfiguration , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/expand-home> ;
+    dcterms:references <https://drift-king.org/ah/site/x-components/check-expanded> ;
+    dcterms:title "no page ships with a tag left unexpanded, canary first" ;
+    sd:hasExecutionCommand "node site/checks/check-expanded.mjs site/checks/canaries/unexpanded.html; test $? -eq 1 && node site/checks/check-expanded.mjs site/public/index.html" ;
+    dcterms:requires <https://drift-king.org/not-ah/node> .
+<https://drift-king.org/ah/site/check-home-styles>
+    a sd:SoftwareConfiguration , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/publish> ;
+    dcterms:references <https://drift-king.org/ah/site/x-components/check-styles> ;
+    dcterms:title "the home page styles only classes the pinned version emits, canary first" ;
+    sd:hasExecutionCommand "node site/checks/check-styles.mjs site/checks/canaries/styles.css site/expander/x-components/component-attributes.generated.mjs; test $? -eq 1 && node site/checks/check-styles.mjs site/home.css site/expander/x-components/component-attributes.generated.mjs" ;
+    dcterms:requires <https://drift-king.org/not-ah/node> .
+<https://drift-king.org/ah/site/deploy>
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/expand-home> ,
+        <https://drift-king.org/ah/site/extract-home-images> ,
+        <https://drift-king.org/ah/site/check-home-expanded> ,
+        <https://drift-king.org/ah/site/check-home-styles> .
+<https://drift-king.org/ah/site/x-components/install-expander>
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/publish> .
+
+# On this machine only: serve the site, try the page in a real browser, stop the
+# server by its PID. Not a step of the-builder: the server runs until it is
+# stopped. These change nothing outside this machine.
+<https://drift-king.org/ah/site/local/plan>
+    a p-plan:Plan ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:title "try the home page in a real browser at 127.0.0.1:8787" ;
+    dcterms:description "Start serve-local, run the tape checks and the link check against http://127.0.0.1:8787/ in Chromium, each with its canary first, stop serve-local by the PIDs it started, and confirm the port is free." .
+<https://drift-king.org/ah/site/local/check-tape>
+    a sd:SoftwareConfiguration , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/site/local/plan> ;
+    dcterms:references <https://drift-king.org/ah/site/endpoint/local> ;
+    dcterms:title "the tape: the space bar pauses and plays both bands, the glyph says which, reduced motion stops them, a focused link pauses them" ;
+    sd:hasExecutionCommand "node site/checks/check-tape.mjs http://127.0.0.1:8787/ ../apricotter/apricotter-microsites/node_modules/playwright" ;
+    dcterms:requires <https://drift-king.org/not-ah/node> , <https://drift-king.org/not-ah/npm/playwright/1.61.1> .
+<https://drift-king.org/ah/site/local/check-links>
+    a sd:SoftwareConfiguration , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/site/local/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/local/check-tape> ;
+    dcterms:references <https://drift-king.org/ah/site/endpoint/local> ;
+    dcterms:title "every link on the home page opens, except the /console links, which wait for their gap to be signed" ;
+    sd:hasExecutionCommand "node site/checks/check-links.mjs http://127.0.0.1:8787/ ../apricotter/apricotter-microsites/node_modules/playwright" ;
+    dcterms:requires <https://drift-king.org/not-ah/node> , <https://drift-king.org/not-ah/npm/playwright/1.61.1> .
+<https://drift-king.org/site/checks/check-tape.mjs> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> .
+<https://drift-king.org/site/checks/check-links.mjs> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> .
+
+# The approval page for a release: the files, the packages the release brings, and
+# what each check found. A new template, so every page already signed keeps
+# rendering from its own.
+<https://drift-king.org/site/templates/approval-release.mustache>
+    a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/approval-release-template> ;
+    rdfs:comment "approval-results.mustache, plus the packages the release brings, each with its exact version and integrity." .
+<https://drift-king.org/ah/site/var/approval-release-template> a p-plan:Variable ; rdfs:label "the approval template for a release" .
+<https://drift-king.org/ah/site/var/approval-release-results> a p-plan:Variable ; rdfs:label "what a release approval's checks found" .
+<https://drift-king.org/ah/site/var/approval-packages> a p-plan:Variable ; rdfs:label "the packages a release approval names, and what they bring" .
+
+<https://drift-king.org/ah/site/var/approval-wanted> a p-plan:Variable ; rdfs:label "what a release approval's document wanted, and what went" .
+
+# The quotes in the model are the signed words: each is compared with the signed file
+# at the place the model says it was taken from, canary first.
+<https://drift-king.org/ah/site/check-wanted-quotes>
+    a sd:SoftwareConfiguration , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    dcterms:title "each wanted line the model quotes is the signed words, at the place the model names, canary first" ;
+    sd:hasExecutionCommand "node site/checks/check-quotes.mjs site/checks/canaries/quotes-altered.ttl; test $? -eq 1 && node site/checks/check-quotes.mjs ah/x-components-0.2.0-wanted.ttl" ;
+    dcterms:requires <https://drift-king.org/not-ah/node> .
+<https://drift-king.org/site/checks/check-quotes.mjs> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> .
+<https://drift-king.org/site/checks/canaries/quotes-altered.ttl> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    rdfs:comment "A wanted line with one word changed from the signed list. check-quotes must fail on it." .
+
+<https://drift-king.org/ah/site/var/approval-unnamed> a p-plan:Variable ; rdfs:label "the checks no wanted item a release approval names is proved by" .
+
+# Render check for the wanted section of a release approval, from fixed canary inputs.
+# Two items of a list and one ask, the ask named with an L, the way a list line is named
+# on the real page. Each is part of its own document, with its own position. The page must
+# put the list's items first, in their positions, and the ask after them: a place read from a
+# name would put the ask first. The output is held to its sha256.
+<https://drift-king.org/ah/site/var/render-canary-release-text> a p-plan:Variable ; rdfs:label "the release wanted canary's document, as text" .
+<https://drift-king.org/ah/site/var/render-canary-release-html> a p-plan:Variable ; rdfs:label "the release wanted canary's output" .
+<https://drift-king.org/the-linter/canaries/render/release-wanted.md> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <https://spec.commonmark.org/> ;
+    prov:wasAttributedTo <https://drift-king.org/not-ah/agent/reviewer> ;
+    dcterms:references <https://drift-king.org/ah/x-components/0.2.0/canary/want/first-line> ,
+        <https://drift-king.org/ah/x-components/0.2.0/canary/want/second-line> ,
+        <https://drift-king.org/ah/x-components/0.2.0/canary/want/ask> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/render-canary-release-text> .
+<https://drift-king.org/ah/x-components/0.2.0/canary/list> <https://drift-king.org/ah/x-components/0.2.0/position> 1 .
+<https://drift-king.org/ah/x-components/0.2.0/canary/asks> <https://drift-king.org/ah/x-components/0.2.0/position> 2 .
+<https://drift-king.org/ah/x-components/0.2.0/canary/want/first-line> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/x-components/0.2.0/canary/list> ;
+    <https://drift-king.org/ah/x-components/0.2.0/position> 1 ;
+    rdfs:label "Canary list item, first" ;
+    skos:notation "A1" ;
+    rdf:value "The first line of a list." .
+<https://drift-king.org/ah/x-components/0.2.0/canary/want/second-line> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/x-components/0.2.0/canary/list> ;
+    <https://drift-king.org/ah/x-components/0.2.0/position> 2 ;
+    rdfs:label "Canary list item, second" ;
+    skos:notation "A2" ;
+    rdf:value "The second line of a list." .
+<https://drift-king.org/ah/x-components/0.2.0/canary/want/ask> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/x-components/0.2.0/canary/asks> ;
+    <https://drift-king.org/ah/x-components/0.2.0/position> 1 ;
+    rdfs:label "Canary ask" ;
+    skos:notation "L1" ;
+    rdf:value "An ask whose name starts with L." .
+<https://drift-king.org/ah/site/render-check-release-wanted>
+    a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/var/approval-release-template> ,
+        <https://drift-king.org/ah/site/var/approval-wanted> ,
+        <https://drift-king.org/ah/site/var/render-canary-release-text> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/render-canary-release-html> ;
+    dcterms:title "render check: the wanted section of a release approval, from fixed canary inputs" .
+<https://drift-king.org/the-builder/target/render-check/release-wanted.html>
+    a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcterms:identifier "sha256:ceba890c4811a071cf8b50c27f10ce1c3a705c6ea33d5309a8ef07f67eb89e76" ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/approval-release.mustache> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/render-canary-release-html> .
+<https://drift-king.org/the-linter/canaries/render/release-wanted.expected.html>
+    a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:identifier "sha256:ceba890c4811a071cf8b50c27f10ce1c3a705c6ea33d5309a8ef07f67eb89e76" ;
+    prov:wasAttributedTo <https://drift-king.org/not-ah/agent/reviewer> ;
+    rdfs:comment "What the release wanted render check must produce, for reading and diffing: the list's two items in their positions, then the ask." .
+
+# ===========================================================================
+# What each published file is: its media type, from the model. The generated headers
+# file is written from these, so no rule is written by hand. A media type is an IANA media
+# type with the charset a text type is served with. servedUnaided says the platform's own
+# answer for the file already is the type named here (measured, and checked on every run
+# against a server); a file it does not hold gets a rule. cacheControl is what a file that
+# must reach the reader as the exact bytes in the repository is served with.
+# ===========================================================================
+<https://drift-king.org/ah/site/charset> a owl:DatatypeProperty ; rdfs:label "charset" ;
+    rdfs:comment "The charset a text media type is served with." .
+<https://drift-king.org/ah/site/cacheControl> a owl:DatatypeProperty ; rdfs:label "cache control" ;
+    rdfs:comment "The Cache-Control a published file is served with." .
+<https://drift-king.org/ah/site/servedUnaided> a owl:DatatypeProperty ; rdfs:label "served unaided" ; rdfs:range xsd:boolean ;
+    rdfs:comment "True when the platform, with no rule for the file, already answers with exactly the media type the model names for it." .
+<https://www.iana.org/assignments/media-types/application/gzip> a dcterms:MediaType ; rdfs:label "application/gzip" .
+<https://www.iana.org/assignments/media-types/application/json> a dcterms:MediaType ; rdfs:label "application/json" .
+<https://www.iana.org/assignments/media-types/application/pdf> a dcterms:MediaType ; rdfs:label "application/pdf" .
+<https://www.iana.org/assignments/media-types/application/sparql-query> a dcterms:MediaType ; rdfs:label "application/sparql-query" .
+<https://www.iana.org/assignments/media-types/application/yaml> a dcterms:MediaType ; rdfs:label "application/yaml" .
+<https://www.iana.org/assignments/media-types/application/zip> a dcterms:MediaType ; rdfs:label "application/zip" .
+<https://www.iana.org/assignments/media-types/font/woff2> a dcterms:MediaType ; rdfs:label "font/woff2" .
+<https://www.iana.org/assignments/media-types/image/webp> a dcterms:MediaType ; rdfs:label "image/webp" .
+<https://www.iana.org/assignments/media-types/text/css> a dcterms:MediaType ; rdfs:label "text/css" ; <https://drift-king.org/ah/site/charset> "utf-8" .
+<https://www.iana.org/assignments/media-types/text/html> a dcterms:MediaType ; rdfs:label "text/html" ; <https://drift-king.org/ah/site/charset> "utf-8" .
+<https://www.iana.org/assignments/media-types/text/javascript> a dcterms:MediaType ; rdfs:label "text/javascript" ; <https://drift-king.org/ah/site/charset> "utf-8" .
+<https://www.iana.org/assignments/media-types/text/markdown> a dcterms:MediaType ; rdfs:label "text/markdown" ; <https://drift-king.org/ah/site/charset> "utf-8" .
+<https://www.iana.org/assignments/media-types/text/plain> a dcterms:MediaType ; rdfs:label "text/plain" ; <https://drift-king.org/ah/site/charset> "utf-8" .
+<https://www.iana.org/assignments/media-types/text/rust> a dcterms:MediaType ; rdfs:label "text/rust" ; <https://drift-king.org/ah/site/charset> "utf-8" .
+<https://www.iana.org/assignments/media-types/text/turtle> a dcterms:MediaType ; rdfs:label "text/turtle" ; <https://drift-king.org/ah/site/charset> "utf-8" .
+
+<https://drift-king.org/site/public/404.html> dcterms:format <https://www.iana.org/assignments/media-types/text/html> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/ah.ttl> dcterms:format <https://www.iana.org/assignments/media-types/text/turtle> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/ah/cloudflare-pid-rs.ttl> dcterms:format <https://www.iana.org/assignments/media-types/text/turtle> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/ah/signings.ttl> dcterms:format <https://www.iana.org/assignments/media-types/text/turtle> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/ah/site.ttl> dcterms:format <https://www.iana.org/assignments/media-types/text/turtle> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/ah/the-builder.ttl> dcterms:format <https://www.iana.org/assignments/media-types/text/turtle> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/ah/x-components-0.2.0-checks.ttl> dcterms:format <https://www.iana.org/assignments/media-types/text/turtle> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/ah/x-components-0.2.0-wanted.ttl> dcterms:format <https://www.iana.org/assignments/media-types/text/turtle> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/approvals/console-approval.html> dcterms:format <https://www.iana.org/assignments/media-types/text/html> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/approvals/console.html> dcterms:format <https://www.iana.org/assignments/media-types/text/html> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/approvals/console.md> dcterms:format <https://www.iana.org/assignments/media-types/text/markdown> ;
+    <https://drift-king.org/ah/site/servedUnaided> true ;
+    <https://drift-king.org/ah/site/cacheControl> "no-transform" .
+<https://drift-king.org/site/public/approvals/drift-king-design-approval.html> dcterms:format <https://www.iana.org/assignments/media-types/text/html> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/approvals/drift-king-design.html> dcterms:format <https://www.iana.org/assignments/media-types/text/html> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/approvals/drift-king-design.md> dcterms:format <https://www.iana.org/assignments/media-types/text/markdown> ;
+    <https://drift-king.org/ah/site/servedUnaided> true ;
+    <https://drift-king.org/ah/site/cacheControl> "no-transform" .
+<https://drift-king.org/site/public/approvals/gap-code-strings-approval.html> dcterms:format <https://www.iana.org/assignments/media-types/text/html> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/approvals/gap-code-strings-closed-approval.html> dcterms:format <https://www.iana.org/assignments/media-types/text/html> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/approvals/gap-code-strings-closed.html> dcterms:format <https://www.iana.org/assignments/media-types/text/html> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/approvals/gap-code-strings-closed.md> dcterms:format <https://www.iana.org/assignments/media-types/text/markdown> ;
+    <https://drift-king.org/ah/site/servedUnaided> true ;
+    <https://drift-king.org/ah/site/cacheControl> "no-transform" .
+<https://drift-king.org/site/public/approvals/gap-code-strings.html> dcterms:format <https://www.iana.org/assignments/media-types/text/html> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/approvals/gap-code-strings.md> dcterms:format <https://www.iana.org/assignments/media-types/text/markdown> ;
+    <https://drift-king.org/ah/site/servedUnaided> true ;
+    <https://drift-king.org/ah/site/cacheControl> "no-transform" .
+<https://drift-king.org/site/public/approvals/gap-file-provenance-approval.html> dcterms:format <https://www.iana.org/assignments/media-types/text/html> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/approvals/gap-file-provenance.html> dcterms:format <https://www.iana.org/assignments/media-types/text/html> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/approvals/gap-file-provenance.md> dcterms:format <https://www.iana.org/assignments/media-types/text/markdown> ;
+    <https://drift-king.org/ah/site/servedUnaided> true ;
+    <https://drift-king.org/ah/site/cacheControl> "no-transform" .
+<https://drift-king.org/site/public/approvals/gap-open-agreements-approval.html> dcterms:format <https://www.iana.org/assignments/media-types/text/html> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/approvals/gap-open-agreements.html> dcterms:format <https://www.iana.org/assignments/media-types/text/html> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/approvals/gap-open-agreements.md> dcterms:format <https://www.iana.org/assignments/media-types/text/markdown> ;
+    <https://drift-king.org/ah/site/servedUnaided> true ;
+    <https://drift-king.org/ah/site/cacheControl> "no-transform" .
+<https://drift-king.org/site/public/approvals/gap-ship-agreements-approval.html> dcterms:format <https://www.iana.org/assignments/media-types/text/html> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/approvals/gap-ship-agreements.html> dcterms:format <https://www.iana.org/assignments/media-types/text/html> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/approvals/gap-ship-agreements.md> dcterms:format <https://www.iana.org/assignments/media-types/text/markdown> ;
+    <https://drift-king.org/ah/site/servedUnaided> true ;
+    <https://drift-king.org/ah/site/cacheControl> "no-transform" .
+<https://drift-king.org/site/public/approvals/gap-x-components-sub-dependencies-approval.html> dcterms:format <https://www.iana.org/assignments/media-types/text/html> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/approvals/gap-x-components-sub-dependencies.html> dcterms:format <https://www.iana.org/assignments/media-types/text/html> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/approvals/gap-x-components-sub-dependencies.md> dcterms:format <https://www.iana.org/assignments/media-types/text/markdown> ;
+    <https://drift-king.org/ah/site/servedUnaided> true ;
+    <https://drift-king.org/ah/site/cacheControl> "no-transform" .
+<https://drift-king.org/site/public/approvals/model-review-responses-approval.html> dcterms:format <https://www.iana.org/assignments/media-types/text/html> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/approvals/model-review-responses.html> dcterms:format <https://www.iana.org/assignments/media-types/text/html> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/approvals/model-review-responses.md> dcterms:format <https://www.iana.org/assignments/media-types/text/markdown> ;
+    <https://drift-king.org/ah/site/servedUnaided> true ;
+    <https://drift-king.org/ah/site/cacheControl> "no-transform" .
+<https://drift-king.org/site/public/approvals/patch-and-verify-plan-approval.html> dcterms:format <https://www.iana.org/assignments/media-types/text/html> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/approvals/patch-and-verify-plan.html> dcterms:format <https://www.iana.org/assignments/media-types/text/html> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/approvals/patch-and-verify-plan.md> dcterms:format <https://www.iana.org/assignments/media-types/text/markdown> ;
+    <https://drift-king.org/ah/site/servedUnaided> true ;
+    <https://drift-king.org/ah/site/cacheControl> "no-transform" .
+<https://drift-king.org/site/public/approvals/signing-plan-v2-approval.html> dcterms:format <https://www.iana.org/assignments/media-types/text/html> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/approvals/signing-plan-v2.html> dcterms:format <https://www.iana.org/assignments/media-types/text/html> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/approvals/signing-plan-v2.md> dcterms:format <https://www.iana.org/assignments/media-types/text/markdown> ;
+    <https://drift-king.org/ah/site/servedUnaided> true ;
+    <https://drift-king.org/ah/site/cacheControl> "no-transform" .
+<https://drift-king.org/site/public/approvals/x-components-0.1.0-release-approval.html> dcterms:format <https://www.iana.org/assignments/media-types/text/html> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/approvals/x-components-0.1.0-release.html> dcterms:format <https://www.iana.org/assignments/media-types/text/html> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/approvals/x-components-0.1.0-release.md> dcterms:format <https://www.iana.org/assignments/media-types/text/markdown> ;
+    <https://drift-king.org/ah/site/servedUnaided> true ;
+    <https://drift-king.org/ah/site/cacheControl> "no-transform" .
+<https://drift-king.org/site/public/approvals/x-components-0.2.0-release-approval.html> dcterms:format <https://www.iana.org/assignments/media-types/text/html> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/approvals/x-components-0.2.0-release.html> dcterms:format <https://www.iana.org/assignments/media-types/text/html> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/approvals/x-components-0.2.0-release.md> dcterms:format <https://www.iana.org/assignments/media-types/text/markdown> ;
+    <https://drift-king.org/ah/site/servedUnaided> true ;
+    <https://drift-king.org/ah/site/cacheControl> "no-transform" .
+<https://drift-king.org/site/public/approvals/x-components-list-v2-approval.html> dcterms:format <https://www.iana.org/assignments/media-types/text/html> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/approvals/x-components-list-v2.html> dcterms:format <https://www.iana.org/assignments/media-types/text/html> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/approvals/x-components-list-v2.md> dcterms:format <https://www.iana.org/assignments/media-types/text/markdown> ;
+    <https://drift-king.org/ah/site/servedUnaided> true ;
+    <https://drift-king.org/ah/site/cacheControl> "no-transform" .
+<https://drift-king.org/site/public/approvals/x-components-next-version-approval.html> dcterms:format <https://www.iana.org/assignments/media-types/text/html> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/approvals/x-components-next-version.html> dcterms:format <https://www.iana.org/assignments/media-types/text/html> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/approvals/x-components-next-version.md> dcterms:format <https://www.iana.org/assignments/media-types/text/markdown> ;
+    <https://drift-king.org/ah/site/servedUnaided> true ;
+    <https://drift-king.org/ah/site/cacheControl> "no-transform" .
+<https://drift-king.org/site/public/design/drift-king-design-system.zip> dcterms:format <https://www.iana.org/assignments/media-types/application/zip> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/fonts/bungee-400.woff2> dcterms:format <https://www.iana.org/assignments/media-types/font/woff2> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/fonts/bungee-shade-400.woff2> dcterms:format <https://www.iana.org/assignments/media-types/font/woff2> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/fonts/chakra-petch-400.woff2> dcterms:format <https://www.iana.org/assignments/media-types/font/woff2> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/fonts/chakra-petch-500.woff2> dcterms:format <https://www.iana.org/assignments/media-types/font/woff2> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/fonts/chakra-petch-600.woff2> dcterms:format <https://www.iana.org/assignments/media-types/font/woff2> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/fonts/chakra-petch-700.woff2> dcterms:format <https://www.iana.org/assignments/media-types/font/woff2> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/fonts/jetbrains-mono.woff2> dcterms:format <https://www.iana.org/assignments/media-types/font/woff2> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/home.css> dcterms:format <https://www.iana.org/assignments/media-types/text/css> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/images/kart-cutout.webp> dcterms:format <https://www.iana.org/assignments/media-types/image/webp> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/images/kart.webp> dcterms:format <https://www.iana.org/assignments/media-types/image/webp> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/images/racer.webp> dcterms:format <https://www.iana.org/assignments/media-types/image/webp> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/images/scene.webp> dcterms:format <https://www.iana.org/assignments/media-types/image/webp> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/index.html> dcterms:format <https://www.iana.org/assignments/media-types/text/html> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/intent/letter-of-intent-signed.pdf> dcterms:format <https://www.iana.org/assignments/media-types/application/pdf> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/intent/letter-of-intent.html> dcterms:format <https://www.iana.org/assignments/media-types/text/html> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/intent/letter-of-intent.md> dcterms:format <https://www.iana.org/assignments/media-types/text/markdown> ;
+    <https://drift-king.org/ah/site/servedUnaided> true ;
+    <https://drift-king.org/ah/site/cacheControl> "no-transform" .
+<https://drift-king.org/site/public/intent/x-components-letter-of-intent-approval.html> dcterms:format <https://www.iana.org/assignments/media-types/text/html> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/intent/x-components-letter-of-intent.html> dcterms:format <https://www.iana.org/assignments/media-types/text/html> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/intent/x-components-letter-of-intent.md> dcterms:format <https://www.iana.org/assignments/media-types/text/markdown> ;
+    <https://drift-king.org/ah/site/servedUnaided> true ;
+    <https://drift-king.org/ah/site/cacheControl> "no-transform" .
+<https://drift-king.org/site/public/intent/x-components-what-good-looks-like-v2.html> dcterms:format <https://www.iana.org/assignments/media-types/text/html> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/intent/x-components-what-good-looks-like-v2.md> dcterms:format <https://www.iana.org/assignments/media-types/text/markdown> ;
+    <https://drift-king.org/ah/site/servedUnaided> true ;
+    <https://drift-king.org/ah/site/cacheControl> "no-transform" .
+<https://drift-king.org/site/public/intent/x-components-what-good-looks-like.html> dcterms:format <https://www.iana.org/assignments/media-types/text/html> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/intent/x-components-what-good-looks-like.md> dcterms:format <https://www.iana.org/assignments/media-types/text/markdown> ;
+    <https://drift-king.org/ah/site/servedUnaided> true ;
+    <https://drift-king.org/ah/site/cacheControl> "no-transform" .
+<https://drift-king.org/site/public/not-ah.ttl> dcterms:format <https://www.iana.org/assignments/media-types/text/turtle> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/plans/docusign-approval-v2.ttl> dcterms:format <https://www.iana.org/assignments/media-types/text/turtle> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/plans/docusign-approval.ttl> dcterms:format <https://www.iana.org/assignments/media-types/text/turtle> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/plans/patch-and-verify.ttl> dcterms:format <https://www.iana.org/assignments/media-types/text/turtle> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/plans/push-and-tag.ttl> dcterms:format <https://www.iana.org/assignments/media-types/text/turtle> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/plans/verify-published.ttl> dcterms:format <https://www.iana.org/assignments/media-types/text/turtle> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/reviews/model-fixes.html> dcterms:format <https://www.iana.org/assignments/media-types/text/html> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/reviews/model-fixes.md> dcterms:format <https://www.iana.org/assignments/media-types/text/markdown> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/skills/docusign-approval/SKILL.md> dcterms:format <https://www.iana.org/assignments/media-types/text/markdown> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/skills/patch-and-verify/SKILL.md> dcterms:format <https://www.iana.org/assignments/media-types/text/markdown> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/style.css> dcterms:format <https://www.iana.org/assignments/media-types/text/css> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/the-linter/canaries/approvals-are-documents.ttl> dcterms:format <https://www.iana.org/assignments/media-types/text/turtle> ;
+    <https://drift-king.org/ah/site/servedUnaided> true ;
+    <https://drift-king.org/ah/site/cacheControl> "no-transform" .
+<https://drift-king.org/site/public/the-linter/canaries/canary-isolation.ttl> dcterms:format <https://www.iana.org/assignments/media-types/text/turtle> ;
+    <https://drift-king.org/ah/site/servedUnaided> true ;
+    <https://drift-king.org/ah/site/cacheControl> "no-transform" .
+<https://drift-king.org/site/public/the-linter/canaries/domain-retypes.ttl> dcterms:format <https://www.iana.org/assignments/media-types/text/turtle> ;
+    <https://drift-king.org/ah/site/servedUnaided> true ;
+    <https://drift-king.org/ah/site/cacheControl> "no-transform" .
+<https://drift-king.org/site/public/the-linter/canaries/every-address-opens.ttl> dcterms:format <https://www.iana.org/assignments/media-types/text/turtle> ;
+    <https://drift-king.org/ah/site/servedUnaided> true ;
+    <https://drift-king.org/ah/site/cacheControl> "no-transform" .
+<https://drift-king.org/site/public/the-linter/canaries/file-provenance.ttl> dcterms:format <https://www.iana.org/assignments/media-types/text/turtle> ;
+    <https://drift-king.org/ah/site/servedUnaided> true ;
+    <https://drift-king.org/ah/site/cacheControl> "no-transform" .
+<https://drift-king.org/site/public/the-linter/canaries/iri-names-not-values.ttl> dcterms:format <https://www.iana.org/assignments/media-types/text/turtle> ;
+    <https://drift-king.org/ah/site/servedUnaided> true ;
+    <https://drift-king.org/ah/site/cacheControl> "no-transform" .
+<https://drift-king.org/site/public/the-linter/canaries/known-gap-unsigned.ttl> dcterms:format <https://www.iana.org/assignments/media-types/text/turtle> ;
+    <https://drift-king.org/ah/site/servedUnaided> true ;
+    <https://drift-king.org/ah/site/cacheControl> "no-transform" .
+<https://drift-king.org/site/public/the-linter/canaries/named-by-nobody.ttl> dcterms:format <https://www.iana.org/assignments/media-types/text/turtle> ;
+    <https://drift-king.org/ah/site/servedUnaided> true ;
+    <https://drift-king.org/ah/site/cacheControl> "no-transform" .
+<https://drift-king.org/site/public/the-linter/canaries/namespace-terms-defined.ttl> dcterms:format <https://www.iana.org/assignments/media-types/text/turtle> ;
+    <https://drift-king.org/ah/site/servedUnaided> true ;
+    <https://drift-king.org/ah/site/cacheControl> "no-transform" .
+<https://drift-king.org/site/public/the-linter/canaries/plan-cycle.ttl> dcterms:format <https://www.iana.org/assignments/media-types/text/turtle> ;
+    <https://drift-king.org/ah/site/servedUnaided> true ;
+    <https://drift-king.org/ah/site/cacheControl> "no-transform" .
+<https://drift-king.org/site/public/the-linter/canaries/procedure-chain.ttl> dcterms:format <https://www.iana.org/assignments/media-types/text/turtle> ;
+    <https://drift-king.org/ah/site/servedUnaided> true ;
+    <https://drift-king.org/ah/site/cacheControl> "no-transform" .
+<https://drift-king.org/site/public/the-linter/canaries/provenance-matches.ttl> dcterms:format <https://www.iana.org/assignments/media-types/text/turtle> ;
+    <https://drift-king.org/ah/site/servedUnaided> true ;
+    <https://drift-king.org/ah/site/cacheControl> "no-transform" .
+<https://drift-king.org/site/public/the-linter/canaries/range-retypes.ttl> dcterms:format <https://www.iana.org/assignments/media-types/text/turtle> ;
+    <https://drift-king.org/ah/site/servedUnaided> true ;
+    <https://drift-king.org/ah/site/cacheControl> "no-transform" .
+<https://drift-king.org/site/public/the-linter/canaries/ship-steps-marked.ttl> dcterms:format <https://www.iana.org/assignments/media-types/text/turtle> ;
+    <https://drift-king.org/ah/site/servedUnaided> true ;
+    <https://drift-king.org/ah/site/cacheControl> "no-transform" .
+<https://drift-king.org/site/public/the-linter/canaries/terms-defined-in-vocab.ttl> dcterms:format <https://www.iana.org/assignments/media-types/text/turtle> ;
+    <https://drift-king.org/ah/site/servedUnaided> true ;
+    <https://drift-king.org/ah/site/cacheControl> "no-transform" .
+<https://drift-king.org/site/public/the-linter/canaries/tool-version-pinned.ttl> dcterms:format <https://www.iana.org/assignments/media-types/text/turtle> ;
+    <https://drift-king.org/ah/site/servedUnaided> true ;
+    <https://drift-king.org/ah/site/cacheControl> "no-transform" .
+<https://drift-king.org/site/public/the-linter/canaries/unnamed-string-rust.rs> dcterms:format <https://www.iana.org/assignments/media-types/text/rust> ;
+    <https://drift-king.org/ah/site/cacheControl> "no-transform" .
+<https://drift-king.org/site/public/the-linter/canaries/x-components-components-whole.ttl> dcterms:format <https://www.iana.org/assignments/media-types/text/turtle> ;
+    <https://drift-king.org/ah/site/servedUnaided> true ;
+    <https://drift-king.org/ah/site/cacheControl> "no-transform" .
+<https://drift-king.org/site/public/the-linter/canaries/x-components-roles-resolve.ttl> dcterms:format <https://www.iana.org/assignments/media-types/text/turtle> ;
+    <https://drift-king.org/ah/site/servedUnaided> true ;
+    <https://drift-king.org/ah/site/cacheControl> "no-transform" .
+<https://drift-king.org/site/public/the-linter/canaries/x-components-words-clean.ttl> dcterms:format <https://www.iana.org/assignments/media-types/text/turtle> ;
+    <https://drift-king.org/ah/site/servedUnaided> true ;
+    <https://drift-king.org/ah/site/cacheControl> "no-transform" .
+<https://drift-king.org/site/public/the-linter/checks/code-strings-named.rq> dcterms:format <https://www.iana.org/assignments/media-types/application/sparql-query> ;
+    <https://drift-king.org/ah/site/servedUnaided> true ;
+    <https://drift-king.org/ah/site/cacheControl> "no-transform" .
+<https://drift-king.org/site/public/the-linter/checks/procedure-chain.rq> dcterms:format <https://www.iana.org/assignments/media-types/application/sparql-query> ;
+    <https://drift-king.org/ah/site/servedUnaided> true ;
+    <https://drift-king.org/ah/site/cacheControl> "no-transform" .
+<https://drift-king.org/site/public/the-linter/checks/x-components-components-whole.rq> dcterms:format <https://www.iana.org/assignments/media-types/application/sparql-query> ;
+    <https://drift-king.org/ah/site/servedUnaided> true ;
+    <https://drift-king.org/ah/site/cacheControl> "no-transform" .
+<https://drift-king.org/site/public/the-linter/checks/x-components-roles-resolve.rq> dcterms:format <https://www.iana.org/assignments/media-types/application/sparql-query> ;
+    <https://drift-king.org/ah/site/servedUnaided> true ;
+    <https://drift-king.org/ah/site/cacheControl> "no-transform" .
+<https://drift-king.org/site/public/the-linter/checks/x-components-words-clean.rq> dcterms:format <https://www.iana.org/assignments/media-types/application/sparql-query> ;
+    <https://drift-king.org/ah/site/servedUnaided> true ;
+    <https://drift-king.org/ah/site/cacheControl> "no-transform" .
+<https://drift-king.org/site/public/the-linter/rules/strings-js.yml> dcterms:format <https://www.iana.org/assignments/media-types/application/yaml> ;
+    <https://drift-king.org/ah/site/cacheControl> "no-transform" .
+<https://drift-king.org/site/public/the-linter/rules/strings-rust.yml> dcterms:format <https://www.iana.org/assignments/media-types/application/yaml> ;
+    <https://drift-king.org/ah/site/cacheControl> "no-transform" .
+<https://drift-king.org/site/public/vendor/npm/apricotter-x-components/0.1.0-candidate/LICENSE> dcterms:format <https://www.iana.org/assignments/media-types/text/plain> .
+<https://drift-king.org/site/public/vendor/npm/apricotter-x-components/0.1.0-candidate/NOTICE> dcterms:format <https://www.iana.org/assignments/media-types/text/plain> .
+<https://drift-king.org/site/public/vendor/npm/apricotter-x-components/0.1.0-candidate/README.md> dcterms:format <https://www.iana.org/assignments/media-types/text/markdown> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/vendor/npm/apricotter-x-components/0.1.0-candidate/component-attributes.generated.mjs> dcterms:format <https://www.iana.org/assignments/media-types/text/javascript> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/vendor/npm/apricotter-x-components/0.1.0-candidate/component.ttl> dcterms:format <https://www.iana.org/assignments/media-types/text/turtle> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/vendor/npm/apricotter-x-components/0.1.0-candidate/expand.mjs> dcterms:format <https://www.iana.org/assignments/media-types/text/javascript> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/vendor/npm/apricotter-x-components/0.1.0-candidate/package.json> dcterms:format <https://www.iana.org/assignments/media-types/application/json> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/vendor/npm/apricotter-x-components/0.1.0-candidate/wai-aria.ttl> dcterms:format <https://www.iana.org/assignments/media-types/text/turtle> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/vendor/npm/apricotter-x-components/0.1.0/attestations.json> dcterms:format <https://www.iana.org/assignments/media-types/application/json> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/vendor/npm/apricotter-x-components/0.1.0/provenance.ttl> dcterms:format <https://www.iana.org/assignments/media-types/text/turtle> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/vendor/npm/apricotter-x-components/0.1.0/x-components-0.1.0.tgz> dcterms:format <https://www.iana.org/assignments/media-types/application/gzip> .
+<https://drift-king.org/site/public/vendor/npm/apricotter-x-components/0.2.0-candidate/LICENSE> dcterms:format <https://www.iana.org/assignments/media-types/text/plain> .
+<https://drift-king.org/site/public/vendor/npm/apricotter-x-components/0.2.0-candidate/NOTICE> dcterms:format <https://www.iana.org/assignments/media-types/text/plain> .
+<https://drift-king.org/site/public/vendor/npm/apricotter-x-components/0.2.0-candidate/README.md> dcterms:format <https://www.iana.org/assignments/media-types/text/markdown> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/vendor/npm/apricotter-x-components/0.2.0-candidate/component-attributes.generated.mjs> dcterms:format <https://www.iana.org/assignments/media-types/text/javascript> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/vendor/npm/apricotter-x-components/0.2.0-candidate/component.ttl> dcterms:format <https://www.iana.org/assignments/media-types/text/turtle> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/vendor/npm/apricotter-x-components/0.2.0-candidate/expand.mjs> dcterms:format <https://www.iana.org/assignments/media-types/text/javascript> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/vendor/npm/apricotter-x-components/0.2.0-candidate/package.json> dcterms:format <https://www.iana.org/assignments/media-types/application/json> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/vendor/npm/apricotter-x-components/0.2.0-candidate/static.mjs> dcterms:format <https://www.iana.org/assignments/media-types/text/javascript> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/vendor/npm/apricotter-x-components/0.2.0-candidate/wai-aria.ttl> dcterms:format <https://www.iana.org/assignments/media-types/text/turtle> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+
+# The headers file and the manifest of what is served are generated from the same rows:
+# the media type of every published file. Neither is written by hand.
+<https://drift-king.org/site/templates/headers.mustache> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/headers-template> ;
+    rdfs:comment "One literal rule for each file that needs one: its path, its Content-Type, and its Cache-Control when it has one. No wildcard: a rule with one would apply to an address that is not published, and answer the 404 page in that file's type." .
+<https://drift-king.org/site/templates/served.mustache> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/served-template> ;
+    rdfs:comment "What the site must answer, a line for each published file: its path, its Content-Type, and whether a rule in the headers file gives it. The checks read this, not the headers file." .
+<https://drift-king.org/ah/site/var/headers-template> a p-plan:Variable ; rdfs:label "the headers file's template" .
+<https://drift-king.org/ah/site/var/served-template> a p-plan:Variable ; rdfs:label "the manifest of what is served, its template" .
+<https://drift-king.org/ah/site/var/published-files> a p-plan:Variable ; rdfs:label "every published file with its media type" .
+<https://drift-king.org/ah/site/var/headers-file> a p-plan:Variable ; rdfs:label "site/public/_headers" .
+<https://drift-king.org/ah/site/var/served-file> a p-plan:Variable ; rdfs:label "site/served.tsv" .
+<https://drift-king.org/ah/site/render-headers>
+    a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/var/headers-template> ,
+        <https://drift-king.org/ah/site/var/published-files> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/headers-file> ;
+    dcterms:title "generate the headers file from the media type of each published file" .
+<https://drift-king.org/ah/site/render-served>
+    a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/var/served-template> ,
+        <https://drift-king.org/ah/site/var/published-files> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/served-file> ;
+    dcterms:title "write the manifest of what the site must answer, from the same rows" .
+<https://drift-king.org/site/served.tsv> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/served.mustache> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/served-file> .
+<https://drift-king.org/ah/site/check-headers>
+    a sd:SoftwareConfiguration , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/render-headers> ,
+        <https://drift-king.org/ah/site/render-served> ;
+    dcterms:title "the headers file has only literal rules, a rule for each file that needs one, each with the type the model names, canary first" ;
+    sd:hasExecutionCommand "node site/checks/check-headers.mjs site/checks/canaries/headers-wildcard/_headers site/checks/canaries/headers-wildcard/served.tsv; test $? -eq 1 && node site/checks/check-headers.mjs site/public/_headers site/served.tsv" ;
+    dcterms:requires <https://drift-king.org/not-ah/node> .
+<https://drift-king.org/ah/site/deploy>
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/check-headers> .
+<https://drift-king.org/site/checks/check-headers.mjs> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> .
+<https://drift-king.org/site/checks/canaries/headers-wildcard/_headers> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    rdfs:comment "The old /the-linter/* rule, a wildcard. check-headers must fail on it." .
+<https://drift-king.org/site/checks/canaries/headers-wildcard/served.tsv> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    rdfs:comment "What the wildcard canary's site must answer." .
+
+# What a running site answers. The check runs against serve-local, and its canary runs against a
+# small site of its own that carries the old wildcard rule: it must fail first.
+<https://drift-king.org/site/checks/check-served.mjs> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> .
+<https://drift-king.org/site/checks/canaries/served/wrangler.jsonc> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    rdfs:comment "A small site that carries the wildcard rule, served on its own port so check-served can be run against it first." .
+<https://drift-king.org/site/checks/canaries/served/served.tsv> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> .
+<https://drift-king.org/site/checks/canaries/served/public/_headers> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    rdfs:comment "The old /the-linter/* rule, a wildcard, as a small site serves it. check-served must fail against it." .
+<https://drift-king.org/site/checks/canaries/served/public/404.html> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> .
+<https://drift-king.org/site/checks/canaries/served/public/the-linter/x.rs> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> .
+<https://drift-king.org/ah/site/local/check-served>
+    a sd:SoftwareConfiguration , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/site/local/plan> ;
+    dcterms:references <https://drift-king.org/ah/site/endpoint/local> ;
+    dcterms:title "every path prefix answers a missing address with the 404 page as text/html, and every published file is served with the type the model names, canary first" ;
+    dcterms:description "First against a small site that carries the old wildcard rule, served from site/checks/canaries/served on port 8788 with wrangler dev, which must exit 1; then against serve-local, which must exit 0. Both servers are stopped by their PIDs." ;
+    sd:hasExecutionCommand "node site/checks/check-served.mjs http://127.0.0.1:8788/ site/checks/canaries/served/served.tsv site/checks/canaries/served/source.tsv; test $? -eq 1 && node site/checks/check-served.mjs http://127.0.0.1:8787/ site/served.tsv site/source.tsv" ;
+    dcterms:requires <https://drift-king.org/not-ah/node> .
+
+# The clean check. It reads the rules from the model, as a file written by a render step, and
+# scans after every step that writes under site/public, so nothing is published that it has not
+# passed. Canaries first: each rule's canary must be found, or the check is blind.
+<https://drift-king.org/ah/site/var/clean-rules> a p-plan:Variable ; rdfs:label "the clean rules, each with its pattern and canary" .
+<https://drift-king.org/ah/site/var/clean-rules-file> a p-plan:Variable ; rdfs:label "the-builder/target/clean-rules.tsv" .
+<https://drift-king.org/site/templates/clean-rules.mustache> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/clean-rules-template> ;
+    rdfs:comment "One line for each clean rule: its name, its pattern and its canary, separated by tabs." .
+<https://drift-king.org/ah/site/var/clean-rules-template> a p-plan:Variable ; rdfs:label "the clean rules file's template" .
+<https://drift-king.org/ah/site/render-clean-rules>
+    a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/var/clean-rules-template> ,
+        <https://drift-king.org/ah/site/var/clean-rules> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/clean-rules-file> ;
+    dcterms:title "write the clean rules file, from the rules the model names" .
+<https://drift-king.org/the-builder/target/clean-rules.tsv> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/clean-rules.mustache> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/clean-rules-file> .
+<https://drift-king.org/ah/site/check-clean>
+    a sd:SoftwareConfiguration , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/render-clean-rules> ,
+        <https://drift-king.org/ah/site/expand-home> ,
+        <https://drift-king.org/ah/site/extract-home-images> ,
+        <https://drift-king.org/ah/site/publish> ,
+        <https://drift-king.org/ah/site/publish-model> ,
+        <https://drift-king.org/ah/site/render-console> ,
+        <https://drift-king.org/ah/site/render-design> ,
+        <https://drift-king.org/ah/site/render-file-prov-gap> ,
+        <https://drift-king.org/ah/site/render-file-prov-gap-approval> ,
+        <https://drift-king.org/ah/site/render-gap> ,
+        <https://drift-king.org/ah/site/render-gap-approval> ,
+        <https://drift-king.org/ah/site/render-gap-closed> ,
+        <https://drift-king.org/ah/site/render-gap-closed-approval> ,
+        <https://drift-king.org/ah/site/render-gap-oa> ,
+        <https://drift-king.org/ah/site/render-headers> ,
+        <https://drift-king.org/ah/site/render-index> ,
+        <https://drift-king.org/ah/site/render-letter> ,
+        <https://drift-king.org/ah/site/render-plan-v2> ,
+        <https://drift-king.org/ah/site/render-plan-v2-approval> ,
+        <https://drift-king.org/ah/site/render-pv-plan> ,
+        <https://drift-king.org/ah/site/render-redirects> ,
+        <https://drift-king.org/ah/site/render-review> ,
+        <https://drift-king.org/ah/site/render-review-responses> ,
+        <https://drift-king.org/ah/site/render-review-responses-approval> ,
+        <https://drift-king.org/ah/site/render-ship-gap> ,
+        <https://drift-king.org/ah/site/render-xc-good> ,
+        <https://drift-king.org/ah/site/render-xc-good-v2> ,
+        <https://drift-king.org/ah/site/render-xc-letter> ,
+        <https://drift-king.org/ah/site/render-xc-letter-approval> ,
+        <https://drift-king.org/ah/site/render-xc-list-v2> ,
+        <https://drift-king.org/ah/site/render-xc-list-v2-approval> ,
+        <https://drift-king.org/ah/site/render-xc-next> ,
+        <https://drift-king.org/ah/site/render-xc-next-approval> ,
+        <https://drift-king.org/ah/site/render-xc-release> ,
+        <https://drift-king.org/ah/site/render-xc-subdeps-gap> ,
+        <https://drift-king.org/ah/site/render-xc-subdeps-gap-approval> ,
+        <https://drift-king.org/ah/site/render-xc020-release> ,
+        <https://drift-king.org/ah/site/render-xc020-release-approval> ,
+        <https://drift-king.org/ah/site/webp-kart> ,
+        <https://drift-king.org/ah/site/webp-racer> ;
+    dcterms:title "the repository, what the site publishes and every commit are clean: no local path, personal name or address, account ID, secret or private host, canary first" ;
+    dcterms:requires <https://drift-king.org/not-ah/setting/private-values> ;
+    sd:hasExecutionCommand "node the-linter/checks/clean.mjs --canaries the-builder/target/clean-rules.tsv; test $? -eq 1 && node the-linter/checks/clean.mjs the-builder/target/clean-rules.tsv" ;
+    dcterms:requires <https://drift-king.org/not-ah/node> .
+<https://drift-king.org/ah/site/deploy>
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/check-clean> .
+
+# ===========================================================================
+# Where an address goes. One rule splits them. Source (the-builder, the-linter, plans, and so
+# the queries and the canaries inside them) is not served from drift-king.org: each of its
+# addresses answers with a 303 to the file on GitHub, at the exact commit the site was built
+# from. What is published stays here: approvals, signed documents, the letters, the model's own
+# .ttl files, the design. The redirects and the list of what the deploy leaves out are written
+# from this rule, never by hand.
+# ===========================================================================
+<https://drift-king.org/ah/SourceFolder> a owl:Class ;
+    rdfs:label "source folder" ;
+    rdfs:comment "A folder whose files are source: their addresses answer with a 303 to the file on GitHub at the commit the site was built from, and no copy of them is served from drift-king.org." .
+<https://drift-king.org/the-builder/> a prov:Collection , <https://drift-king.org/ah/SourceFolder> ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    rdfs:label "the-builder" .
+<https://drift-king.org/the-linter/> a prov:Collection , <https://drift-king.org/ah/SourceFolder> ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    rdfs:label "the-linter" .
+<https://drift-king.org/plans/> a prov:Collection , <https://drift-king.org/ah/SourceFolder> ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    rdfs:label "plans" .
+<https://drift-king.org/ah/the-builder/build> a prov:Activity ;
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    rdfs:label "this build" ;
+    rdfs:comment "The run in progress. The builder notes on it the commit it is run from, so an address can name the exact file the site was built from." .
+<https://drift-king.org/ah/site/read-commit>
+    a sd:SoftwareConfiguration , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    dcterms:title "read the commit the site is built from" ;
+    sd:hasExecutionCommand "git rev-parse HEAD" .
+
+# What the source rule writes: the list of source files, the file that keeps their copies out of the
+# deploy, and (above, in the redirects) the 303s. The checks read the list, not the other files.
+<https://drift-king.org/ah/site/var/source-files> a p-plan:Variable ; rdfs:label "every source file, with its address on GitHub" .
+<https://drift-king.org/ah/site/var/source-template> a p-plan:Variable ; rdfs:label "the list of source files, its template" .
+<https://drift-king.org/ah/site/var/assetsignore-template> a p-plan:Variable ; rdfs:label "the deploy's ignore file, its template" .
+<https://drift-king.org/ah/site/var/source-file> a p-plan:Variable ; rdfs:label "site/source.tsv" .
+<https://drift-king.org/ah/site/var/assetsignore-file> a p-plan:Variable ; rdfs:label "site/public/.assetsignore" .
+<https://drift-king.org/site/templates/source.mustache> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/source-template> ;
+    rdfs:comment "One line for each source file: its path, the address on GitHub it is sent to, and whether a copy of it is published." .
+<https://drift-king.org/site/templates/assetsignore.mustache> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/assetsignore-template> ;
+    rdfs:comment "One literal line for each published copy of a source file: the deploy leaves it out, because its address answers from GitHub." .
+<https://drift-king.org/site/source.tsv> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/source.mustache> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/source-file> .
+<https://drift-king.org/site/public/.assetsignore> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/assetsignore.mustache> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/assetsignore-file> .
+<https://drift-king.org/ah/site/render-source>
+    a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/read-commit> ,
+        <https://drift-king.org/not-ah/the-linter/scan> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/var/source-template> ,
+        <https://drift-king.org/ah/site/var/source-files> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/source-file> ;
+    dcterms:title "write the list of source files and where each is sent" .
+<https://drift-king.org/ah/site/render-assetsignore>
+    a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/read-commit> ,
+        <https://drift-king.org/not-ah/the-linter/scan> ,
+        <https://drift-king.org/ah/site/publish> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/var/assetsignore-template> ,
+        <https://drift-king.org/ah/site/var/source-files> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/assetsignore-file> ;
+    dcterms:title "write the file that keeps the copies of source files out of the deploy" .
+<https://drift-king.org/ah/site/render-redirects>
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/read-commit> ,
+        <https://drift-king.org/not-ah/the-linter/scan> .
+<https://drift-king.org/ah/site/check-source>
+    a sd:SoftwareConfiguration , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/render-source> ,
+        <https://drift-king.org/ah/site/render-assetsignore> ,
+        <https://drift-king.org/ah/site/render-redirects> ;
+    dcterms:title "every source address is sent to GitHub and no copy of a source file is deployed, canary first" ;
+    sd:hasExecutionCommand "node site/checks/check-source.mjs site/checks/canaries/source-answers/source.tsv site/checks/canaries/source-answers/_redirects site/checks/canaries/source-answers/.assetsignore; test $? -eq 1 || exit 1; node site/checks/check-source.mjs site/checks/canaries/source-unsent/source.tsv site/checks/canaries/source-unsent/_redirects site/checks/canaries/source-unsent/.assetsignore; test $? -eq 1 || exit 1; node site/checks/check-source.mjs site/source.tsv site/public/_redirects site/public/.assetsignore" ;
+    dcterms:requires <https://drift-king.org/not-ah/node> .
+<https://drift-king.org/ah/site/deploy>
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/check-source> ,
+        <https://drift-king.org/ah/site/render-assetsignore> ,
+        <https://drift-king.org/ah/site/render-source> .
+<https://drift-king.org/site/checks/check-source.mjs> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> .
+<https://drift-king.org/site/checks/canaries/source-answers/source.tsv> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    rdfs:comment "A source file with a published copy that the ignore file does not leave out: its address would answer on drift-king.org. check-source must fail." .
+<https://drift-king.org/site/checks/canaries/source-answers/_redirects> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> .
+<https://drift-king.org/site/checks/canaries/source-answers/.assetsignore> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    rdfs:comment "Leaves out nothing." .
+<https://drift-king.org/site/checks/canaries/source-unsent/source.tsv> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    rdfs:comment "A source file whose address has no redirect to GitHub. check-source must fail." .
+<https://drift-king.org/site/checks/canaries/source-unsent/_redirects> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> .
+<https://drift-king.org/site/checks/canaries/source-unsent/.assetsignore> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    rdfs:comment "Leaves out the copy, but nothing sends the address anywhere." .
+<https://drift-king.org/site/checks/canaries/served/source.tsv> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    rdfs:comment "A source file that this small site still serves as itself: its address answers 200, not a 303 to GitHub. check-served must fail." .

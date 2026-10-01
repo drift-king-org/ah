@@ -1,0 +1,12 @@
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+# Observations standing in for a disk scan, as the first canary does. The folder is an intake
+# folder, as the real model says directives/ is.
+<https://drift-king.org/directives/> a <https://drift-king.org/ah/IntakeFolder> .
+<https://drift-king.org/not-ah/canary/named-by-nobody-intake-and-elsewhere/directive>
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter/disk-scan> ;
+    dcterms:identifier "directives/unnamed.md" .
+<https://drift-king.org/not-ah/canary/named-by-nobody-intake-and-elsewhere/elsewhere>
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter/disk-scan> ;
+    dcterms:identifier "elsewhere/unnamed.md" .

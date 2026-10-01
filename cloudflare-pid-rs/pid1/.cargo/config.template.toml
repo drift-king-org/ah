@@ -1,0 +1,6 @@
+[build]
+rustflags = [
+    "--remap-path-prefix", 'CHECKOUT\cloudflare-pid-rs\pid1=/src',
+    "--remap-path-prefix", 'USERPROFILE\.cargo=/cargo',
+    "--remap-path-prefix", 'USERPROFILE\.rustup=/rustup',
+]

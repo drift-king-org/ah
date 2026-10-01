@@ -1,0 +1,39 @@
+id: string-literal
+language: rust
+rule:
+  any:
+    # a" + "b": two literals joined by +. Rust has no implicit adjacent-
+    # literal join like Python's; this is the closest real equivalent.
+    - kind: binary_expression
+      all:
+        - has: { field: left, kind: string_literal }
+        - has: { field: right, kind: string_literal }
+    # concat!(...) really does join its literal arguments into one string
+    # at compile time, so it is caught as one unit. format!(...) does not:
+    # its format string is one literal and every other argument is its own
+    # expression, so each literal in it is caught on its own.
+    - kind: macro_invocation
+      has:
+        field: macro
+        regex: '^concat$'
+    - all:
+        - kind: string_literal
+        # Inside a binary_expression only when it is one side of a join the
+        # first branch already caught as one unit. A comparison like
+        # a == "x" is not a join, and its literal is caught on its own.
+        - not:
+            inside:
+              kind: binary_expression
+              all:
+                - has: { field: left, kind: string_literal }
+                - has: { field: right, kind: string_literal }
+        - not:
+            inside:
+              stopBy: end
+              kind: macro_invocation
+              has:
+                field: macro
+                regex: '^concat$'
+        - not: { inside: { kind: expression_statement } }
+        # extern "C": Rust syntax itself, not a word of ours.
+        - not: { inside: { stopBy: end, kind: extern_modifier } }

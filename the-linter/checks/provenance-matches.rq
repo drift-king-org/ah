@@ -1,0 +1,42 @@
+# The published tarball of a package we audited, kept in vendor/, is the one
+# its provenance is about, and that provenance names the commit the audited
+# candidate came from and is logged in Sigstore's Rekor. The provenance facts
+# are derived from the kept files by the-builder (provenance.ttl), never
+# written by hand. A finding names the tarball and what is missing.
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX prov:    <http://www.w3.org/ns/prov#>
+PREFIX sd:      <https://w3id.org/okn/o/sd#>
+
+SELECT DISTINCT ?package ?finding WHERE {
+  # A package we audited: its candidate files come from a commit on GitHub.
+  ?candidate dcterms:isPartOf ?package ; prov:wasDerivedFrom ?blob .
+  FILTER (contains(str(?blob), "/blob/"))
+  ?package sd:hasDownloadURL ?download .
+  BIND (concat(strbefore(str(?blob), "/blob/"), "/commit/", strbefore(strafter(str(?blob), "/blob/"), "/")) AS ?commit)
+  # The tarball kept from that download address, and how many sha512
+  # integrities it has: npm's, and the one derived from the kept bytes. When
+  # they agree they are one.
+  OPTIONAL {
+    ?kept prov:wasDerivedFrom ?dl .
+    OPTIONAL {
+      SELECT ?kept (COUNT(DISTINCT ?id) AS ?integrities) WHERE {
+        ?kept dcterms:identifier ?id . FILTER (strstarts(?id, "sha512-"))
+      } GROUP BY ?kept
+    }
+    FILTER (str(?dl) = str(?download))
+  }
+  BIND (IF(!BOUND(?kept), "no tarball is kept",
+        IF(COALESCE(?integrities, 0) != 1, "the kept bytes and npm's integrity disagree, or one is missing",
+        IF(EXISTS {
+             ?kept dcterms:identifier ?integrity . FILTER (strstarts(?integrity, "sha512-"))
+             ?statement dcterms:subject ?integrity ;
+               prov:wasGeneratedBy ?build ;
+               dcterms:identifier ?logged .
+             FILTER (strstarts(?logged, "rekor:"))
+             ?build prov:used ?built .
+             FILTER (str(?built) = ?commit)
+           }, "",
+           "no provenance about these bytes names the candidate's commit and is logged"))) AS ?finding)
+  FILTER (?finding != "")
+}
+ORDER BY ?package ?finding

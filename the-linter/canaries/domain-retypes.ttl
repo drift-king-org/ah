@@ -1,0 +1,14 @@
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix vann: <http://purl.org/vocab/vann/> .
+@prefix ex:   <https://drift-king.org/not-ah/canary/domain-retypes/> .
+
+# Must be found: a Dataset given a Distribution's property.
+ex:dataset a dcat:Dataset ;
+    dcat:downloadURL <https://example.org/file.txt> .
+
+# Must stay clean: the same property on a Distribution.
+ex:distribution a dcat:Distribution ;
+    dcat:downloadURL <https://example.org/file.txt> .
+
+# Stands in for the model, so the check knows whose names are ours.
+<https://drift-king.org/not-ah/canary/domain-retypes.ttl> vann:preferredNamespaceUri "https://drift-king.org/" .

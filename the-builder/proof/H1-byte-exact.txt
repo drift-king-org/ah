@@ -1,0 +1,75 @@
+What happened: certutil wrote cloudflare-pid-rs/proof/M2-sha256.txt with CRLF
+line endings (Windows native). Committed in fb106fd, git's global
+core.autocrlf (set outside this repo, on this machine) converted it to LF
+before storing the blob -- so the committed evidence was not the bytes
+certutil actually produced. A Windows-side `git status`/`git checkout`
+reported it as clean only because the same global setting converted it back
+to CRLF on checkout, masking the mismatch. Comparing the blob itself (e.g.
+from a non-Windows view) showed it changed. Proof files must never change,
+including by the tool that stores them.
+
+First fix attempted and wrong: `.gitattributes` containing `proof/** -text`.
+The pattern has a slash before the `**`, which anchors it to the repo root
+per gitattributes/gitignore matching rules -- it only ever matched a `proof/`
+folder at the root, never `cloudflare-pid-rs/proof/` or `the-builder/proof/`.
+`git ls-files --eol` showed no attribute applied to anything. Caught by
+diffing the same repo from a different OS, not from more scratchpad Python.
+
+Real fix:
+  git config --local core.autocrlf false
+  .gitattributes: * -text   (whole repo, not just proof/)
+  git add --renormalize .
+
+Result: only cloudflare-pid-rs/proof/M2-sha256.txt changed (i/crlf w/crlf
+now, matching certutil's real output). Nothing else in the repo was ever
+mis-stored -- pid1.bin, the tar, and every image were already treated as
+binary; every other text file was already LF end to end.
+
+git ls-files --eol (every line reads attr/-text):
+
+i/lf    w/lf    attr/-text            	.gitignore
+i/-text w/-text attr/-text            	Gemini_Generated_Image_32yn0v32yn0v32yn.jpg
+i/-text w/-text attr/-text            	Gemini_Generated_Image_69bpe169bpe169bp.jpg
+i/-text w/-text attr/-text            	Gemini_Generated_Image_75wd8p75wd8p75wd.jpg
+i/lf    w/lf    attr/-text            	ah.ttl
+i/lf    w/lf    attr/-text            	catalog-v001.xml
+i/lf    w/lf    attr/-text            	cloudflare-pid-rs/make-layer.py
+i/-text w/-text attr/-text            	cloudflare-pid-rs/pid1-layer.tar
+i/-text w/-text attr/-text            	cloudflare-pid-rs/pid1.bin
+i/lf    w/lf    attr/-text            	cloudflare-pid-rs/pid1/.cargo/config.toml
+i/lf    w/lf    attr/-text            	cloudflare-pid-rs/pid1/Cargo.lock
+i/lf    w/lf    attr/-text            	cloudflare-pid-rs/pid1/Cargo.toml
+i/lf    w/lf    attr/-text            	cloudflare-pid-rs/pid1/rust-toolchain.toml
+i/lf    w/lf    attr/-text            	cloudflare-pid-rs/pid1/src/main.rs
+i/lf    w/lf    attr/-text            	cloudflare-pid-rs/proof/M1-versions.txt
+i/crlf  w/crlf  attr/-text            	cloudflare-pid-rs/proof/M2-sha256.txt
+i/lf    w/lf    attr/-text            	cloudflare-pid-rs/proof/M3-push.txt
+i/lf    w/lf    attr/-text            	cloudflare-pid-rs/proof/M4-deploy.txt
+i/lf    w/lf    attr/-text            	cloudflare-pid-rs/proof/M4-response.json
+i/lf    w/lf    attr/-text            	cloudflare-pid-rs/proof/M5-logs.txt
+i/lf    w/lf    attr/-text            	cloudflare-pid-rs/proof/M6-onstop.txt
+i/lf    w/lf    attr/-text            	cloudflare-pid-rs/proof/M7-custom-domain.txt
+i/lf    w/lf    attr/-text            	cloudflare-pid-rs/proof/M8-routing.txt
+i/lf    w/lf    attr/-text            	cloudflare-pid-rs/proof/M9-sosa-favicons.txt
+i/lf    w/lf    attr/-text            	cloudflare-pid-rs/worker/package-lock.json
+i/lf    w/lf    attr/-text            	cloudflare-pid-rs/worker/package.json
+i/-text w/-text attr/-text            	cloudflare-pid-rs/worker/public/apple-touch-icon.png
+i/-text w/-text attr/-text            	cloudflare-pid-rs/worker/public/drift-king.webp
+i/-text w/-text attr/-text            	cloudflare-pid-rs/worker/public/favicon.ico
+i/-text w/-text attr/-text            	cloudflare-pid-rs/worker/public/icon-192.png
+i/-text w/-text attr/-text            	cloudflare-pid-rs/worker/public/icon-512.png
+i/lf    w/lf    attr/-text            	cloudflare-pid-rs/worker/public/manifest.webmanifest
+i/lf    w/lf    attr/-text            	cloudflare-pid-rs/worker/src/index.js
+i/lf    w/lf    attr/-text            	cloudflare-pid-rs/worker/wrangler.jsonc
+i/lf    w/lf    attr/-text            	not-ah.ttl
+i/lf    w/lf    attr/-text            	the-builder/Cargo.lock
+i/lf    w/lf    attr/-text            	the-builder/Cargo.toml
+i/lf    w/lf    attr/-text            	the-builder/proof/B1-domain-retypes.txt
+i/lf    w/lf    attr/-text            	the-builder/proof/B2-dry-run.txt
+i/lf    w/lf    attr/-text            	the-builder/rust-toolchain.toml
+i/lf    w/lf    attr/-text            	the-builder/src/main.rs
+i/lf    w/lf    attr/-text            	the-linter/canaries/domain-retypes.ttl
+i/lf    w/lf    attr/-text            	the-linter/checks/domain-retypes.rq
+
+Going forward: a file's sha256 on disk should equal its sha256 as
+`git hash-object` reports it. Worth a the-linter check later, not built yet.

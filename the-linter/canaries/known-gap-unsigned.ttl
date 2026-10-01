@@ -1,0 +1,11 @@
+# Canary for known-gap.rq (M3.1): shaped exactly like a real gap -- an
+# earl:Assertion for a (test, subject) pair -- but with no signing
+# prov:Activity at all. Must find nothing: writing a gap node is free;
+# it must never count on its own.
+@prefix earl: <http://www.w3.org/ns/earl#> .
+
+<https://drift-king.org/not-ah/canary/known-gap-unsigned/gap>
+    a earl:Assertion ;
+    earl:test <https://drift-king.org/not-ah/canary/known-gap-unsigned/test> ;
+    earl:subject <https://drift-king.org/not-ah/canary/known-gap-unsigned/subject> ;
+    earl:result [ a earl:TestResult ; earl:outcome earl:failed ] .

@@ -1,0 +1,24 @@
+# Every step of the plan, with its title and command, if it is a command
+# step. ?plan is bound by the caller. main.rs holds no SPARQL of its own: this
+# is the one question it asks to find out what a step is called and how to
+# run it, the same way the-generator's imports-required.rq works.
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX p-plan:  <http://purl.org/net/p-plan#>
+PREFIX sd:      <https://w3id.org/okn/o/sd#>
+
+SELECT ?plan ?step ?title ?command ?copy ?render ?ready ?ship WHERE {
+  ?step p-plan:isStepOfPlan ?plan .
+  OPTIONAL { ?step dcterms:title ?title }
+  OPTIONAL { ?step sd:hasExecutionCommand ?command }
+  # A copy step publishes files from the commit; publish-copies.rq says which.
+  BIND (EXISTS { ?step a <https://drift-king.org/ah/the-builder/CopyStep> } AS ?copy)
+  # A render step fills a Mustache template; render-inputs.rq says how.
+  BIND (EXISTS { ?step a <https://drift-king.org/ah/the-builder/RenderStep> } AS ?render)
+  # A ready step runs after every check: it stops the build on a failed check,
+  # and lets signed gaps through, naming each one.
+  BIND (EXISTS { ?step a <https://drift-king.org/ah/the-builder/ReadyStep> } AS ?ready)
+  # A ship step changes something outside this machine; only a run with
+  # --ship runs it.
+  BIND (EXISTS { ?step a <https://drift-king.org/ah/the-builder/ShipStep> } AS ?ship)
+}
+ORDER BY ?step

@@ -1,0 +1,22 @@
+# Every file of ours in a source folder, with the address on GitHub it is sent to: the
+# repository's address, the commit this build is run from, and the file's path. ?copied is true when
+# a copy of the file is published on drift-king.org, which the deploy must leave out. The files are
+# the ones on the disk now, as the scan saw them. ?base is bound by the caller.
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX prov:    <http://www.w3.org/ns/prov#>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+SELECT ?base ?path ?target ?copied WHERE {
+  ?folder a <https://drift-king.org/ah/SourceFolder> .
+  ?observed dcterms:isPartOf <https://drift-king.org/not-ah/the-linter/disk-scan> ;
+    dcterms:identifier ?path .
+  FILTER (STRSTARTS(?path, STRAFTER(STR(?folder), STR(?base))))
+  <https://drift-king.org/ah/the-builder/build> dcterms:identifier ?commit .
+  <https://drift-king.org/not-ah/repository> dcterms:source ?repository .
+  BIND (concat(str(?repository), "/blob/", ?commit, "/", ?path) AS ?target)
+  BIND (EXISTS {
+    ?copy prov:wasDerivedFrom ?file .
+    FILTER (?file = IRI(concat(str(?base), ?path)) && ?copy = IRI(concat(str(?base), "site/public/", ?path)))
+  } AS ?copied)
+}
+ORDER BY ?path

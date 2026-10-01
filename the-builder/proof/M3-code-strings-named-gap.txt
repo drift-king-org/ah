@@ -1,0 +1,24 @@
+https://drift-king.org/not-ah/the-linter/code-strings-named/real-step: OPEN GAP -- expected http://www.w3.org/ns/earl#passed, got http://www.w3.org/ns/earl#failed (query https://drift-king.org/the-linter/checks/code-strings-named.rq, subject https://drift-king.org/ah.ttl)
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/worker/src/index.js:5 5m ?line=5
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/worker/src/index.js:9 @context ?line=9
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/worker/src/index.js:10 @type ?line=10
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/worker/src/index.js:10 sosa:Observation ?line=10
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/worker/src/index.js:11 @id ?line=11
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/worker/src/index.js:11 dk:ah/cloudflare-pid-rs/worker ?line=11
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/worker/src/index.js:11 sosa:madeBySensor ?line=11
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/worker/src/index.js:12 @id ?line=12
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/worker/src/index.js:12 dk:ah/cloudflare-pid-rs/image/v2 ?line=12
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/worker/src/index.js:12 sosa:hasFeatureOfInterest ?line=12
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/worker/src/index.js:13 @id ?line=13
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/worker/src/index.js:13 dk:ah/cloudflare-pid-rs/property/exit ?line=13
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/worker/src/index.js:13 sosa:observedProperty ?line=13
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/worker/src/index.js:14 dk:ah/cloudflare-pid-rs/exitCode ?line=14
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/worker/src/index.js:14 dk:ah/cloudflare-pid-rs/reason ?line=14
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/worker/src/index.js:14 sosa:hasResult ?line=14
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/worker/src/index.js:15 sosa:resultTime ?line=15
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/worker/src/index.js:40 Accept ?line=40
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/worker/src/index.js:42 text/html ?line=42
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/worker/src/index.js:44 one ?line=44
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/worker/src/index.js:46 one ?line=46
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/worker/src/index.js:49 content-type ?line=49
+  ?base=https://drift-king.org/ ?found=https://drift-king.org/cloudflare-pid-rs/worker/src/index.js:49 text/html; charset=utf-8 ?line=49

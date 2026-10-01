@@ -1,0 +1,47 @@
+# What the checks a release approval names found, in the build that renders the
+# page: the-builder's own EARL assertion for each check, on each subject the
+# approval itself names, beside what the-linter says it must find there. A check
+# the document names that has no assertion on any subject it names has not run,
+# and the page says so; it is never left out. ?step is bound by the caller.
+PREFIX earl:    <http://www.w3.org/ns/earl#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX p-plan:  <http://purl.org/net/p-plan#>
+
+SELECT ?step ?check ?on ?found ?verdict ?order WHERE {
+  ?step p-plan:hasInputVar ?var .
+  ?doc p-plan:correspondsToVariable ?var ;
+    dcterms:conformsTo <https://spec.commonmark.org/> ;
+    dcterms:references ?test .
+  ?test dcterms:title ?check .
+  {
+    ?ran a earl:Assertion ;
+      earl:assertedBy <https://drift-king.org/ah/the-builder> ;
+      earl:test ?test ;
+      earl:subject ?subject ;
+      earl:result [ earl:outcome ?outcome ] .
+    ?must a earl:Assertion ;
+      earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+      earl:test ?test ;
+      earl:subject ?subject ;
+      earl:result [ earl:outcome ?expected ] .
+    ?doc dcterms:references ?subject .
+    ?subject rdfs:label ?on .
+    BIND (IF(?outcome = earl:failed, "something", "nothing") AS ?found)
+    BIND (IF(?outcome = ?expected, "As it must.", "Not as it must.") AS ?verdict)
+    BIND (IF(?outcome = earl:failed, 1, 2) AS ?order)
+  } UNION {
+    FILTER NOT EXISTS {
+      ?ran a earl:Assertion ;
+        earl:assertedBy <https://drift-king.org/ah/the-builder> ;
+        earl:test ?test ;
+        earl:subject ?subject .
+      ?doc dcterms:references ?subject .
+    }
+    BIND ("nothing the approval names" AS ?on)
+    BIND ("not run" AS ?found)
+    BIND ("It has not run, so it is not counted as passed." AS ?verdict)
+    BIND (3 AS ?order)
+  }
+}
+ORDER BY ?order ?check

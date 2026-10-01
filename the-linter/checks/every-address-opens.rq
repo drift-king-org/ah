@@ -1,0 +1,42 @@
+# Every address of ours the model's files name opens: it is a file on
+# drift-king.org, or a published file of ours defines it, so the site answers
+# it with a 303 to that file (the-builder/queries/redirects.rq), wherever it
+# is served. An address that does neither is a finding: whoever follows it
+# gets a 404. ?base is bound by the caller, ah.ttl's own
+# vann:preferredNamespaceUri.
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX dcat: <http://www.w3.org/ns/dcat#>
+
+SELECT DISTINCT ?base ?address WHERE {
+  {
+    SELECT DISTINCT ?base ?named WHERE {
+      # Only what a file of ours says: a subject some file of ours defines,
+      # and every address in its triples. What the-builder observes while it
+      # runs (the disk scan, the strings it extracts) is never published, so
+      # it is not an address anyone is given.
+      ?s rdfs:isDefinedBy ?definer .
+      FILTER (strstarts(str(?definer), str(?base)))
+      { ?s ?p ?named } UNION { ?s ?named ?o } UNION { ?s ?p ?o BIND (?s AS ?named) }
+      FILTER (isIRI(?named) && strstarts(str(?named), str(?base)))
+    }
+  }
+  BIND (IF(contains(str(?named), "#"), strbefore(str(?named), "#"), str(?named)) AS ?address)
+  BIND (strafter(?address, str(?base)) AS ?path)
+  FILTER (?path != "")
+  BIND (IRI(?address) AS ?thing)
+  # drift-king.org itself: the published folder served at our own base.
+  ?public a dcat:Distribution ; dcat:accessURL ?home .
+  FILTER (str(?home) = str(?base))
+  BIND (IRI(concat(str(?public), ?path)) AS ?asFile)
+  BIND (IRI(concat(str(?public), ?path, ".html")) AS ?asPage)
+  FILTER NOT EXISTS { ?asFile prov:wasDerivedFrom ?source }
+  FILTER NOT EXISTS { ?asPage prov:wasDerivedFrom ?template }
+  FILTER NOT EXISTS {
+    { ?named rdfs:isDefinedBy ?file } UNION { ?thing rdfs:isDefinedBy ?file }
+    ?copy prov:wasDerivedFrom ?file .
+    ?root a dcat:Distribution .
+    FILTER (strstarts(str(?root), str(?base)) && strstarts(str(?copy), str(?root)))
+  }
+}
+ORDER BY ?address

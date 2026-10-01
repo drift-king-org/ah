@@ -1,0 +1,22 @@
+# Every command that runs a pinned tool through npx names the version the model
+# pins for it. A bare `npx wrangler` resolves whatever release is newest on the
+# day it runs, so it is not the one seen to work: it was 4.145.0 in the morning
+# and 4.146.0 at the ship, and the newer install failed. A finding names the
+# command and the pin it should have named.
+#
+# Only a tool run through npx is read here, because only npx asks a registry for
+# a version at run time. A command that runs a tool from a file on disk runs the
+# one that was installed and confirmed, which is what its pin in not-ah records.
+PREFIX sd: <https://w3id.org/okn/o/sd#>
+
+SELECT DISTINCT ?command ?pinned WHERE {
+  ?tool a sd:SoftwareVersion ; sd:name ?name ; sd:hasVersionId ?version .
+  ?step sd:hasExecutionCommand ?command .
+  BIND (REPLACE(STR(?name), "[.]", "[.]") AS ?safeName)
+  BIND (REPLACE(STR(?version), "[.]", "[.]") AS ?safeVersion)
+  BIND (CONCAT("npx([ ]+-[-A-Za-z]+)*[ ]+", ?safeName) AS ?npx)
+  FILTER (REGEX(STR(?command), CONCAT(?npx, "([@][^ ]*)?([ ]|$)")))
+  FILTER (!REGEX(STR(?command), CONCAT(?npx, "[@]", ?safeVersion, "([ ]|$)")))
+  BIND (CONCAT(STR(?name), "@", STR(?version)) AS ?pinned)
+}
+ORDER BY ?command

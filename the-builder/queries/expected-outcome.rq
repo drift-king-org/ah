@@ -1,0 +1,18 @@
+# What a check is supposed to find when it is run against one subject: the
+# EARL outcome already asserted for that (test, subject) pair. ?test and
+# ?subject are bound by the caller. If nothing is asserted, the-builder has
+# no modeled expectation to hold the run to -- an error, not a silent skip.
+# Pinned to earl:assertedBy the-linter specifically: a gap node (see
+# known-gap.rq) is also an earl:Assertion for the same pair, recording
+# today's actual, failing outcome, but it is asserted by whoever wrote it
+# (prov:wasAttributedTo), never by the-linter -- so it is never mistaken
+# for the target this query answers.
+PREFIX earl: <http://www.w3.org/ns/earl#>
+
+SELECT ?test ?subject ?outcome WHERE {
+  ?assertion a earl:Assertion ;
+    earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+    earl:test ?test ;
+    earl:subject ?subject ;
+    earl:result [ earl:outcome ?outcome ] .
+}

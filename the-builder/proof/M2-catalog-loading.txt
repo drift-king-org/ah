@@ -1,0 +1,64 @@
+main.rs no longer contains ../ah.ttl or ../not-ah.ttl. It reads exactly one
+file path literal: "catalog-v001.xml" (the bare filename, no directory
+traversal) -- the same unavoidable bootstrap convention ah-workbench's own
+lint.py uses (CATALOG_FILE = "catalog-v001.xml", run from the folder that
+holds it). Confirmed by grep: no other path-shaped literal remains.
+
+What changed:
+- parse_catalog(): not a general XML parser, just enough for
+  catalog-v001.xml's own fixed shape (flat <uri name="..." uri="..."/>
+  elements) -- adding a real XML crate wasn't asked for and the format is
+  ours to keep simple.
+- load_via_catalog(seed): walks owl:imports transitively from the seed,
+  resolving every encountered name through the catalog. A name the catalog
+  doesn't map calls eprintln!+exit(1), same style as the existing cycle
+  check -- not a silent skip.
+- load_file() tries Turtle first, falls back to RDF/XML on failure, since
+  M1's vendored copies are a mix of both and the catalog doesn't currently
+  record which is which.
+- Single seed: https://drift-king.org/ah.ttl. Its own owl:imports already
+  lists not-ah.ttl, so one seed reaches both -- no second hard-coded load.
+- ah/the-builder/build's command changed to
+  "cargo run --release --manifest-path the-builder/Cargo.toml", run from
+  drift-king root, not "cd the-builder && cargo run --release". Verified
+  first (throwaway crate): --manifest-path builds and runs the binary
+  without changing the caller's cwd, so catalog-v001.xml's relative paths
+  (relative to the repo root, same as the catalog itself) resolve
+  correctly. Model changed before the code that depends on it.
+
+Real finding, from actually running it against the catalog -- not from
+re-reading the imports by hand first: DCAT's own owl:imports reaches two
+things M1 didn't catalog:
+  http://www.w3.org/ns/prov-o#   -- PROV-O's OTHER self-declared name
+                                     (it declares both prov# and prov-o#).
+                                     Same vendored file, second catalog
+                                     entry, no new dataset node needed.
+  http://www.w3.org/2004/02/skos/core -- SKOS, not one of M1's nine at
+                                     all. Fetched, hashed, cataloged, and
+                                     named in not-ah.ttl as a tenth vocab
+                                     (Accept: text/turtle served RDF/XML
+                                     anyway, same pattern as VANN/EARL/
+                                     P-Plan).
+After both fixes, the-builder loads clean via the catalog: 0 unmapped
+names, --dry-run runs to completion.
+
+--dry-run order: same algorithm, same lint-first/deploy-last shape as B2
+(unchanged -- Kahn's algorithm, IRI tiebreak). The exact step list differs
+from B2's original printout because ffmpeg-favicons was added to the model
+after B2, not because of anything in M2; it sorts in after lint, alongside
+ffmpeg-webp, exactly where the dependency graph puts it.
+
+Both checks rerun after the SKOS/prov-o# additions:
+  domain-retypes: 1/0 (canary/model), reading local vocab/ only
+  named-by-nobody: 0 unnamed, 75 files
+
+Follow-up: catalog-v001.xml itself is no longer in main.rs either. Removed
+the CATALOG_FILE constant; the path is now a required --catalog <path> CLI
+argument with no default (missing it exits 1 with a clear message, verified
+both ways). ah/the-builder/build and ah/cloudflare-pid-rs/lint's commands
+updated to pass -- --catalog catalog-v001.xml explicitly. Also fixed the
+"catalog doesn't map X" error message, which had hardcoded the filename
+"catalog-v001.xml" even after the path became a variable -- it no longer
+names any file. Rebuilt, --dry-run confirmed still correct with the new
+flag.
+

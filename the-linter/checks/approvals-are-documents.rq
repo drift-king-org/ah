@@ -1,0 +1,19 @@
+# Everything presented for approval is a document a person can read, and the
+# model says which kind. So every file in approvals/ must be named in the
+# model as conforming to CommonMark. A file there that the model does not
+# name, or names as something else (a .txt page, say), is a finding.
+# Reads the disk-scan observations, never a list: a new file is seen the
+# first time it is on disk.
+PREFIX dcterms: <http://purl.org/dc/terms/>
+
+SELECT ?base ?found WHERE {
+  # ?base is bound by the caller: ah.ttl's own vann:preferredNamespaceUri.
+  ?observed dcterms:isPartOf <https://drift-king.org/not-ah/the-linter/disk-scan> ;
+    dcterms:identifier ?found .
+  FILTER (strstarts(?found, "approvals/"))
+  BIND (IRI(concat(str(?base), ?found)) AS ?address)
+  # An address that cannot be made is a finding too, never a silent pass.
+  FILTER (!bound(?address) ||
+    NOT EXISTS { ?address dcterms:conformsTo <https://spec.commonmark.org/> })
+}
+ORDER BY ?found

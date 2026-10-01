@@ -1,0 +1,20 @@
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix p-plan:  <http://purl.org/net/p-plan#> .
+@prefix ex:      <https://drift-king.org/not-ah/canary/procedure-chain/> .
+
+# Must be found: a procedure that forks after its first step, and whose
+# third step says nothing of what to do.
+ex:forked a <https://drift-king.org/ah/Procedure> .
+ex:start a p-plan:Step ; p-plan:isStepOfPlan ex:forked ;
+    dcterms:description "begin" .
+ex:left a p-plan:Step ; p-plan:isStepOfPlan ex:forked ;
+    p-plan:isPrecededBy ex:start ; dcterms:description "one way" .
+ex:right a p-plan:Step ; p-plan:isStepOfPlan ex:forked ;
+    p-plan:isPrecededBy ex:start .
+
+# Must stay clean: the same procedure as one chain, every step described.
+ex:chain a <https://drift-king.org/ah/Procedure> .
+ex:one a p-plan:Step ; p-plan:isStepOfPlan ex:chain ;
+    dcterms:description "begin" .
+ex:two a p-plan:Step ; p-plan:isStepOfPlan ex:chain ;
+    p-plan:isPrecededBy ex:one ; dcterms:description "then this" .
