@@ -1434,7 +1434,6 @@
     p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
 <https://drift-king.org/ah/site/var/xc020-release-text> a p-plan:Variable ; rdfs:label "the x-components 0.2.0 release approval, as text" .
 <https://drift-king.org/ah/site/var/xc020-release-html> a p-plan:Variable ; rdfs:label "site/public/approvals/x-components-0.2.0-release.html" .
-<https://drift-king.org/ah/site/var/xc020-release-approval> a p-plan:Variable ; rdfs:label "site/public/approvals/x-components-0.2.0-release-approval.html" .
 <https://drift-king.org/ah/site/render-xc020-release>
     a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
     p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
@@ -1446,26 +1445,21 @@
     dcterms:isPartOf <https://drift-king.org/ah/site> ;
     prov:wasDerivedFrom <https://drift-king.org/site/templates/document.mustache> ;
     p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/xc020-release-html> .
-<https://drift-king.org/ah/site/render-xc020-release-approval>
-    a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
-    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
-    # Waits for the audit's last check on the candidate, so the page shows what it found.
-    p-plan:isPrecededBy <https://drift-king.org/not-ah/the-linter/x-components-words-clean/real-step-0-2-0> ,
-        <https://drift-king.org/ah/site/check-wanted-quotes> ,
-        <https://drift-king.org/ah/site/render-check-release-wanted> ;
-    p-plan:hasInputVar <https://drift-king.org/ah/site/var/approval-release-template> ,
-        <https://drift-king.org/ah/site/var/approval-files> ,
-        <https://drift-king.org/ah/site/var/approval-packages> ,
-        <https://drift-king.org/ah/site/var/approval-release-results> ,
-        <https://drift-king.org/ah/site/var/approval-wanted> ,
-        <https://drift-king.org/ah/site/var/approval-unnamed> ,
-        <https://drift-king.org/ah/site/var/xc020-release-text> ;
-    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/xc020-release-approval> ;
-    dcterms:title "render the x-components 0.2.0 release's approval page" .
+# The approval page exactly as signed in envelope a1952437-8395-8eae-80e4-a9ca95aa01f1, pinned. Kept in
+# signed/, not approvals/, which holds only documents. It is no longer rendered: a signed page is served
+# as signed. The copy step checks its sha256 on every build.
+<https://drift-king.org/signed/approvals/x-components-0.2.0-release-approval.html>
+    a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    dcterms:identifier "sha256:b4c2500be0f84309764aaf4b4ecda5595a9b5a48e0d78f3ee90de35dc62ce088" ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/approval-release.mustache> ,
+        <https://drift-king.org/approvals/x-components-0.2.0-release.md> .
 <https://drift-king.org/site/public/approvals/x-components-0.2.0-release-approval.html> a prov:Entity , p-plan:Entity ;
     dcterms:isPartOf <https://drift-king.org/ah/site> ;
-    prov:wasDerivedFrom <https://drift-king.org/site/templates/approval-release.mustache> ;
-    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/xc020-release-approval> .
+    dcterms:identifier "sha256:b4c2500be0f84309764aaf4b4ecda5595a9b5a48e0d78f3ee90de35dc62ce088" ;
+    prov:wasDerivedFrom <https://drift-king.org/signed/approvals/x-components-0.2.0-release-approval.html> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
 
 # ---------------------------------------------------------------------------
 # The x-components sub-dependency gap (Compliance), written, not signed. No gap
@@ -1517,7 +1511,6 @@
     p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
 <https://drift-king.org/ah/site/deploy>
     p-plan:isPrecededBy <https://drift-king.org/ah/site/render-xc020-release> ,
-        <https://drift-king.org/ah/site/render-xc020-release-approval> ,
         <https://drift-king.org/ah/site/render-xc-subdeps-gap> .
 
 # The directive the lead architect gave for readying 0.2.0 for signing, kept as given.
@@ -1659,3 +1652,27 @@
     rdfs:comment "DocuSign caps a custom field name at 50 characters, so the approval page's field was named gap-x-components-sub-dependencies-approval-sha256, without .html." ;
     # Opens only for users of the demo account; never linked from the site.
     rdfs:seeAlso <https://apps-d.docusign.com/send/documents/details/c2412395-5e34-8007-8175-eca523a201a9> .
+
+# ---------------------------------------------------------------------------
+# The x-components 0.2.0 release, signed (envelope a1952437-8395-8eae-80e4-a9ca95aa01f1). Client work:
+# Compliance signed first (2026-10-01T23:42:13.3Z) and Apricotter's approver second (2026-10-01T23:43:04.757Z).
+# Read back by Compliance: status completed, both signers, every custom field equal to its hash. It
+# approves tagging v0.2.0 at x-components 6cf506e and a staged publish, and nothing more. It does not take
+# 0.2.0 into Drift King: that is signed once the published tarball is checked against these files, and
+# the homepage stays held until then (ah/site/x-components/take). The document is not a gap, so no gap
+# node is used or invalidated by this signing.
+# ---------------------------------------------------------------------------
+<https://drift-king.org/ah/signing/x-components-0.2.0-release>
+    a prov:Activity ;
+    prov:used [ a prov:Entity ;
+          prov:specializationOf <https://drift-king.org/approvals/x-components-0.2.0-release.md> ;
+          dcterms:identifier "sha256:2b203623117b35d4b9c5adb24e0118f9ab5e4ff17e001ba0a79ec64809b9bcc3" ] ,
+        [ a prov:Entity ;
+          prov:specializationOf <https://drift-king.org/site/public/approvals/x-components-0.2.0-release-approval.html> ;
+          dcterms:identifier "sha256:b4c2500be0f84309764aaf4b4ecda5595a9b5a48e0d78f3ee90de35dc62ce088" ] ;
+    prov:wasAssociatedWith <https://drift-king.org/ah/agent/compliance> ,
+        <https://drift-king.org/ah/agent/client/apricotter> ;
+    prov:endedAtTime "2026-10-01T23:43:04.757Z"^^xsd:dateTime ;
+    dcterms:identifier "docusign-dev:envelope:a1952437-8395-8eae-80e4-a9ca95aa01f1" ;
+    # Opens only for users of the demo account; never linked from the site.
+    rdfs:seeAlso <https://apps-d.docusign.com/send/documents/details/a1952437-8395-8eae-80e4-a9ca95aa01f1> .

@@ -1863,7 +1863,6 @@
         <https://drift-king.org/ah/site/render-xc-release> ,
         <https://drift-king.org/ah/site/render-xc-subdeps-gap> ,
         <https://drift-king.org/ah/site/render-xc020-release> ,
-        <https://drift-king.org/ah/site/render-xc020-release-approval> ,
         <https://drift-king.org/ah/site/webp-kart> ,
         <https://drift-king.org/ah/site/webp-racer> ;
     dcterms:title "the repository, what the site publishes and every commit are clean: no local path, personal name or address, account ID, secret or private host, canary first" ;

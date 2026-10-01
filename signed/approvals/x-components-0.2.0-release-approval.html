@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>x-components: release 0.2.0, for approval</title>
+<style>
+body{font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.5;color:#111;margin:0;padding:0}
+h1{font-size:18px;margin:0 0 12px}
+h2{font-size:15px;margin:18px 0 8px}
+p{margin:0 0 10px}
+a{color:#111}
+.doc{border-left:3px solid #999;padding:4px 0 4px 14px;margin:0 0 16px}
+.ref{margin:0 0 12px}
+.ref b{display:block}
+.mono{font-family:"Courier New",monospace;font-size:12px;word-break:break-all;overflow-wrap:anywhere}
+.sign{margin-top:32px}
+.sign p{margin:0 0 34px}
+.anchor{color:#ffffff;font-size:10px}
+</style>
+</head>
+<body>
+<h1>x-components: release 0.2.0, for approval</h1>
+<p>Drift King Compliance presents this for approval. Its full text follows.</p>
+<div class="doc">
+<p>The x-components letter says: &quot;A release ships only when every check passes on the exact bytes it ships.&quot;<br><a class="mono" href="https://drift-king.org/intent/x-components-letter-of-intent#:~:text=A%20release%20ships%20only%20when%20every%20check%20passes%20on%20the%20exact%20bytes%20it%20ships.">https://drift-king.org/intent/x-components-letter-of-intent#:~:text=A%20release%20ships%20only%20when%20every%20check%20passes%20on%20the%20exact%20bytes%20it%20ships.</a></p>
+<p>The candidate is commit 6cf506e of the public x-components repository.</p>
+<p>It adds the tape, the line panes, the sticker and the seal. Every word a component shows comes from the site, the classes each component emits are part of the contract, two escaping defects are fixed, and a static entry point expands a page with no Worker. That entry point brings the package&#39;s first dependency, cheerio at exactly 1.2.0.</p>
+<p>This document&#39;s approval page lists the files npm will publish from that commit, the 23 packages the dependency brings, the checks Drift King ran on them and what each found, with the fingerprint of every file. One known gap ships with this release and is signed beside it: cheerio&#39;s own dependencies are not pinned.</p>
+<p>This approves tagging v0.2.0 and a staged publish. It does not approve taking the version into Drift King: that is signed once the published tarball is checked against these files.</p>
+<p>What we do not do: we do not count a check that has not run as passed.</p>
+<p>Signed: Drift King Compliance</p>
+</div>
+<h2>The files</h2>
+<p>Each sha256 is the fingerprint of the file's exact bytes. If one character changes, the fingerprint changes and this approval no longer covers it.</p>
+<div class="ref"><b>The release approval, exactly as above</b>
+<a class="mono" href="https://drift-king.org/approvals/x-components-0.2.0-release.md">https://drift-king.org/approvals/x-components-0.2.0-release.md</a><br>
+<span class="mono">sha256 2b203623117b35d4b9c5adb24e0118f9ab5e4ff17e001ba0a79ec64809b9bcc3</span></div>
+<div class="ref"><b>The 0.2.0 candidate&#39;s LICENSE, exact bytes</b>
+<a class="mono" href="https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/LICENSE">https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/LICENSE</a><br>
+<span class="mono">sha256 c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4</span></div>
+<div class="ref"><b>The 0.2.0 candidate&#39;s NOTICE, exact bytes</b>
+<a class="mono" href="https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/NOTICE">https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/NOTICE</a><br>
+<span class="mono">sha256 0160e5a552d5eaa44863878679f6907cc127bda9aabb13cf4676caa4d236785e</span></div>
+<div class="ref"><b>The 0.2.0 candidate&#39;s README.md, exact bytes</b>
+<a class="mono" href="https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/README.md">https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/README.md</a><br>
+<span class="mono">sha256 243cd5658d3f1ce298a43b261acef29f4a99b7ffbec8c29272fee961b2b0417e</span></div>
+<div class="ref"><b>The 0.2.0 candidate&#39;s component-attributes.generated.mjs, exact bytes</b>
+<a class="mono" href="https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/component-attributes.generated.mjs">https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/component-attributes.generated.mjs</a><br>
+<span class="mono">sha256 a3e2ae24f09d065375e5c91204de8d9f26a36c52d7ad0bdc3ffec6f103d243f8</span></div>
+<div class="ref"><b>The 0.2.0 candidate&#39;s component.ttl, exact bytes</b>
+<a class="mono" href="https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/component.ttl">https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/component.ttl</a><br>
+<span class="mono">sha256 4ee45f78781bdb1895a1ac645fc1c27d705a329d052db99441bfd83eaa7e4403</span></div>
+<div class="ref"><b>The 0.2.0 candidate&#39;s expand.mjs, exact bytes</b>
+<a class="mono" href="https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/expand.mjs">https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/expand.mjs</a><br>
+<span class="mono">sha256 2cbb759aa82b9f783edd0b21c0e43a5d83adbbbb34d4f48370847966d051d675</span></div>
+<div class="ref"><b>The 0.2.0 candidate&#39;s package.json, exact bytes</b>
+<a class="mono" href="https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/package.json">https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/package.json</a><br>
+<span class="mono">sha256 ffe8ad77fee803f232f6c08a9f8482faca091b405e2211abcba9b64eb38dcdba</span></div>
+<div class="ref"><b>The 0.2.0 candidate&#39;s static.mjs, exact bytes</b>
+<a class="mono" href="https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/static.mjs">https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/static.mjs</a><br>
+<span class="mono">sha256 550974d9b2a57f57924ab9b130d831e9995cc7d37e56e9ec928441bb9289a21c</span></div>
+<div class="ref"><b>The 0.2.0 candidate&#39;s wai-aria.ttl, exact bytes</b>
+<a class="mono" href="https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/wai-aria.ttl">https://drift-king.org/vendor/npm/apricotter-x-components/0.2.0-candidate/wai-aria.ttl</a><br>
+<span class="mono">sha256 d68deb932b1e5b4df041832daa75a8802804d191560de1a1ceeab60836c24bd6</span></div>
+<div class="ref"><b>The canary for: every ARIA role a component carries is one its model describes, exact bytes</b>
+<a class="mono" href="https://drift-king.org/the-linter/canaries/x-components-roles-resolve.ttl">https://drift-king.org/the-linter/canaries/x-components-roles-resolve.ttl</a><br>
+<span class="mono">sha256 183d99bf994bf68194d3b965fbfe04b911ad1abad12c7cf1bb00b971a47c83b1</span></div>
+<div class="ref"><b>The canary for: every component names its tag and the element it becomes, exact bytes</b>
+<a class="mono" href="https://drift-king.org/the-linter/canaries/x-components-components-whole.ttl">https://drift-king.org/the-linter/canaries/x-components-components-whole.ttl</a><br>
+<span class="mono">sha256 b47be5a4f8a160e55ee2060bfef8a542a27f9c0dbd280b0115fc529782f70926</span></div>
+<div class="ref"><b>The canary for: no label or comment in its model names anything internal, exact bytes</b>
+<a class="mono" href="https://drift-king.org/the-linter/canaries/x-components-words-clean.ttl">https://drift-king.org/the-linter/canaries/x-components-words-clean.ttl</a><br>
+<span class="mono">sha256 ce4bc0e680c2acb9b2c3dac203180a17a69a8e32b260db2fed0704af1a167b1e</span></div>
+<div class="ref"><b>The check that every ARIA role a component carries is one its model describes, exact bytes</b>
+<a class="mono" href="https://drift-king.org/the-linter/checks/x-components-roles-resolve.rq">https://drift-king.org/the-linter/checks/x-components-roles-resolve.rq</a><br>
+<span class="mono">sha256 08ad90f0b353122a7bd77e0b7add98689aa2cb6dc6cffcf630c2145f8bc408b8</span></div>
+<div class="ref"><b>The check that every component names its tag and the element it becomes, exact bytes</b>
+<a class="mono" href="https://drift-king.org/the-linter/checks/x-components-components-whole.rq">https://drift-king.org/the-linter/checks/x-components-components-whole.rq</a><br>
+<span class="mono">sha256 81d18888496393fd01d899dbc0808296e3b3c66d6824e95953fbd4cee671087b</span></div>
+<div class="ref"><b>The check that no label or comment in its model names anything internal, exact bytes</b>
+<a class="mono" href="https://drift-king.org/the-linter/checks/x-components-words-clean.rq">https://drift-king.org/the-linter/checks/x-components-words-clean.rq</a><br>
+<span class="mono">sha256 dc80c97ee467cdce483320f17a7b060022de1e2a6d9806654e6340979514ff02</span></div>
+<div class="ref"><b>The x-components letter, exactly as above</b>
+<a class="mono" href="https://drift-king.org/intent/x-components-letter-of-intent.md">https://drift-king.org/intent/x-components-letter-of-intent.md</a><br>
+<span class="mono">sha256 28ac8e5d0889bc2276db3126ec6f0c0c883ad883d9f4977660cc0429109f44bb</span></div>
+<div class="ref"><b>What good looks like, exact bytes</b>
+<a class="mono" href="https://drift-king.org/intent/x-components-what-good-looks-like.md">https://drift-king.org/intent/x-components-what-good-looks-like.md</a><br>
+<span class="mono">sha256 e483eb804a7790e19867aff8a8b9e7adca335b54715cd4655e4637581c519867</span></div>
+<h2>The packages it brings</h2>
+<p>Each package below is one an install of the release runs, with the exact version that was checked and the integrity npm gave it.</p>
+<div class="ref"><b>boolbase 1.0.0</b>
+<span class="mono">integrity sha512-JZOSA7Mo9sNGB8+UjSgzdLtokWAky1zbztM3WRLCbZ70/3cTANmQmOdR7y2g+J0e2WXywy1yS468tY+IruqEww==</span></div>
+<div class="ref"><b>cheerio 1.2.0</b>
+<span class="mono">integrity sha512-WDrybc/gKFpTYQutKIK6UvfcuxijIZfMfXaYm8NMsPQxSYvf+13fXUJ4rztGGbJcBQ/GF55gvrZ0Bc0bj/mqvg==</span></div>
+<div class="ref"><b>cheerio-select 2.1.0</b>
+<span class="mono">integrity sha512-9v9kG0LvzrlcungtnJtpGNxY+fzECQKhK4EGJX2vByejiMX84MFNQw4UxPJl3bFbTMw+Dfs37XaIkCwTZfLh4g==</span></div>
+<div class="ref"><b>css-select 5.2.2</b>
+<span class="mono">integrity sha512-TizTzUddG/xYLA3NXodFM0fSbNizXjOKhqiQQwvhlspadZokn1KDy0NZFS0wuEubIYAV5/c1/lAr0TaaFXEXzw==</span></div>
+<div class="ref"><b>css-what 6.2.2</b>
+<span class="mono">integrity sha512-u/O3vwbptzhMs3L1fQE82ZSLHQQfto5gyZzwteVIEyeaY5Fc7R4dapF/BvRoSYFeqfBk4m0V1Vafq5Pjv25wvA==</span></div>
+<div class="ref"><b>dom-serializer 2.0.0</b>
+<span class="mono">integrity sha512-wIkAryiqt/nV5EQKqQpo3SToSOV9J0DnbJqwK7Wv/Trc92zIAYZ4FlMu+JPFW1DfGFt81ZTCGgDEabffXeLyJg==</span></div>
+<div class="ref"><b>domelementtype 2.3.0</b>
+<span class="mono">integrity sha512-OLETBj6w0OsagBwdXnPdN0cnMfF9opN69co+7ZrbfPGrdpPVNBUj02spi6B1N7wChLQiPn4CSH/zJvXw56gmHw==</span></div>
+<div class="ref"><b>domhandler 5.0.3</b>
+<span class="mono">integrity sha512-cgwlv/1iFQiFnU96XXgROh8xTeetsnJiDsTc7TYCLFd9+/WNkIqPTxiM/8pSd8VIrhXGTf1Ny1q1hquVqDJB5w==</span></div>
+<div class="ref"><b>domutils 3.2.2</b>
+<span class="mono">integrity sha512-6kZKyUajlDuqlHKVX1w7gyslj9MPIXzIFiz/rGu35uC1wMi+kMhQwGhl4lt9unC9Vb9INnY9Z3/ZA3+FhASLaw==</span></div>
+<div class="ref"><b>encoding-sniffer 0.2.1</b>
+<span class="mono">integrity sha512-5gvq20T6vfpekVtqrYQsSCFZ1wEg5+wW0/QaZMWkFr6BqD3NfKs0rLCx4rrVlSWJeZb5NBJgVLswK/w2MWU+Gw==</span></div>
+<div class="ref"><b>entities 7.0.1</b>
+<span class="mono">integrity sha512-TWrgLOFUQTH994YUyl1yT4uyavY5nNB5muff+RtWaqNVCAK408b5ZnnbNAUEWLTCpum9w6arT70i1XdQ4UeOPA==</span></div>
+<div class="ref"><b>entities 4.5.0</b>
+<span class="mono">integrity sha512-V0hjH4dGPh9Ao5p0MoRY6BVqtwCjhz6vI5LT8AJ55H+4g9/4vbHx1I54fS0XuclLhDHArPQCiMjDxjaL8fPxhw==</span></div>
+<div class="ref"><b>entities 6.0.1</b>
+<span class="mono">integrity sha512-aN97NXWF6AWBTahfVOIrB/NShkzi5H7F9r1s9mD3cDj4Ko5f2qhhVoYMibXF7GlLveb/D2ioWay8lxI97Ven3g==</span></div>
+<div class="ref"><b>htmlparser2 10.1.0</b>
+<span class="mono">integrity sha512-VTZkM9GWRAtEpveh7MSF6SjjrpNVNNVJfFup7xTY3UpFtm67foy9HDVXneLtFVt4pMz5kZtgNcvCniNFb1hlEQ==</span></div>
+<div class="ref"><b>iconv-lite 0.6.3</b>
+<span class="mono">integrity sha512-4fCk79wshMdzMp2rH06qWrJE4iolqLhCUH+OiuIgU++RB0+94NlDL81atO7GX55uUKueo0txHNtvEyI6D7WdMw==</span></div>
+<div class="ref"><b>nth-check 2.1.1</b>
+<span class="mono">integrity sha512-lqjrjmaOoAnWfMmBPL+XNnynZh2+swxiX3WUE0s4yEHI6m+AwrK2UZOimIRl3X/4QctVqS8AiZjFqyOGrMXb/w==</span></div>
+<div class="ref"><b>parse5 7.3.0</b>
+<span class="mono">integrity sha512-IInvU7fabl34qmi9gY8XOVxhYyMyuH2xUNpb2q8/Y+7552KlejkRvqvD19nMoUW/uQGGbqNpA6Tufu5FL5BZgw==</span></div>
+<div class="ref"><b>parse5-htmlparser2-tree-adapter 7.1.0</b>
+<span class="mono">integrity sha512-ruw5xyKs6lrpo9x9rCZqZZnIUntICjQAd0Wsmp396Ul9lN/h+ifgVV1x1gZHi8euej6wTfpqX8j+BFQxF0NS/g==</span></div>
+<div class="ref"><b>parse5-parser-stream 7.1.2</b>
+<span class="mono">integrity sha512-JyeQc9iwFLn5TbvvqACIF/VXG6abODeB3Fwmv/TGdLk2LfbWkaySGY72at4+Ty7EkPZj854u4CrICqNk2qIbow==</span></div>
+<div class="ref"><b>safer-buffer 2.1.2</b>
+<span class="mono">integrity sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==</span></div>
+<div class="ref"><b>undici 7.29.0</b>
+<span class="mono">integrity sha512-IDxfleLmmbSskfWSUATiN1nfn2rDuvnMOqb5CWR92iIfojA0Ud+ulOAAEQ57LPr9rWmsreUyf5lwyao+7GNNVw==</span></div>
+<div class="ref"><b>whatwg-encoding 3.1.1</b>
+<span class="mono">integrity sha512-6qN4hJdMwfYBtE3YBTTHhoeuUrDBPZmbQaxWAqSALV/MeEnR5z1xd8UKud2RAkFoPkmB+hli1TZSnyi84xz1vQ==</span></div>
+<div class="ref"><b>whatwg-mimetype 4.0.0</b>
+<span class="mono">integrity sha512-QaKxh0eNIi2mE9p2vEdzfagOKHCcj1pJ56EEHGQOVxp8r9/iszLUUV7v89x9O1p/T+NlTM5W7jW6+cz4Fq1YVg==</span></div>
+<h2>What was wanted, and what went</h2>
+<p>Each wanted line is quoted as signed, from the signed list (what good looks like, version 2) and from the signed document that asks for the next version. Beside it, each check that proves it, with what the check found on the committed bytes of the candidate and what it found in its own canary. A line no check proves says so; it is never counted as met.</p>
+<div class="ref"><b>What good looks like, version 2, line 1</b>
+Wanted: The repository holds exactly the files the model lists, and the letter of intent as signed.</div>
+<div class="ref"><b>The repository holds exactly the files the model lists, and the letter as signed</b>
+On the candidate: it found nothing. As it must.<br><span class="mono">the commit holds 11 files, the model lists the same</span><br>In its canary: it found something. As it must.</div>
+<div class="ref"><b>What good looks like, version 2, line 2</b>
+Wanted: Every hash is of committed bytes, never of a checkout.</div>
+<div class="ref"><b>Every hash is of committed bytes, never of a checkout</b>
+On the candidate: it found nothing. As it must.<br><span class="mono">LICENSE: the committed blob c71d239df917 is the pinned hash; NOTICE: the committed blob 0160e5a552d5 is what a673465 projects; README.md: the committed blob 243cd5658d3f is what a673465 projects; package.json: the committed blob ffe8ad77fee8 is what a673465 projects; component.ttl: the committed blob 4ee45f78781b is what a673465 projects; wai-aria.ttl: the committed blob d68deb932b1e is what a673465 projects; component-attributes.generated.mjs: the committed blob a3e2ae24f09d is what a673465 projects; expand.mjs: the committed blob 2cbb759aa82b is what a673465 projects; .github/workflows/release.yml: the committed blob b6576fcebf50 is what a673465 projects; LETTER-OF-INTENT.md: the committed blob 28ac8e5d0889 is the pinned hash; static.mjs: the committed blob 550974d9b2a5 is what a673465 projects</span><br>In its canary: it found something. As it must.</div>
+<div class="ref"><b>What good looks like, version 2, line 3</b>
+Wanted: The tarball holds the package&#39;s files list, package.json, README and LICENSE, and nothing else.</div>
+<div class="ref"><b>The tarball holds its file list and nothing else</b>
+On the candidate: it found nothing. As it must.<br><span class="mono">the tarball holds 9 files, exactly the list</span><br>In its canary: it found something. As it must.</div>
+<div class="ref"><b>What good looks like, version 2, line 4</b>
+Wanted: package.json names @apricotter/x-components, Apache-2.0, the exact repository address, public access, its exports, and Node 22.14.0 or later.</div>
+<div class="ref"><b>package.json names the package, its license, its repository, its access, its Node version, its exports and its dependencies, each at one exact version</b>
+On the candidate: it found nothing. As it must.<br><span class="mono">package.json matches the model and origin</span><br>In its canary: it found something. As it must.</div>
+<div class="ref"><b>What good looks like, version 2, line 5</b>
+Wanted: Every action the release workflow runs is pinned to the commit its tag names. The workflow may write an identity token and read the repository, nothing more, and runs in the npm environment.</div>
+<div class="ref"><b>The release workflow&#39;s actions are pinned to commits, and it may write an identity token and read the repository, nothing more</b>
+On the candidate: it found nothing. As it must.<br><span class="mono">every action is pinned, the permissions and environment are the model&#39;s</span><br>In its canary: it found something. As it must.</div>
+<div class="ref"><b>What good looks like, version 2, line 6</b>
+Wanted: The model and the code name the same components.</div>
+<div class="ref"><b>The model and the code name the same components</b>
+On the candidate: it found nothing. As it must.<br><span class="mono">83 components in the model, 83 in the code, the same</span><br>In its canary: it found something. As it must.</div>
+<div class="ref"><b>every component names its tag and the element it becomes</b>
+On the candidate: it found nothing. As it must.<br>In its canary: it found something. As it must.</div>
+<div class="ref"><b>What good looks like, version 2, line 7</b>
+Wanted: The generated file is exactly what component.ttl generates.</div>
+<div class="ref"><b>The generated file is exactly what the model generates</b>
+On the candidate: it found nothing. As it must.<br><span class="mono">the run wrote nothing into the repo; component-attributes.generated.mjs is what the model generates; component-reference.md is what the model generates</span><br>In its canary: it found something. As it must.</div>
+<div class="ref"><b>What good looks like, version 2, line 8</b>
+Wanted: The ontology loads by itself. It parses, every ARIA role it names resolves, and every ontology of ours it imports ships in the package. W3C standards are imported by their own names, for the consumer to vendor.</div>
+<div class="ref"><b>The ontology loads by itself</b>
+On the candidate: it found nothing. As it must.<br><span class="mono">both files parse (1754 and 88 triples); every ARIA role the model names resolves; every ARIA term it uses is defined in the package; 2 imports, each shipped or a W3C standard</span><br>In its canary: it found something. As it must.</div>
+<div class="ref"><b>every ARIA role a component carries is one its model describes</b>
+On the candidate: it found nothing. As it must.<br>In its canary: it found something. As it must.</div>
+<div class="ref"><b>What good looks like, version 2, line 9</b>
+Wanted: Nothing internal. No comment in the code, and nothing in the files, refers to another repository, file, page, product, person or dated history.</div>
+<div class="ref"><b>Nothing internal ships, not even in a comment</b>
+On the candidate: it found nothing. As it must.<br><span class="mono">NOTICE is clean; README.md is clean; package.json is clean; component.ttl is clean; wai-aria.ttl is clean; component-attributes.generated.mjs is clean; expand.mjs is clean; .github/workflows/release.yml is clean; static.mjs is clean</span><br>In its canary: it found something. As it must.</div>
+<div class="ref"><b>no label or comment in its model names anything internal</b>
+On the candidate: it found nothing. As it must.<br>In its canary: it found something. As it must.</div>
+<div class="ref"><b>What good looks like, version 2, line 10</b>
+Wanted: No site is a default. No brand, host or link is written in for a site that does not pass it.</div>
+<div class="ref"><b>No site is a default</b>
+On the candidate: it found nothing. As it must.<br><span class="mono">all 83 components render with only their required attributes and name no site (1 refuse without a word or a place from the site)</span><br>In its canary: it found something. As it must.</div>
+<div class="ref"><b>What good looks like, version 2, line 11</b>
+Wanted: A link needs the site&#39;s domain. Without it, the expander refuses.</div>
+<div class="ref"><b>A link needs the site&#39;s domain</b>
+On the candidate: it found nothing. As it must.<br><span class="mono">every component that takes an href refuses to render an absolute link without a domain</span><br>In its canary: it found something. As it must.</div>
+<div class="ref"><b>A tape item&#39;s link is written as a link, and refuses without the site&#39;s domain</b>
+On the candidate: it found nothing. As it must.<br><span class="mono">an item&#39;s link is written as a link, refuses without the site&#39;s domain, and is marked when it leaves the site</span><br>In its canary: it found something. As it must.</div>
+<div class="ref"><b>What good looks like, version 2, line 12</b>
+Wanted: No known defect ships unless it is a signed gap.</div>
+<div class="ref"><b>No known defect ships unless it is a signed gap</b>
+On the candidate: it found nothing. As it must.<br><span class="mono">NOTICE says no defect is open; README.md says no defect is open; package.json says no defect is open; component.ttl says no defect is open; wai-aria.ttl says no defect is open; component-attributes.generated.mjs says no defect is open; expand.mjs says no defect is open; .github/workflows/release.yml says no defect is open; static.mjs says no defect is open; the escaping cases pass on the shipped expand.mjs (All 262 checks passed.); 0 signed gaps are recorded, and none is needed</span><br>In its canary: it found something. As it must.</div>
+<div class="ref"><b>x-field writes a value once, never encoded twice</b>
+On the candidate: it found nothing. As it must.<br><span class="mono">x-field writes a value that arrives encoded once, single line and multiline</span><br>In its canary: it found something. As it must.</div>
+<div class="ref"><b>x-map&#39;s width writes a style only when it is a length</b>
+On the candidate: it found nothing. As it must.<br><span class="mono">a width of 40rem writes the style, and a width that adds a declaration writes none</span><br>In its canary: it found something. As it must.</div>
+<div class="ref"><b>What good looks like, version 2, line 13</b>
+Wanted: Every commit names the commit it was projected from.</div>
+<div class="ref"><b>Every commit names the commit it was projected from</b>
+On the candidate: it found nothing. As it must.<br><span class="mono">6cf506e names its source; d2a1cc4 names its source; b1a6b38 names its source; 175074c names its source</span><br>In its canary: it found something. As it must.</div>
+<div class="ref"><b>What good looks like, version 2, line 14</b>
+Wanted: The README follows the house copy rules: no em dash, no puffed-up word, no copula-dodging, no negative parallelism and no filler transition. Code blocks and inline code are not copy.</div>
+<div class="ref"><b>The README follows the house copy rules</b>
+On the candidate: it found nothing. As it must.<br><span class="mono">the README breaks none of the rules a pattern can find</span><br>In its canary: it found something. As it must.</div>
+<div class="ref"><b>What good looks like, version 2, line 15</b>
+Wanted: The classes a component emits are part of the contract. The model names them, the code emits exactly those, and renaming one is a new major version.</div>
+<div class="ref"><b>The classes a component emits are the classes the model names</b>
+On the candidate: it found nothing. As it must.<br><span class="mono">83 components emit exactly the classes the model names (279 classes, 141 renders)</span><br>In its canary: it found something. As it must.</div>
+<div class="ref"><b>The design styles exactly the classes the model names</b>
+On the candidate: it found nothing. As it must.<br><span class="mono">the design styles exactly the 12 classes the model names for the tape, and uses no other</span><br>In its canary: it found something. As it must.</div>
+<div class="ref"><b>A tape refuses without the words of its control and without its separator</b>
+On the candidate: it found nothing. As it must.<br><span class="mono">a tape refuses without any of the control&#39;s words, without a separator, and outside a pair (5 cases); a pair given all its words renders</span><br>In its canary: it found something. As it must.</div>
+<div class="ref"><b>What good looks like, version 2, line 16</b>
+Wanted: No visible words are defaults. Every word a component shows comes from the site that uses it.</div>
+<div class="ref"><b>No visible word is a default</b>
+On the candidate: it found nothing. As it must.<br><span class="mono">212 renders say no word the site did not give (9 more refuse without one)</span><br>In its canary: it found something. As it must.</div>
+<div class="ref"><b>A tape is read once: its repeats and its separators are hidden from screen readers, and a link in a repeat leaves the tab order</b>
+On the candidate: it found nothing. As it must.<br><span class="mono">a band that rolls reads each phrase once, in order, and hides its repeats and every separator; a band that does not roll is one row, with no repeat; a link in a band is tabbable once, in the row that is read, and in no repeat</span><br>In its canary: it found something. As it must.</div>
+<div class="ref"><b>A tape item&#39;s link is written as a link, and refuses without the site&#39;s domain</b>
+On the candidate: it found nothing. As it must.<br><span class="mono">an item&#39;s link is written as a link, refuses without the site&#39;s domain, and is marked when it leaves the site</span><br>In its canary: it found something. As it must.</div>
+<div class="ref"><b>A tape refuses without the words of its control and without its separator</b>
+On the candidate: it found nothing. As it must.<br><span class="mono">a tape refuses without any of the control&#39;s words, without a separator, and outside a pair (5 cases); a pair given all its words renders</span><br>In its canary: it found something. As it must.</div>
+<div class="ref"><b>The next version asks for a ticker</b>
+Wanted: A ticker: a band of short phrases that scrolls, and stands still for anyone who asks for less motion.<br>The ticker is the tape in 0.2.0.</div>
+<div class="ref"><b>A tape that rolls has one control, named in words, with its words from the site</b>
+On the candidate: it found nothing. As it must.<br><span class="mono">a pair that rolls has one checked checkbox inside one label, named in words, with its Pause and Play hidden from screen readers; the pair writes only the classes the model names</span><br>In its canary: it found something. As it must.</div>
+<div class="ref"><b>The design styles exactly the classes the model names</b>
+On the candidate: it found nothing. As it must.<br><span class="mono">the design styles exactly the 12 classes the model names for the tape, and uses no other</span><br>In its canary: it found something. As it must.</div>
+<div class="ref"><b>The next version asks for paired line panes</b>
+Wanted: Paired line panes: two numbered lists of lines side by side, where one line can be marked and a stamp can sit across a pane.</div>
+<div class="ref"><b>Paired line panes render with their required attributes, emit exactly the classes the model names, take every word from the site, and refuse without them</b>
+On the candidate: it found nothing. As it must.<br><span class="mono">the paired line panes renders with every attribute and with only its required ones; the paired line panes writes exactly the classes the model names for it (9); the paired line panes says no word the site did not give, with every attribute the sentinel and with none; the paired line panes refuses without each attribute the model requires of it</span><br>In its canary: it found something. As it must.</div>
+<div class="ref"><b>The next version asks for a sticker</b>
+Wanted: A sticker: a short label, set at an angle over an image.</div>
+<div class="ref"><b>A sticker renders with its required attributes, emits exactly the classes the model names, takes every word from the site, and refuses without them</b>
+On the candidate: it found nothing. As it must.<br><span class="mono">the sticker renders with every attribute and with only its required ones; the sticker writes exactly the classes the model names for it (1); the sticker says no word the site did not give, with every attribute the sentinel and with none; the sticker refuses without each attribute the model requires of it</span><br>In its canary: it found something. As it must.</div>
+<div class="ref"><b>The next version asks for a seal</b>
+Wanted: A seal: a round mark holding a line or two of text, set beside a block of text.</div>
+<div class="ref"><b>A seal renders with its required attributes, emits exactly the classes the model names, takes every word from the site, and refuses without them</b>
+On the candidate: it found nothing. As it must.<br><span class="mono">the seal renders with every attribute and with only its required ones; the seal writes exactly the classes the model names for it (3); the seal says no word the site did not give, with every attribute the sentinel and with none; the seal refuses without each attribute the model requires of it</span><br>In its canary: it found something. As it must.</div>
+<div class="ref"><b>The next version asks that the classes a component emits are the contract</b>
+Wanted: The classes a component emits are part of the contract: the model names them, a check proves the code emits exactly those, and renaming one is a new major version.</div>
+<div class="ref"><b>The classes a component emits are the classes the model names</b>
+On the candidate: it found nothing. As it must.<br><span class="mono">83 components emit exactly the classes the model names (279 classes, 141 renders)</span><br>In its canary: it found something. As it must.</div>
+<div class="ref"><b>The design styles exactly the classes the model names</b>
+On the candidate: it found nothing. As it must.<br><span class="mono">the design styles exactly the 12 classes the model names for the tape, and uses no other</span><br>In its canary: it found something. As it must.</div>
+<div class="ref"><b>A tape refuses without the words of its control and without its separator</b>
+On the candidate: it found nothing. As it must.<br><span class="mono">a tape refuses without any of the control&#39;s words, without a separator, and outside a pair (5 cases); a pair given all its words renders</span><br>In its canary: it found something. As it must.</div>
+<div class="ref"><b>The next version asks that no visible words are defaults</b>
+Wanted: And no visible words are defaults: every word a component shows comes from the site that uses it.</div>
+<div class="ref"><b>No visible word is a default</b>
+On the candidate: it found nothing. As it must.<br><span class="mono">212 renders say no word the site did not give (9 more refuse without one)</span><br>In its canary: it found something. As it must.</div>
+<p>Checks that no wanted line names:</p>
+<div class="ref"><b>Static expansion gives the same HTML as the rewriter, and refuses a tag the model does not define</b>
+On the candidate: it found nothing. As it must.<br><span class="mono">141 cases expanded by the static entry point equal the rewriter&#39;s HTML byte for byte (0 refused by both); a tag that starts with x- and is not a component the model defines is refused; it ran on cheerio 1.2.0, the version the model pins</span><br>In its canary: it found something. As it must.</div>
+<h2>What the checks found</h2>
+<p>Drift King ran each check below on the files above, in the build that made this page. A canary is a copy broken on purpose: a check must find something in it first, or finding nothing in the real thing means nothing.</p>
+<div class="ref"><b>every ARIA role a component carries is one its model describes</b>
+Ran on: The canary for: every ARIA role a component carries is one its model describes, exact bytes<br>
+Found: something. As it must.</div>
+<div class="ref"><b>every component names its tag and the element it becomes</b>
+Ran on: The canary for: every component names its tag and the element it becomes, exact bytes<br>
+Found: something. As it must.</div>
+<div class="ref"><b>no label or comment in its model names anything internal</b>
+Ran on: The canary for: no label or comment in its model names anything internal, exact bytes<br>
+Found: something. As it must.</div>
+<div class="ref"><b>every ARIA role a component carries is one its model describes</b>
+Ran on: The 0.2.0 candidate&#39;s component.ttl, exact bytes<br>
+Found: nothing. As it must.</div>
+<div class="ref"><b>every component names its tag and the element it becomes</b>
+Ran on: The 0.2.0 candidate&#39;s component.ttl, exact bytes<br>
+Found: nothing. As it must.</div>
+<div class="ref"><b>no label or comment in its model names anything internal</b>
+Ran on: The 0.2.0 candidate&#39;s component.ttl, exact bytes<br>
+Found: nothing. As it must.</div>
+<div class="sign">
+<p>Signed, Drift King Compliance: <span class="anchor">/sig1/</span></p>
+<p>Date: <span class="anchor">/date1/</span></p>
+<p>Approved: <span class="anchor">/sig2/</span></p>
+<p>Date: <span class="anchor">/date2/</span></p>
+</div>
+</body>
+</html>
