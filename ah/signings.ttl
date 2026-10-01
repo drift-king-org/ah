@@ -412,10 +412,10 @@
 # The client's approver, for client work (x-components is Apricotter's).
 # Identifier only: no name goes in the model.
 <https://drift-king.org/ah/agent/client/apricotter>
-    a prov:Organization ;
+    a prov:Person ;
     rdfs:label "Apricotter" ;
     dcterms:identifier "docusign-demo:user:6bf64f29-7199-45ac-85d5-591229d2005f" ;
-    rdfs:comment "Approves client work second, after Compliance, as the client." .
+    rdfs:comment "Approves client work second, after Compliance, as the client. A person, the client's approver, named for the client: a signing is counted as a human's only when a prov:Person is associated with it, and no name DocuSign shows for a signer goes in the model. It was typed an organization until the first client gap was signed." .
 
 # The x-components letter of intent, signed (envelope #11). Compliance signed
 # first (routing 1, 2026-09-29T22:43:54.767Z); the client approved second
