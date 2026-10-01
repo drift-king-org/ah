@@ -1176,7 +1176,7 @@ dcterms:requires a owl:ObjectProperty .
 # assertions, canary/real chain) is the reviewer's own next milestone,
 # after M3 is committed -- not done here.
 <https://drift-king.org/the-linter/checks/file-provenance.rq>
-    a dcat:Resource ;
+    a dcat:Resource , earl:TestCriterion ;
     dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
     dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/> .
 <https://drift-king.org/the-linter/canaries/file-provenance.ttl>
@@ -2012,7 +2012,7 @@ dcterms:requires a owl:ObjectProperty .
 # The candidate as a version: what the new home page waits to have taken. It is not
 # published, and Drift King uses only a version it has taken.
 <https://drift-king.org/not-ah/npm/apricotter-x-components/0.2.0>
-    a sd:SoftwareVersion ;
+    a sd:SoftwareVersion , earl:TestSubject ;
     sd:name "@apricotter/x-components" ;
     sd:hasVersionId "0.2.0" ;
     dcterms:isPartOf <https://drift-king.org/not-ah/npm/apricotter-x-components> ;
