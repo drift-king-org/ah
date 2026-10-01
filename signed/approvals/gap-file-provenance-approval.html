@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Drift King: gap, for approval</title>
+<style>
+body{font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.5;color:#111;margin:0;padding:0}
+h1{font-size:18px;margin:0 0 12px}
+h2{font-size:15px;margin:18px 0 8px}
+p{margin:0 0 10px}
+a{color:#111}
+.doc{border-left:3px solid #999;padding:4px 0 4px 14px;margin:0 0 16px}
+.ref{margin:0 0 12px}
+.ref b{display:block}
+.mono{font-family:"Courier New",monospace;font-size:12px;word-break:break-all;overflow-wrap:anywhere}
+.sign{margin-top:32px}
+.sign p{margin:0 0 34px}
+.anchor{color:#ffffff;font-size:10px}
+</style>
+</head>
+<body>
+<h1>Drift King: gap, for approval</h1>
+<p>Drift King Compliance presents this for approval. Its full text follows.</p>
+<div class="doc">
+<p>Our signed intent says: &quot;Every change is signed and hashed.&quot;<br><a class="mono" href="https://drift-king.org/intent/letter-of-intent#:~:text=Every%20change%20is%20signed%20and%20hashed.">https://drift-king.org/intent/letter-of-intent#:~:text=Every%20change%20is%20signed%20and%20hashed.</a></p>
+<p>We have seen that a new file can reach the build without anyone signing it. The file-provenance check exists, but the builder does not run it, so a written file with no signing behind it passes every check. The 0.2.0 candidate&#39;s files, its lockfile and the home page&#39;s copy are in the build today, and none of them is signed.</p>
+<p>To close this, the builder runs file-provenance on every build. Every file the build reads or publishes is either signed, a projection of something signed, or a pinned tool. A canary with one unsigned file must fail it.</p>
+<p>What we do not do: we do not ship a file nobody signed, and we do not sign a file we have not hashed.</p>
+<p>Signed: Drift King Compliance</p>
+</div>
+<h2>The files</h2>
+<p>Each sha256 is the fingerprint of the file's exact bytes. If one character changes, the fingerprint changes and this approval no longer covers it.</p>
+<div class="ref"><b>The file-provenance gap, exactly as above</b>
+<a class="mono" href="https://drift-king.org/approvals/gap-file-provenance.md">https://drift-king.org/approvals/gap-file-provenance.md</a><br>
+<span class="mono">sha256 1d360c25061070670566aa15610bc4a1edf21f254adbe4e8a29dfb950d107ff7</span></div>
+<div class="ref"><b>The letter of intent, exact bytes</b>
+<a class="mono" href="https://drift-king.org/intent/letter-of-intent.md">https://drift-king.org/intent/letter-of-intent.md</a><br>
+<span class="mono">sha256 0c5ede6bce924501a740c2a130c0db8e04f3ff9235994598e798d66cf3cb94a0</span></div>
+<div class="sign">
+<p>Signed, Drift King Compliance: <span class="anchor">/sig1/</span></p>
+<p>Date: <span class="anchor">/date1/</span></p>
+<p>Approved: <span class="anchor">/sig2/</span></p>
+<p>Date: <span class="anchor">/date2/</span></p>
+</div>
+</body>
+</html>

@@ -1337,6 +1337,7 @@
     dcterms:isPartOf <https://drift-king.org/ah> ;
     dcterms:conformsTo <https://spec.commonmark.org/> ;
     prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    dcterms:subject <https://drift-king.org/not-ah/the-linter/gap/file-provenance> ;
     rdfs:label "The file-provenance gap, exactly as above" ;
     dcterms:references <https://drift-king.org/intent/letter-of-intent.md> ;
     p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/file-prov-gap-text> ;
@@ -1352,7 +1353,6 @@
 
 <https://drift-king.org/ah/site/var/file-prov-gap-text> a p-plan:Variable ; rdfs:label "the file-provenance gap, as text" .
 <https://drift-king.org/ah/site/var/file-prov-gap-html> a p-plan:Variable ; rdfs:label "site/public/approvals/gap-file-provenance.html" .
-<https://drift-king.org/ah/site/var/file-prov-gap-approval> a p-plan:Variable ; rdfs:label "site/public/approvals/gap-file-provenance-approval.html" .
 <https://drift-king.org/ah/site/render-file-prov-gap>
     a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
     p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
@@ -1364,21 +1364,23 @@
     dcterms:isPartOf <https://drift-king.org/ah/site> ;
     prov:wasDerivedFrom <https://drift-king.org/site/templates/document.mustache> ;
     p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/file-prov-gap-html> .
-<https://drift-king.org/ah/site/render-file-prov-gap-approval>
-    a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
-    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
-    p-plan:hasInputVar <https://drift-king.org/ah/site/var/approval-template> ,
-        <https://drift-king.org/ah/site/var/approval-files> ,
-        <https://drift-king.org/ah/site/var/file-prov-gap-text> ;
-    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/file-prov-gap-approval> ;
-    dcterms:title "render the file-provenance gap's approval page" .
+# The approval page exactly as signed in envelope 1c5f23e0-819d-84db-8094-3ca551a90138, pinned. Kept in
+# signed/, not approvals/, which holds only documents. It is no longer rendered: a signed page is
+# served as signed. The copy step checks its sha256 on every build.
+<https://drift-king.org/signed/approvals/gap-file-provenance-approval.html>
+    a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    dcterms:identifier "sha256:e2f07b3408c0be4ec2be9d594cba55f5b25ba06d0f971813248a675b206454fe" ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/approval.mustache> ,
+        <https://drift-king.org/approvals/gap-file-provenance.md> .
 <https://drift-king.org/site/public/approvals/gap-file-provenance-approval.html> a prov:Entity , p-plan:Entity ;
     dcterms:isPartOf <https://drift-king.org/ah/site> ;
-    prov:wasDerivedFrom <https://drift-king.org/site/templates/approval.mustache> ;
-    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/file-prov-gap-approval> .
+    dcterms:identifier "sha256:e2f07b3408c0be4ec2be9d594cba55f5b25ba06d0f971813248a675b206454fe" ;
+    prov:wasDerivedFrom <https://drift-king.org/signed/approvals/gap-file-provenance-approval.html> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
 <https://drift-king.org/ah/site/deploy>
-    p-plan:isPrecededBy <https://drift-king.org/ah/site/render-file-prov-gap> ,
-        <https://drift-king.org/ah/site/render-file-prov-gap-approval> .
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/render-file-prov-gap> .
 
 # ---------------------------------------------------------------------------
 # The x-components 0.2.0 release approval (Compliance), written, not signed. Its
@@ -1474,7 +1476,7 @@
     dcterms:isPartOf <https://drift-king.org/ah> ;
     dcterms:conformsTo <https://spec.commonmark.org/> ;
     prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
-    dcterms:subject <https://drift-king.org/not-ah/npm/apricotter-x-components> ;
+    dcterms:subject <https://drift-king.org/not-ah/the-linter/gap/x-components-sub-dependencies> ;
     rdfs:label "The x-components sub-dependency gap, exactly as above" ;
     dcterms:references <https://drift-king.org/intent/x-components-letter-of-intent.md> ;
     p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/xc-subdeps-gap-text> ;
@@ -1488,7 +1490,6 @@
     p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
 <https://drift-king.org/ah/site/var/xc-subdeps-gap-text> a p-plan:Variable ; rdfs:label "the sub-dependency gap, as text" .
 <https://drift-king.org/ah/site/var/xc-subdeps-gap-html> a p-plan:Variable ; rdfs:label "site/public/approvals/gap-x-components-sub-dependencies.html" .
-<https://drift-king.org/ah/site/var/xc-subdeps-gap-approval> a p-plan:Variable ; rdfs:label "site/public/approvals/gap-x-components-sub-dependencies-approval.html" .
 <https://drift-king.org/ah/site/render-xc-subdeps-gap>
     a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
     p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
@@ -1500,23 +1501,24 @@
     dcterms:isPartOf <https://drift-king.org/ah/site> ;
     prov:wasDerivedFrom <https://drift-king.org/site/templates/document.mustache> ;
     p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/xc-subdeps-gap-html> .
-<https://drift-king.org/ah/site/render-xc-subdeps-gap-approval>
-    a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
-    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
-    p-plan:hasInputVar <https://drift-king.org/ah/site/var/approval-template> ,
-        <https://drift-king.org/ah/site/var/approval-files> ,
-        <https://drift-king.org/ah/site/var/xc-subdeps-gap-text> ;
-    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/xc-subdeps-gap-approval> ;
-    dcterms:title "render the sub-dependency gap's approval page" .
+# The approval page exactly as signed in envelope c2412395-5e34-8007-8175-eca523a201a9, pinned, in
+# signed/ and no longer rendered.
+<https://drift-king.org/signed/approvals/gap-x-components-sub-dependencies-approval.html>
+    a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    dcterms:identifier "sha256:02788ca80d48588d1795c0e91110f5302dbc5de24094e784fd13c63d75fbbdd9" ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/approval.mustache> ,
+        <https://drift-king.org/approvals/gap-x-components-sub-dependencies.md> .
 <https://drift-king.org/site/public/approvals/gap-x-components-sub-dependencies-approval.html> a prov:Entity , p-plan:Entity ;
     dcterms:isPartOf <https://drift-king.org/ah/site> ;
-    prov:wasDerivedFrom <https://drift-king.org/site/templates/approval.mustache> ;
-    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/xc-subdeps-gap-approval> .
+    dcterms:identifier "sha256:02788ca80d48588d1795c0e91110f5302dbc5de24094e784fd13c63d75fbbdd9" ;
+    prov:wasDerivedFrom <https://drift-king.org/signed/approvals/gap-x-components-sub-dependencies-approval.html> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
 <https://drift-king.org/ah/site/deploy>
     p-plan:isPrecededBy <https://drift-king.org/ah/site/render-xc020-release> ,
         <https://drift-king.org/ah/site/render-xc020-release-approval> ,
-        <https://drift-king.org/ah/site/render-xc-subdeps-gap> ,
-        <https://drift-king.org/ah/site/render-xc-subdeps-gap-approval> .
+        <https://drift-king.org/ah/site/render-xc-subdeps-gap> .
 
 # The directive the lead architect gave for readying 0.2.0 for signing, kept as given.
 <https://drift-king.org/directives/x-components-0.2.0-release.md> a prov:Entity ;
@@ -1571,3 +1573,89 @@
     dcterms:identifier "sha256:1d402d953ebe33c2cf57372aaafc4b32b13eb42d13ca427717db4778f010010e" ;
     prov:wasAttributedTo <https://drift-king.org/ah/agent/lead-architect> ;
     rdfs:comment "Every published file says its media type, and the headers file is generated from those types." .
+
+# ---------------------------------------------------------------------------
+# The file-provenance gap's node (Compliance), added now that it is signed (envelope
+# 1c5f23e0-819d-84db-8094-3ca551a90138). Its test is the check that exists and is not yet wired into the
+# build: the gap is failed by hand (earl:manual), not by a check that ran. It is closed in a later
+# change, never in the one that opens it.
+# ---------------------------------------------------------------------------
+<https://drift-king.org/not-ah/the-linter/gap/file-provenance>
+    a earl:Assertion , prov:Entity , oa:Annotation ;
+    earl:test <https://drift-king.org/the-linter/checks/file-provenance.rq> ;
+    earl:subject <https://drift-king.org/ah.ttl> ;
+    earl:mode earl:manual ;
+    earl:result [ a earl:TestResult ; earl:outcome earl:failed ] ;
+    rdfs:label "file-provenance: a written file is not yet checked to have a signed packet" ;
+    dcterms:title "The file-provenance check exists and is not wired into the build, so a file written with no signed packet does not fail it" ;
+    oa:hasTarget [ a oa:SpecificResource ;
+        oa:hasSource <https://drift-king.org/intent/letter-of-intent.md> ;
+        oa:hasSelector [ a oa:TextPositionSelector ; oa:start 438 ; oa:end 472 ] ] ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> .
+
+# The x-components sub-dependency gap's node (Compliance), added now that it is signed (envelope
+# c2412395-5e34-8007-8175-eca523a201a9). Its test is the check its document names, which does not exist
+# yet: every package an install of x-components runs is shipped in the release or pinned to the exact
+# version that was checked. The gap is failed by hand (earl:manual).
+<https://drift-king.org/not-ah/the-linter/gap/x-components-sub-dependencies>
+    a earl:Assertion , prov:Entity , oa:Annotation ;
+    earl:test <https://drift-king.org/the-linter/checks/install-pinned.rq> ;
+    earl:subject <https://drift-king.org/not-ah/npm/apricotter-x-components/0.2.0> ;
+    earl:mode earl:manual ;
+    earl:result [ a earl:TestResult ; earl:outcome earl:failed ] ;
+    rdfs:label "x-components-sub-dependencies: cheerio's own dependencies float" ;
+    dcterms:title "An install of x-components 0.2.0 can receive newer versions of cheerio's 22 dependencies than the ones checked" ;
+    oa:hasTarget [ a oa:SpecificResource ;
+        oa:hasSource <https://drift-king.org/intent/x-components-letter-of-intent.md> ;
+        oa:hasSelector [ a oa:TextPositionSelector ; oa:start 557 ; oa:end 630 ] ] ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> .
+
+# The check the sub-dependency gap names, before it is written: named here, so its address opens on this
+# file and says it does not exist yet.
+<https://drift-king.org/the-linter/checks/install-pinned.rq>
+    rdfs:comment "Not written yet. The check that will close the sub-dependency gap: every package an install of x-components runs is either shipped in the release or pinned to the exact version that was checked, and a canary with one dependency at a range must fail it." .
+
+# ---------------------------------------------------------------------------
+# The file-provenance gap, signed (envelope 1c5f23e0-819d-84db-8094-3ca551a90138). Drift King's own work:
+# Compliance signed first and the lead architect second. Read back by Compliance: status completed, both
+# signers, every custom field equal to its hash. It accepts the gap, so the signing uses the gap node
+# itself and known-gap.rq counts it.
+# ---------------------------------------------------------------------------
+<https://drift-king.org/ah/signing/gap-file-provenance>
+    a prov:Activity ;
+    prov:used [ a prov:Entity ;
+          prov:specializationOf <https://drift-king.org/approvals/gap-file-provenance.md> ;
+          dcterms:identifier "sha256:1d360c25061070670566aa15610bc4a1edf21f254adbe4e8a29dfb950d107ff7" ] ,
+        [ a prov:Entity ;
+          prov:specializationOf <https://drift-king.org/site/public/approvals/gap-file-provenance-approval.html> ;
+          dcterms:identifier "sha256:e2f07b3408c0be4ec2be9d594cba55f5b25ba06d0f971813248a675b206454fe" ] ,
+        <https://drift-king.org/not-ah/the-linter/gap/file-provenance> ;
+    prov:wasAssociatedWith <https://drift-king.org/ah/agent/compliance> ,
+        <https://drift-king.org/ah/agent/lead-architect> ;
+    prov:endedAtTime "2026-10-01T23:20:26.603Z"^^xsd:dateTime ;
+    dcterms:identifier "docusign-dev:envelope:1c5f23e0-819d-84db-8094-3ca551a90138" ;
+    # Opens only for users of the demo account; never linked from the site.
+    rdfs:seeAlso <https://apps-d.docusign.com/send/documents/details/1c5f23e0-819d-84db-8094-3ca551a90138> .
+
+# The x-components sub-dependency gap, signed (envelope c2412395-5e34-8007-8175-eca523a201a9). Client
+# work: Compliance signed first and Apricotter's approver second. Read back by Compliance: status
+# completed, both signers, every custom field equal to its hash. It accepts the gap, so the signing uses
+# the gap node itself and known-gap.rq counts it. A departure from the rule that a custom field is named
+# for its document: DocuSign caps a custom field name at 50 characters, so the approval page's field is
+# named gap-x-components-sub-dependencies-approval-sha256, without ".html".
+<https://drift-king.org/ah/signing/gap-x-components-sub-dependencies>
+    a prov:Activity ;
+    prov:used [ a prov:Entity ;
+          prov:specializationOf <https://drift-king.org/approvals/gap-x-components-sub-dependencies.md> ;
+          dcterms:identifier "sha256:1869e1e204aefc12b80f7b57365e6899538f8f74836c00ed3d89a9e108bd501c" ] ,
+        [ a prov:Entity ;
+          prov:specializationOf <https://drift-king.org/site/public/approvals/gap-x-components-sub-dependencies-approval.html> ;
+          dcterms:identifier "sha256:02788ca80d48588d1795c0e91110f5302dbc5de24094e784fd13c63d75fbbdd9" ] ,
+        <https://drift-king.org/not-ah/the-linter/gap/x-components-sub-dependencies> ;
+    prov:wasAssociatedWith <https://drift-king.org/ah/agent/compliance> ,
+        <https://drift-king.org/ah/agent/client/apricotter> ;
+    prov:endedAtTime "2026-10-01T23:22:37.400Z"^^xsd:dateTime ;
+    dcterms:identifier "docusign-dev:envelope:c2412395-5e34-8007-8175-eca523a201a9" ;
+    rdfs:comment "DocuSign caps a custom field name at 50 characters, so the approval page's field was named gap-x-components-sub-dependencies-approval-sha256, without .html." ;
+    # Opens only for users of the demo account; never linked from the site.
+    rdfs:seeAlso <https://apps-d.docusign.com/send/documents/details/c2412395-5e34-8007-8175-eca523a201a9> .
