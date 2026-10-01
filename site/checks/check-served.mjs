@@ -22,6 +22,11 @@ const get = async (path) => {
   return { status: response.status, type: response.headers.get("content-type"), body: Buffer.from(await response.arrayBuffer()) };
 };
 const problems = [];
+// The model names a media type. A file given a rule is served with exactly the header the rule
+// writes, charset included. A file the platform serves unaided is held to its media type: the
+// platform decides whether to add a charset, and the live edge and a local server do not agree.
+const mediaType = (value) => (value || "").split(";")[0].trim().toLowerCase();
+const sameType = (served, named, how) => (how === "rule" ? served === named : mediaType(served) === mediaType(named));
 
 // Every folder the site publishes under, the root included.
 const folders = new Set([""]);
@@ -40,7 +45,7 @@ for (const { path, contentType, how } of manifest) {
   if (how === "source") continue;
   const answer = await get("/" + path);
   if (answer.status !== 200) problems.push(`/${path} answers ${answer.status}`);
-  else if (answer.type !== contentType) problems.push(`/${path} is served as ${answer.type}, the model names ${contentType}`);
+  else if (!sameType(answer.type, contentType, how)) problems.push(`/${path} is served as ${answer.type}, the model names ${contentType}`);
 }
 for (const { path, target } of sources) {
   const response = await fetch(new URL("/" + path, base), { redirect: "manual" });
