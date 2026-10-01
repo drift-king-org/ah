@@ -1996,3 +1996,17 @@
     dcterms:isPartOf <https://drift-king.org/ah/site> ;
     prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
     rdfs:comment "A source file that this small site still serves as itself: its address answers 200, not a 303 to GitHub. check-served must fail." .
+
+# After the deploy, the live site is held to the same checks the local one is: every folder answers
+# a missing address with the HTML 404, every published file is served with the type the model names,
+# and every source address is sent by a 303 to GitHub at the commit the site was built from. A failure
+# here is a failed ship. It runs only when the deploy does. Its canary, the same script against a small
+# site that carries the old wildcard rule, is run in the local plan (ah/site/local/check-served).
+<https://drift-king.org/ah/site/check-served-live>
+    a <https://drift-king.org/ah/the-builder/ShipStep> , sd:SoftwareConfiguration , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/deploy> ;
+    dcterms:references <https://drift-king.org/ah/site/local/check-served> ;
+    dcterms:title "check drift-king.org itself: the HTML 404 for every missing address, each file served with its model type, each source address a 303 to GitHub at the built commit" ;
+    sd:hasExecutionCommand "node site/checks/check-served.mjs https://drift-king.org site/served.tsv site/source.tsv" ;
+    dcterms:requires <https://drift-king.org/not-ah/node> .
