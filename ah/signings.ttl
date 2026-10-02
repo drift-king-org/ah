@@ -1709,7 +1709,6 @@
 
 <https://drift-king.org/ah/site/var/console-design-text> a p-plan:Variable ; rdfs:label "the console design approval, as text" .
 <https://drift-king.org/ah/site/var/console-design-html> a p-plan:Variable ; rdfs:label "site/public/approvals/drift-king-console-design.html" .
-<https://drift-king.org/ah/site/var/console-design-approval> a p-plan:Variable ; rdfs:label "site/public/approvals/drift-king-console-design-approval.html" .
 <https://drift-king.org/ah/site/render-console-design>
     a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
     p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
@@ -1721,21 +1720,59 @@
     dcterms:isPartOf <https://drift-king.org/ah/site> ;
     prov:wasDerivedFrom <https://drift-king.org/site/templates/document.mustache> ;
     p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/console-design-html> .
-<https://drift-king.org/ah/site/render-console-design-approval>
-    a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
-    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
-    p-plan:hasInputVar <https://drift-king.org/ah/site/var/approval-template> ,
-        <https://drift-king.org/ah/site/var/approval-files> ,
-        <https://drift-king.org/ah/site/var/console-design-text> ;
-    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/console-design-approval> ;
-    dcterms:title "render the console design's approval page" .
+# The approval page exactly as signed in envelope 64662b4a-16e4-8d48-818b-41ec67a60290, pinned. Kept in
+# signed/, not approvals/, which holds only documents. It is no longer rendered: a signed page is served
+# as signed. The copy step checks its sha256 on every build.
+<https://drift-king.org/signed/approvals/drift-king-console-design-approval.html>
+    a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    dcterms:identifier "sha256:3defcb0283b6eb1aeaeca40fb439194da9281e0954bc4065355707cd05cfa8b2" ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/approval.mustache> ,
+        <https://drift-king.org/approvals/drift-king-console-design.md> .
 <https://drift-king.org/site/public/approvals/drift-king-console-design-approval.html> a prov:Entity , p-plan:Entity ;
     dcterms:isPartOf <https://drift-king.org/ah/site> ;
-    prov:wasDerivedFrom <https://drift-king.org/site/templates/approval.mustache> ;
-    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/console-design-approval> .
+    dcterms:identifier "sha256:3defcb0283b6eb1aeaeca40fb439194da9281e0954bc4065355707cd05cfa8b2" ;
+    prov:wasDerivedFrom <https://drift-king.org/signed/approvals/drift-king-console-design-approval.html> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
 <https://drift-king.org/ah/site/deploy>
-    p-plan:isPrecededBy <https://drift-king.org/ah/site/render-console-design> ,
-        <https://drift-king.org/ah/site/render-console-design-approval> .
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/render-console-design> .
 <https://drift-king.org/ah/site/check-clean>
-    p-plan:isPrecededBy <https://drift-king.org/ah/site/render-console-design> ,
-        <https://drift-king.org/ah/site/render-console-design-approval> .
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/render-console-design> .
+
+# ---------------------------------------------------------------------------
+# The console design, signed (envelope 64662b4a-16e4-8d48-818b-41ec67a60290). Drift King's own work:
+# Compliance signed first (2026-10-02T10:59:03.613Z) and the lead architect second (2026-10-02T10:59:29.47Z).
+# Read back by Compliance: status completed, both signers, every custom field equal to its hash. It
+# approves building the console from the design, and nothing more: it does not open /console, and it does
+# not ship any of the design's HTML. The eight components the design needs (NEEDS.md) come to x-components
+# first. The document is not a gap, so no gap node is used or invalidated by this signing.
+# ---------------------------------------------------------------------------
+<https://drift-king.org/ah/signing/drift-king-console-design>
+    a prov:Activity ;
+    prov:used [ a prov:Entity ;
+          prov:specializationOf <https://drift-king.org/approvals/drift-king-console-design.md> ;
+          dcterms:identifier "sha256:f318ca39bd8a01cfab3ab5a70af823fcb7db8c9f0eed01775504577344b9fa2a" ] ,
+        [ a prov:Entity ;
+          prov:specializationOf <https://drift-king.org/site/public/approvals/drift-king-console-design-approval.html> ;
+          dcterms:identifier "sha256:3defcb0283b6eb1aeaeca40fb439194da9281e0954bc4065355707cd05cfa8b2" ] ;
+    prov:wasAssociatedWith <https://drift-king.org/ah/agent/compliance> ,
+        <https://drift-king.org/ah/agent/lead-architect> ;
+    prov:endedAtTime "2026-10-02T10:59:29.47Z"^^xsd:dateTime ;
+    dcterms:identifier "docusign-dev:envelope:64662b4a-16e4-8d48-818b-41ec67a60290" ;
+    rdfs:comment "The hosted bytes of the document, the zip and the approval page were verified by hash from this machine before the envelope was sent, so the signing stands even though the ship that hosted them failed its own live check (see ah/ship/console-design-hosting)." ;
+    # Opens only for users of the demo account; never linked from the site.
+    rdfs:seeAlso <https://apps-d.docusign.com/send/documents/details/64662b4a-16e4-8d48-818b-41ec67a60290> .
+
+# The ship that hosted the console design, recorded as it was. It deployed the Worker and the site
+# (site version 180a4b38-d82f-4faa-9cf2-6d3ea9b91a70) from the commit eed5ce5, and its own live check then
+# failed: the check ran before the edge served the new version, so it saw the three new pages answer 404
+# and the source redirects still pointing at the previous commit. The same check, run again a little
+# later, passed (22 folders, 107 files, 120 source addresses). By the rule that a failure there is a failed
+# ship, this ship failed, and it is recorded as failed.
+<https://drift-king.org/ah/ship/console-design-hosting>
+    a prov:Activity ;
+    dcterms:identifier "cloudflare:worker-version:180a4b38-d82f-4faa-9cf2-6d3ea9b91a70" ;
+    rdfs:label "the ship that hosted the console design" ;
+    rdfs:comment "Failed: its live check ran before the edge served the new version. A later run of the same check passed. The hosted bytes were then verified by hash." ;
+    prov:wasAssociatedWith <https://drift-king.org/ah/agent/compliance> .
