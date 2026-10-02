@@ -1069,3 +1069,8 @@
     rdfs:label "reading template" ;
     dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
     rdfs:comment "A Mustache template that makes the page a signed file is read on, as opposed to the page it is signed on or a page of the home. The cut step links each sentence to such a page." .
+<https://drift-king.org/the-builder/name/cut>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "cut" ;
+    dcterms:references <https://drift-king.org/the-builder/queries/plan-steps.rq> .

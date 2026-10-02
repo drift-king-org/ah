@@ -2090,7 +2090,7 @@
 <https://drift-king.org/site/content/console.yaml> a prov:Entity , p-plan:Entity ;
     dcterms:isPartOf <https://drift-king.org/ah/site> ;
     dcterms:conformsTo <https://yaml.org/spec/1.2.2/> ;
-    dcterms:identifier "sha256:82dee438a252e374867e2867cb1b9f0c80a24f526290ec6fcc4e953f1dd86b9d" ;
+    dcterms:identifier "sha256:b8bf2e560055d2ddec4e38f2359cdc0169c4d12f69228fc6df86173f34b6be0c" ;
     prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
     p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/intents-content> ;
     rdfs:comment "Every word on the console's Intents page. The template holds none." .
@@ -2126,7 +2126,7 @@
     rdfs:comment "Local only: never under site/public, never deployed." .
 <https://drift-king.org/site/local/public/console.css> a prov:Entity , p-plan:Entity ;
     dcterms:isPartOf <https://drift-king.org/ah/site> ;
-    dcterms:identifier "sha256:443cb2fff44996487d721eafb1500d3a60880e61b8a124b7e6536b80f66ed833" ;
+    dcterms:identifier "sha256:dc087b285388989cc0b9d7a4ccd26b5c8410c666c3c2c4a4e6d243ca1020308c" ;
     prov:wasDerivedFrom <https://drift-king.org/site/console.css> ;
     p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/local-copies> .
 <https://drift-king.org/site/local/public/fonts/bungee-400.woff2> a prov:Entity , p-plan:Entity ;
