@@ -52,6 +52,7 @@
     <uri id="the-builder: render-inputs.rq" name="https://drift-king.org/the-builder/queries/render-inputs.rq" uri="the-builder/queries/render-inputs.rq"/>
     <uri id="the-builder: letter-signing.rq" name="https://drift-king.org/the-builder/queries/letter-signing.rq" uri="the-builder/queries/letter-signing.rq"/>
     <uri id="the-builder: code-scope.rq" name="https://drift-king.org/the-builder/queries/code-scope.rq" uri="the-builder/queries/code-scope.rq"/>
+    <uri id="the-builder: selections.rq" name="https://drift-king.org/the-builder/queries/selections.rq" uri="the-builder/queries/selections.rq"/>
     <uri id="the-builder: publish-copies.rq" name="https://drift-king.org/the-builder/queries/publish-copies.rq" uri="the-builder/queries/publish-copies.rq"/>
     <uri id="the-builder: redirects.rq" name="https://drift-king.org/the-builder/queries/redirects.rq" uri="the-builder/queries/redirects.rq"/>
     <!-- the-linter's checks and canaries (M3): each is a plan step's input,

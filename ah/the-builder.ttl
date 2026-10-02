@@ -954,3 +954,118 @@
     skos:inScheme <https://drift-king.org/the-builder/names> ;
     skos:prefLabel "--graph" ;
     rdfs:comment "The option naming the one Turtle file --rows runs its query on." .
+
+# ---------------------------------------------------------------------------
+# A cut step (the console shows the signed sentences): for each text selection on a signed file it reads the
+# file's published copy, checks its sha256 against the one the model pins, and takes the characters from
+# oa:start to oa:end (Unicode code points, not bytes). A copy whose hash does not match, a selection that
+# falls outside the file, and a selection with no published copy each stop the build with exit 1: the numbers
+# are never shown in place of the words. What it cut is noted on the build as ah/the-builder/SelectedText, so a
+# render step's query can read it beside the rows it belongs to.
+# ---------------------------------------------------------------------------
+<https://drift-king.org/ah/the-builder/CutStep>
+    a owl:Class ;
+    rdfs:subClassOf p-plan:Step ;
+    rdfs:label "cut step" ;
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcterms:references <https://drift-king.org/the-builder/queries/selections.rq> ;
+    rdfs:comment "Cuts the text a selector points to out of the published copy of a signed file, after checking the copy's sha256." .
+<https://drift-king.org/the-builder/queries/selections.rq>
+    a dcat:Resource , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    dcterms:title "every text selection on a signed file, with the published copy and sha256 it is cut from and the address of the page it is read on" .
+<https://drift-king.org/ah/the-builder/SelectedText>
+    a owl:Class ;
+    rdfs:label "selected text" ;
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    rdfs:comment "The characters a text selection picks out of a signed file, with the address of the page they are read on, a text fragment on that sentence. Noted on the build by the cut step." .
+<https://drift-king.org/ah/the-builder/selectedFrom>
+    a owl:ObjectProperty ;
+    rdfs:domain <https://drift-king.org/ah/the-builder/SelectedText> ;
+    rdfs:range rdfs:Resource ;
+    rdfs:label "selected from" ;
+    rdfs:comment "The signed file the characters were cut from." .
+<https://drift-king.org/ah/the-builder/selectionStart>
+    a owl:DatatypeProperty ;
+    rdfs:domain <https://drift-king.org/ah/the-builder/SelectedText> ;
+    rdfs:range xsd:integer ;
+    rdfs:label "selection start" ;
+    rdfs:comment "The first character cut, counting from 0, as oa:start does." .
+<https://drift-king.org/ah/the-builder/selectionEnd>
+    a owl:DatatypeProperty ;
+    rdfs:domain <https://drift-king.org/ah/the-builder/SelectedText> ;
+    rdfs:range xsd:integer ;
+    rdfs:label "selection end" ;
+    rdfs:comment "The character after the last one cut, as oa:end does." .
+<https://drift-king.org/ah/the-builder/selectedText>
+    a owl:DatatypeProperty ;
+    rdfs:domain <https://drift-king.org/ah/the-builder/SelectedText> ;
+    rdfs:range xsd:string ;
+    rdfs:label "selected text" ;
+    rdfs:comment "The characters cut, exactly." .
+<https://drift-king.org/ah/the-builder/readAt>
+    a owl:ObjectProperty ;
+    rdfs:domain <https://drift-king.org/ah/the-builder/SelectedText> ;
+    rdfs:range rdfs:Resource ;
+    rdfs:label "read at" ;
+    rdfs:comment "The page the signed file is read on, with a text fragment that highlights the selected sentence." .
+
+<https://drift-king.org/the-builder/message/cut>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/messages> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    dcterms:description "cut {{{start}}} to {{{end}}} of {{{source}}}: {{{text}}}" .
+<https://drift-king.org/the-builder/message/cut-out-of-range>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/messages> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    dcterms:description "the-builder: {{{source}}} has {{{length}}} characters, so {{{start}}} to {{{end}}} is not in it" .
+<https://drift-king.org/the-builder/message/cut-no-copy>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/messages> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    dcterms:description "the-builder: {{{source}}} has no published copy with a sha256 to cut {{{start}}} to {{{end}}} from" .
+<https://drift-king.org/the-builder/message/cut-usage>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/messages> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    dcterms:description "the-builder: --cut needs a query file, and either --graph with a Turtle file or --catalog" .
+<https://drift-king.org/the-builder/message/text-fragment>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/messages> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    dcterms:description "{{{page}}}#:~:text={{{text}}}" ;
+    rdfs:comment "The address of a page with a text fragment on one sentence: the sentence, percent-encoded as the text directive asks, after #:~:text=." .
+<https://drift-king.org/the-builder/name/cut-option>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "--cut" ;
+    rdfs:comment "The option that runs the cut step's query and prints what it cut as JSON, on the whole model or on one file alone; it stops with exit 1 on a copy whose hash does not match." .
+<https://drift-king.org/the-builder/name/end>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "end" ;
+    dcterms:references <https://drift-king.org/the-builder/queries/selections.rq> , <https://drift-king.org/the-builder/message/cut> , <https://drift-king.org/the-builder/message/cut-out-of-range> , <https://drift-king.org/the-builder/message/cut-no-copy> .
+<https://drift-king.org/the-builder/name/length>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "length" ;
+    dcterms:references <https://drift-king.org/the-builder/message/cut-out-of-range> .
+<https://drift-king.org/the-builder/name/page>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "page" ;
+    dcterms:references <https://drift-king.org/the-builder/message/text-fragment> .
+<https://drift-king.org/the-builder/name/address>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "address" ;
+    dcterms:references <https://drift-king.org/the-builder/queries/selections.rq> .
+
+<https://drift-king.org/ah/the-builder/ReadingTemplate>
+    a owl:Class ;
+    rdfs:label "reading template" ;
+    dcterms:isPartOf <https://drift-king.org/ah/the-builder> ;
+    rdfs:comment "A Mustache template that makes the page a signed file is read on, as opposed to the page it is signed on or a page of the home. The cut step links each sentence to such a page." .

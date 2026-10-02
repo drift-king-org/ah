@@ -1,0 +1,46 @@
+# Every text selection on a signed file: the file, the characters it picks out (oa:TextPositionSelector,
+# counted in characters, as the Web Annotation model says, not in bytes), the published copy of that file with
+# the sha256 the model pins for it, and the page where that file is read, as an address a text fragment can be
+# put on. A selection with no published copy comes back with no ?copy, and the cut step stops on it: the text
+# is cut from the bytes the model pins, or not at all.
+#
+# A file is signed when a signing used a specialization of it. The page is what a render step makes from the
+# file as its input with a template that is for reading it (ah/the-builder/ReadingTemplate), not for signing
+# or for the home page. Its address is the page's place in the published folder, on the host that folder is
+# served from.
+PREFIX dcat:    <http://www.w3.org/ns/dcat#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX oa:      <http://www.w3.org/ns/oa#>
+PREFIX p-plan:  <http://purl.org/net/p-plan#>
+PREFIX prov:    <http://www.w3.org/ns/prov#>
+
+SELECT DISTINCT ?source ?start ?end ?copy ?sha256 ?address WHERE {
+  ?target oa:hasSource ?source ;
+    oa:hasSelector ?selector .
+  ?selector a oa:TextPositionSelector ;
+    oa:start ?start ;
+    oa:end ?end .
+  FILTER EXISTS { ?signing prov:used [ prov:specializationOf ?source ] }
+  OPTIONAL {
+    ?copy prov:wasDerivedFrom ?source ;
+      p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> ;
+      dcterms:identifier ?id .
+    FILTER (STRSTARTS(?id, "sha256:"))
+    BIND (STRAFTER(?id, "sha256:") AS ?sha256)
+  }
+  OPTIONAL {
+    ?source p-plan:correspondsToVariable ?text .
+    ?step a <https://drift-king.org/ah/the-builder/RenderStep> ;
+      p-plan:hasInputVar ?text , ?templateVar ;
+      p-plan:hasOutputVar ?html .
+    ?template p-plan:correspondsToVariable ?templateVar ;
+      a <https://drift-king.org/ah/the-builder/ReadingTemplate> .
+    ?page p-plan:correspondsToVariable ?html ;
+      dcterms:format <https://www.iana.org/assignments/media-types/text/html> .
+    ?folder a dcat:Distribution ;
+      dcat:accessURL ?home .
+    FILTER (STRSTARTS(STR(?page), STR(?folder)))
+    BIND (CONCAT(STR(?home), STRAFTER(STR(?page), STR(?folder))) AS ?address)
+  }
+}
+ORDER BY ?source ?start ?end

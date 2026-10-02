@@ -2328,3 +2328,41 @@
     dcterms:isPartOf <https://drift-king.org/ah/site> ;
     prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
     rdfs:comment "Holds a port, runs serve-stop on it with a PID file that names nothing alive, and exits 1 only if serve-stop said the port was still taken." .
+
+# ===========================================================================
+# The console shows the signed sentences. A cut step reads the published copy of each signed file the
+# console's asks and answers point into, checks its sha256, and cuts the characters the selector names. The
+# render takes that text as an input and shows it, as plain quoted text in an existing component: the
+# designed Quote with source waits for x-components 0.3.0, and is not written by hand. A check proves it.
+# ===========================================================================
+<https://drift-king.org/ah/site/var/selected-text> a p-plan:Variable ; rdfs:label "the sentences cut from the signed files" .
+<https://drift-king.org/ah/site/cut-signed-text>
+    a <https://drift-king.org/ah/the-builder/CutStep> , <https://drift-king.org/ah/LocalOnlyStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/publish> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/selected-text> ;
+    dcterms:title "cut the signed sentences the console shows from the published copies, after checking each copy's sha256 (local only)" .
+<https://drift-king.org/ah/site/render-intents>
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/cut-signed-text> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/var/selected-text> .
+
+# The check: every ask and answer on the rendered console shows exactly the text its selector points to in the
+# signed file, and no row shows a bare character range. Its canaries are built when it runs: a row showing
+# "Characters N to M" in place of the text, a row whose text differs by one character, and a selector whose
+# signed file's hash does not match. Each must fail it.
+<https://drift-king.org/the-linter/checks/console-text.mjs> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    rdfs:comment "Cuts each selection from the signed file itself, in code of its own, after checking the file's sha256 against the model, and compares what the rendered console shows. With --canaries it builds three broken cases and exits 1 only if all three were caught." .
+<https://drift-king.org/ah/site/check-console-text>
+    a sd:SoftwareConfiguration , <https://drift-king.org/ah/LocalOnlyStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/expand-console> , <https://drift-king.org/ah/site/cut-signed-text> ;
+    dcterms:title "every ask and answer on the rendered console shows exactly the text its selector points to in the signed file, and none shows a bare character range, canary first (local only)" ;
+    sd:hasExecutionCommand "node the-linter/checks/console-text.mjs --canaries the-builder/target/release/the-builder.exe catalog-v001.xml the-builder/queries/selections.rq not-ah/queries/intents.rq site/local/public/console/index.html . https://drift-king.org/; test $? -eq 1 || exit 1; node the-linter/checks/console-text.mjs the-builder/target/release/the-builder.exe catalog-v001.xml the-builder/queries/selections.rq not-ah/queries/intents.rq site/local/public/console/index.html . https://drift-king.org/" ;
+    dcterms:requires <https://drift-king.org/not-ah/node> , <https://drift-king.org/not-ah/npm/cheerio/1.2.0> .
+
+# The two templates that make the page a signed file is read on. A page made from either one is where the
+# sentence a selector points to is highlighted; the approval pages and the home are made from others.
+<https://drift-king.org/site/templates/document.mustache> a <https://drift-king.org/ah/the-builder/ReadingTemplate> .
+<https://drift-king.org/site/templates/letter.mustache> a <https://drift-king.org/ah/the-builder/ReadingTemplate> .

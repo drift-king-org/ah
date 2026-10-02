@@ -12,22 +12,36 @@
 # A gap is open when it is an earl:Assertion that is earl:failed, a signing used it, and no signing has
 # invalidated it. Its selector is the sentence of the letter it answers.
 #
+# The sentence each ask and answer points to is what the cut step took from the published copy of the signed
+# file (ah/the-builder/SelectedText), with the address of the page it is read on and a text fragment on it.
+# It is optional here so the query still runs alone, on a model the cut step has not been run on; a page
+# rendered without it shows no sentence, and the console's check fails it.
+#
 # Rows are ordered by booleans and values: agreements before gaps, open before done, the fewest asks met
 # first, then the time they were signed. No string function is used and no sort key is built from a name.
 PREFIX ah:      <https://drift-king.org/ah/>
+PREFIX builder: <https://drift-king.org/ah/the-builder/>
 PREFIX dcterms: <http://purl.org/dc/terms/>
 PREFIX earl:    <http://www.w3.org/ns/earl#>
 PREFIX oa:      <http://www.w3.org/ns/oa#>
 PREFIX p-plan:  <http://purl.org/net/p-plan#>
 PREFIX prov:    <http://www.w3.org/ns/prov#>
 
-SELECT ?isGap ?open ?done ?title ?agreement ?askSource ?askStart ?askEnd ?fulfilledBy ?signedAt ?envelope ?asksTotal ?asksMet ?gap ?test ?letter ?letterStart ?letterEnd WHERE {
+SELECT ?isGap ?open ?done ?title ?agreement ?askSource ?askStart ?askEnd ?fulfilledBy ?signedAt ?envelope ?asksTotal ?asksMet ?gap ?test ?letter ?letterStart ?letterEnd ?quote ?quoteHref WHERE {
   {
     BIND (false AS ?isGap)
     ?agreement a ah:Agreement ;
       dcterms:title ?title ;
       ah:asks ?ask .
     ?ask oa:hasTarget [ oa:hasSource ?askSource ; oa:hasSelector [ oa:start ?askStart ; oa:end ?askEnd ] ] .
+    OPTIONAL {
+      [] a builder:SelectedText ;
+        builder:selectedFrom ?askSource ;
+        builder:selectionStart ?askStart ;
+        builder:selectionEnd ?askEnd ;
+        builder:selectedText ?quote ;
+        builder:readAt ?quoteHref .
+    }
     OPTIONAL { ?ask ah:fulfilledBy ?fulfilledBy }
     ?signing a prov:Activity ;
       prov:endedAtTime ?signedAt ;
@@ -75,6 +89,14 @@ SELECT ?isGap ?open ?done ?title ?agreement ?askSource ?askStart ?askEnd ?fulfil
       earl:test ?test ;
       earl:result [ earl:outcome earl:failed ] ;
       oa:hasTarget [ oa:hasSource ?letter ; oa:hasSelector [ oa:start ?letterStart ; oa:end ?letterEnd ] ] .
+    OPTIONAL {
+      [] a builder:SelectedText ;
+        builder:selectedFrom ?letter ;
+        builder:selectionStart ?letterStart ;
+        builder:selectionEnd ?letterEnd ;
+        builder:selectedText ?quote ;
+        builder:readAt ?quoteHref .
+    }
     OPTIONAL { ?gap dcterms:title ?title }
     ?signing a prov:Activity ;
       prov:used ?gap ;
