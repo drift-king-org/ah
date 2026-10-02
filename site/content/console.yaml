@@ -1,0 +1,53 @@
+# Every word on the console's Intents page. The template holds none of its own: it names a place in this
+# file, and the render fills it. The page is tried on this machine only.
+
+head:
+  title: Drift King · Intents
+  description: Every agreement Drift King holds, what it asks for and what fulfils it.
+
+header:
+  brand: Drift King
+
+nav:
+  label: Console
+  intents: Intents
+
+heading:
+  title: Intents
+  blurb: Every agreement Drift King holds, what it asks for and what fulfils it. A query over the model works out which are open.
+
+agreements:
+  heading: Agreements
+
+gaps:
+  heading: Open gaps
+
+words:
+  agreement: agreement
+  gap: gap
+  status: Status
+  open: Open
+  done: Done
+  of: of
+  asks_met: asks met
+  asks: Asks
+  characters: Characters
+  to: to
+  of_file: of the signed file
+  of_letter: of the letter
+  signed_file: The signed file
+  fulfilled_by: Fulfilled by
+  fulfilment: What fulfils it
+  not_met: Not met yet
+  document: Document
+  signed: Signed
+  envelope: DocuSign envelope
+  answers: Answers
+  the_letter: The letter
+  closed_by: Closed by
+  the_check: The check
+
+footer:
+  brand: Drift King
+  blurb: Nothing is built or run unless the model names it.
+  copyright: © 2026 Drift King.

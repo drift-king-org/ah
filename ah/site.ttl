@@ -2059,3 +2059,161 @@
 <https://drift-king.org/ah/LocalOnlyStep> a owl:Class ;
     rdfs:label "local-only step" ;
     rdfs:comment "A step that makes something to try on this machine. No step that ships comes after it." .
+
+# ===========================================================================
+# The console, locally: Intents. A page made of x-components 0.2.0 and the rows of the Intents query, tried on this
+# machine and nowhere else. Its steps are local only, so a ship plan that includes one is caught. The page is
+# served from site/local/public on its own port by wrangler 4.145.0 (pinned); nothing here is written under
+# site/public, and the /console links on the landing page stay closed.
+# The design parts the page leaves out for want of a component are listed in the report of this change: no
+# part of the design's HTML is copied, and none is written by hand.
+# ===========================================================================
+<https://drift-king.org/ah/site/page/console>
+    a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:title "the console's Intents page, in x-components" ;
+    dcterms:requires <https://apricotter.com/ns/components#x-header> ,
+        <https://apricotter.com/ns/components#x-console> ,
+        <https://apricotter.com/ns/components#x-side-nav> ,
+        <https://apricotter.com/ns/components#x-side-nav-item> ,
+        <https://apricotter.com/ns/components#x-section> ,
+        <https://apricotter.com/ns/components#x-page-heading> ,
+        <https://apricotter.com/ns/components#x-heading> ,
+        <https://apricotter.com/ns/components#x-card> ,
+        <https://apricotter.com/ns/components#x-tag> ,
+        <https://apricotter.com/ns/components#x-terms> ,
+        <https://apricotter.com/ns/components#x-term> ,
+        <https://apricotter.com/ns/components#x-term-name> ,
+        <https://apricotter.com/ns/components#x-term-body> ,
+        <https://apricotter.com/ns/components#x-link> ,
+        <https://apricotter.com/ns/components#x-footer> .
+<https://drift-king.org/site/content/console.yaml> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:conformsTo <https://yaml.org/spec/1.2.2/> ;
+    dcterms:identifier "sha256:82dee438a252e374867e2867cb1b9f0c80a24f526290ec6fcc4e953f1dd86b9d" ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/console-content> ;
+    rdfs:comment "Every word on the console's Intents page. The template holds none." .
+<https://drift-king.org/site/templates/console.mustache> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/console-template> ;
+    rdfs:comment "The Intents page: a plain head and a body of x-* tags only, named for places in console.yaml and in the rows of the Intents query." .
+<https://drift-king.org/site/console.css> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:conformsTo <https://www.w3.org/TR/css/> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    rdfs:comment "The Intents page's styles, on the classes x-components 0.2.0 emits and no others." .
+<https://drift-king.org/site/local/wrangler.jsonc> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:conformsTo <https://developers.cloudflare.com/workers/wrangler/configuration/> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    rdfs:comment "Serves site/local/public, the folder the local-only steps write, and nothing from site/public." .
+<https://drift-king.org/ah/site/var/console-content> a p-plan:Variable ; rdfs:label "the console page's words" .
+<https://drift-king.org/ah/site/var/console-template> a p-plan:Variable ; rdfs:label "the console page's template" .
+<https://drift-king.org/ah/site/var/console-markup> a p-plan:Variable ; rdfs:label "the console page as x-* markup" .
+<https://drift-king.org/ah/site/var/console-html> a p-plan:Variable ; rdfs:label "site/local/public/console/index.html" .
+<https://drift-king.org/ah/site/var/local-copies> a p-plan:Variable ; rdfs:label "files copied into site/local/public" .
+<https://drift-king.org/site/expander/markup/console.html> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/console.mustache> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/console-markup> .
+<https://drift-king.org/site/local/public/console/index.html> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/console.mustache> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/console-html> ;
+    rdfs:comment "Local only: never under site/public, never deployed." .
+<https://drift-king.org/site/local/public/console.css> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:443cb2fff44996487d721eafb1500d3a60880e61b8a124b7e6536b80f66ed833" ;
+    prov:wasDerivedFrom <https://drift-king.org/site/console.css> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/local-copies> .
+<https://drift-king.org/site/local/public/fonts/bungee-400.woff2> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:126eec706b7931682dbcf6c6efc274132c603f181fbf912678e6cfeb341e721b" ;
+    prov:wasDerivedFrom <https://drift-king.org/site/fonts/bungee-400.woff2> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/local-copies> .
+<https://drift-king.org/site/local/public/fonts/chakra-petch-400.woff2> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:7d75be85dd1627e27ec151e9a3701e661bc4f8c2a93611bdd92f3a05d6bbd942" ;
+    prov:wasDerivedFrom <https://drift-king.org/site/fonts/chakra-petch-400.woff2> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/local-copies> .
+<https://drift-king.org/site/local/public/fonts/chakra-petch-600.woff2> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:a5888696e9eb1b4bbbecc8eb3922b8369f49d4bddb72263e033cbd17f399be76" ;
+    prov:wasDerivedFrom <https://drift-king.org/site/fonts/chakra-petch-600.woff2> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/local-copies> .
+<https://drift-king.org/site/local/public/fonts/chakra-petch-700.woff2> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:ce5095dc1cb200aaa939e38067a0677018d10e9f26ec38cdcf1557ac524fc775" ;
+    prov:wasDerivedFrom <https://drift-king.org/site/fonts/chakra-petch-700.woff2> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/local-copies> .
+<https://drift-king.org/site/local/public/fonts/jetbrains-mono.woff2> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:83c005d49d8a6a50474c73a5a36ac0468076e9c4a29da7bdb14995d80560a5be" ;
+    prov:wasDerivedFrom <https://drift-king.org/site/fonts/jetbrains-mono.woff2> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/local-copies> .
+
+<https://drift-king.org/ah/site/render-console>
+    a <https://drift-king.org/ah/the-builder/RenderStep> , <https://drift-king.org/ah/LocalOnlyStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/var/console-template> ,
+        <https://drift-king.org/ah/site/var/console-content> ,
+        <https://drift-king.org/ah/site/var/console-intents> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/console-markup> ;
+    dcterms:title "render the console's Intents page as x-* markup, from its template, its words and the Intents query (local only)" .
+<https://drift-king.org/ah/site/expand-console>
+    a sd:SoftwareConfiguration , <https://drift-king.org/ah/LocalOnlyStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/render-console> ,
+        <https://drift-king.org/ah/site/render-home-settings> ,
+        <https://drift-king.org/ah/site/x-components/install-expander> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/console-html> ;
+    dcterms:title "expand the console page to plain HTML, in site/local/public, never in site/public (local only)" ;
+    sd:hasExecutionCommand "cd site/expander && node expand-home.mjs markup/console.html settings.json ../local/public/console/index.html" ;
+    dcterms:requires <https://drift-king.org/not-ah/node> , <https://drift-king.org/not-ah/npm/cheerio/1.2.0> .
+<https://drift-king.org/ah/site/local-copy>
+    a <https://drift-king.org/ah/the-builder/CopyStep> , <https://drift-king.org/ah/LocalOnlyStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/local-copies> ;
+    dcterms:title "copy the console's styles and fonts into site/local/public, from the commit (local only)" .
+<https://drift-king.org/ah/site/serve-local-console>
+    a sd:SoftwareConfiguration ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:title "serve the console's local folder on this machine" ;
+    sd:hasExecutionCommand "cd site/local && npx --yes wrangler@4.145.0 dev --local --port 8789" ;
+    dcterms:requires <https://drift-king.org/not-ah/wrangler> ;
+    rdfs:comment "Port 8789. Started and stopped by its PIDs, like serve-local, and never part of a ship." .
+<https://drift-king.org/ah/site/endpoint/local-console>
+    a dcat:DataService ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcat:endpointURL <http://127.0.0.1:8789/console/> ;
+    rdfs:comment "The console's Intents page on the lead architect's machine. Never public." .
+<https://drift-king.org/ah/site/check-console-tags>
+    a sd:SoftwareConfiguration , <https://drift-king.org/ah/LocalOnlyStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/publish> ;
+    dcterms:title "every tag on the console page is a component the model defines, canary first" ;
+    sd:hasExecutionCommand "node site/checks/check-tags.mjs site/checks/canaries/undefined-tag.mustache site/expander/x-components/component.ttl site/expander/x-components/component-attributes.generated.mjs; test $? -eq 1 || exit 1; node site/checks/check-tags.mjs site/templates/console.mustache site/expander/x-components/component.ttl site/expander/x-components/component-attributes.generated.mjs" ;
+    dcterms:requires <https://drift-king.org/not-ah/node> .
+<https://drift-king.org/ah/site/check-console-only-components>
+    a sd:SoftwareConfiguration , <https://drift-king.org/ah/LocalOnlyStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    dcterms:title "the console page is made of components and nothing else, canary first" ;
+    sd:hasExecutionCommand "node site/checks/check-only-components.mjs site/checks/canaries/plain-div.mustache; test $? -eq 1 || exit 1; node site/checks/check-only-components.mjs site/templates/console.mustache" ;
+    dcterms:requires <https://drift-king.org/not-ah/node> .
+<https://drift-king.org/ah/site/check-console-styles>
+    a sd:SoftwareConfiguration , <https://drift-king.org/ah/LocalOnlyStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/publish> ;
+    dcterms:title "the console page styles only classes the pinned version emits, canary first" ;
+    sd:hasExecutionCommand "node site/checks/check-styles.mjs site/checks/canaries/styles.css site/expander/x-components/component-attributes.generated.mjs; test $? -eq 1 || exit 1; node site/checks/check-styles.mjs site/console.css site/expander/x-components/component-attributes.generated.mjs" ;
+    dcterms:requires <https://drift-king.org/not-ah/node> .
+<https://drift-king.org/ah/site/check-console-expanded>
+    a sd:SoftwareConfiguration , <https://drift-king.org/ah/LocalOnlyStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/expand-console> ;
+    dcterms:title "no tag is left unexpanded on the console page, canary first" ;
+    sd:hasExecutionCommand "node site/checks/check-expanded.mjs site/checks/canaries/unexpanded.html; test $? -eq 1 || exit 1; node site/checks/check-expanded.mjs site/local/public/console/index.html" ;
+    dcterms:requires <https://drift-king.org/not-ah/node> .
