@@ -1287,7 +1287,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let query_text = std::fs::read_to_string(query_path)?;
         let prepared = SparqlEvaluator::new().parse_query(&query_text)?;
         let rows = collect_rows(prepared.on_store(&store).execute()?, query_path);
-        let base = AH_TTL.rsplit_once('/').map(|(folder, _)| format!("{}/", folder)).unwrap_or_default();
+        let mut base = AH_TTL.rsplit_once('/').map(|(folder, _)| folder.to_string()).unwrap_or_default();
+        base.push('/');
         let out: Vec<HashMap<String, String>> = cut_selections(&rows, &base)?
             .into_iter()
             .map(|cut| {
