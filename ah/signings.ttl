@@ -1799,7 +1799,7 @@
 <https://drift-king.org/approvals/gap-code-strings-closed.md> a <https://drift-king.org/ah/Agreement> ;
     dcterms:title "Drift King: gap closed" ;
     <https://drift-king.org/ah/asks> <https://drift-king.org/ah/ask/closed-code-strings> .
-<https://drift-king.org/ah/ask/closed-code-strings> a <https://drift-king.org/ah/Ask> ;
+<https://drift-king.org/ah/ask/closed-code-strings> a <https://drift-king.org/ah/Ask> , oa:Annotation ;
     oa:hasTarget [ a oa:SpecificResource ;
         oa:hasSource <https://drift-king.org/approvals/gap-code-strings-closed.md> ;
         oa:hasSelector [ a oa:TextPositionSelector ; oa:start 663 ; oa:end 752 ] ] ;
@@ -1807,7 +1807,7 @@
 <https://drift-king.org/approvals/signing-plan-v2.md> a <https://drift-king.org/ah/Agreement> ;
     dcterms:title "Drift King: signing plan, version 2" ;
     <https://drift-king.org/ah/asks> <https://drift-king.org/ah/ask/signing-plan-v2> .
-<https://drift-king.org/ah/ask/signing-plan-v2> a <https://drift-king.org/ah/Ask> ;
+<https://drift-king.org/ah/ask/signing-plan-v2> a <https://drift-king.org/ah/Ask> , oa:Annotation ;
     oa:hasTarget [ a oa:SpecificResource ;
         oa:hasSource <https://drift-king.org/approvals/signing-plan-v2.md> ;
         oa:hasSelector [ a oa:TextPositionSelector ; oa:start 314 ; oa:end 355 ] ] ;
@@ -1815,7 +1815,7 @@
 <https://drift-king.org/approvals/x-components-0.1.0-release.md> a <https://drift-king.org/ah/Agreement> ;
     dcterms:title "x-components: release 0.1.0" ;
     <https://drift-king.org/ah/asks> <https://drift-king.org/ah/ask/x-components-0-1-0-release> .
-<https://drift-king.org/ah/ask/x-components-0-1-0-release> a <https://drift-king.org/ah/Ask> ;
+<https://drift-king.org/ah/ask/x-components-0-1-0-release> a <https://drift-king.org/ah/Ask> , oa:Annotation ;
     oa:hasTarget [ a oa:SpecificResource ;
         oa:hasSource <https://drift-king.org/approvals/x-components-0.1.0-release.md> ;
         oa:hasSelector [ a oa:TextPositionSelector ; oa:start 469 ; oa:end 653 ] ] ;
@@ -1823,14 +1823,14 @@
 <https://drift-king.org/approvals/console.md> a <https://drift-king.org/ah/Agreement> ;
     dcterms:title "Drift King: the console" ;
     <https://drift-king.org/ah/asks> <https://drift-king.org/ah/ask/console> .
-<https://drift-king.org/ah/ask/console> a <https://drift-king.org/ah/Ask> ;
+<https://drift-king.org/ah/ask/console> a <https://drift-king.org/ah/Ask> , oa:Annotation ;
     oa:hasTarget [ a oa:SpecificResource ;
         oa:hasSource <https://drift-king.org/approvals/console.md> ;
         oa:hasSelector [ a oa:TextPositionSelector ; oa:start 326 ; oa:end 430 ] ] .
 <https://drift-king.org/approvals/drift-king-console-design.md> a <https://drift-king.org/ah/Agreement> ;
     dcterms:title "Drift King: console design" ;
     <https://drift-king.org/ah/asks> <https://drift-king.org/ah/ask/console-design> .
-<https://drift-king.org/ah/ask/console-design> a <https://drift-king.org/ah/Ask> ;
+<https://drift-king.org/ah/ask/console-design> a <https://drift-king.org/ah/Ask> , oa:Annotation ;
     oa:hasTarget [ a oa:SpecificResource ;
         oa:hasSource <https://drift-king.org/approvals/drift-king-console-design.md> ;
         oa:hasSelector [ a oa:TextPositionSelector ; oa:start 684 ; oa:end 736 ] ] .
