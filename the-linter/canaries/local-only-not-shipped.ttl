@@ -6,5 +6,5 @@ ex:preview a <https://drift-king.org/ah/LocalOnlyStep> .
 ex:between p-plan:isPrecededBy ex:preview .
 ex:deploy a <https://drift-king.org/ah/the-builder/ShipStep> ; p-plan:isPrecededBy ex:between .
 # Must stay clean: a ship that comes after an ordinary step.
-ex:build p-plan:isPrecededBy ex:between .
+ex:build p-plan:isStepOfPlan ex:plan .
 ex:ship a <https://drift-king.org/ah/the-builder/ShipStep> ; p-plan:isPrecededBy ex:build .
