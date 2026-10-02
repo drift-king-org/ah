@@ -22,7 +22,7 @@
 <x-tag label="{{words.agreement}}"></x-tag>
 <x-terms>
 <x-term><x-term-name>{{words.status}}</x-term-name><x-term-body>{{#open}}{{words.open}}{{/open}}{{#done}}{{words.done}}{{/done}} ({{asksMet}} {{words.of}} {{asksTotal}} {{words.asks_met}})</x-term-body></x-term>
-<x-term><x-term-name>{{words.asks}}</x-term-name><x-term-body>{{words.characters}} {{askStart}} {{words.to}} {{askEnd}} {{words.of_file}} <x-link href="{{askSource}}" label="{{words.signed_file}}"></x-link></x-term-body></x-term>
+<x-term><x-term-name>{{words.asks}}</x-term-name><x-term-body><x-prose>{{quote}}</x-prose><x-link href="{{quoteHref}}" label="{{words.signed_file}}"></x-link></x-term-body></x-term>
 <x-term><x-term-name>{{words.fulfilled_by}}</x-term-name><x-term-body>{{#fulfilledBy}}<x-link href="{{fulfilledBy}}" label="{{words.fulfilment}}"></x-link>{{/fulfilledBy}}{{^fulfilledBy}}{{words.not_met}}{{/fulfilledBy}}</x-term-body></x-term>
 <x-term><x-term-name>{{words.signed}}</x-term-name><x-term-body>{{signedAt}} {{words.envelope}} {{envelope}}</x-term-body></x-term>
 </x-terms>
@@ -35,7 +35,7 @@
 <x-tag label="{{words.gap}}"></x-tag>
 <x-terms>
 <x-term><x-term-name>{{words.status}}</x-term-name><x-term-body>{{words.open}}</x-term-body></x-term>
-<x-term><x-term-name>{{words.answers}}</x-term-name><x-term-body>{{words.characters}} {{letterStart}} {{words.to}} {{letterEnd}} {{words.of_letter}} <x-link href="{{letter}}" label="{{words.the_letter}}"></x-link></x-term-body></x-term>
+<x-term><x-term-name>{{words.answers}}</x-term-name><x-term-body><x-prose>{{quote}}</x-prose><x-link href="{{quoteHref}}" label="{{words.the_letter}}"></x-link></x-term-body></x-term>
 <x-term><x-term-name>{{words.closed_by}}</x-term-name><x-term-body><x-link href="{{test}}" label="{{words.the_check}}"></x-link></x-term-body></x-term>
 </x-terms>
 </x-card>

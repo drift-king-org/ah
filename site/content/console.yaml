@@ -31,10 +31,6 @@ words:
   of: of
   asks_met: asks met
   asks: Asks
-  characters: Characters
-  to: to
-  of_file: of the signed file
-  of_letter: of the letter
   signed_file: The signed file
   fulfilled_by: Fulfilled by
   fulfilment: What fulfils it

@@ -6,7 +6,7 @@ PREFIX dcterms: <http://purl.org/dc/terms/>
 PREFIX p-plan:  <http://purl.org/net/p-plan#>
 PREFIX sd:      <https://w3id.org/okn/o/sd#>
 
-SELECT ?plan ?step ?title ?command ?copy ?render ?ready ?ship WHERE {
+SELECT ?plan ?step ?title ?command ?copy ?render ?cut ?ready ?ship WHERE {
   ?step p-plan:isStepOfPlan ?plan .
   OPTIONAL { ?step dcterms:title ?title }
   OPTIONAL { ?step sd:hasExecutionCommand ?command }
@@ -14,6 +14,9 @@ SELECT ?plan ?step ?title ?command ?copy ?render ?ready ?ship WHERE {
   BIND (EXISTS { ?step a <https://drift-king.org/ah/the-builder/CopyStep> } AS ?copy)
   # A render step fills a Mustache template; render-inputs.rq says how.
   BIND (EXISTS { ?step a <https://drift-king.org/ah/the-builder/RenderStep> } AS ?render)
+  # A cut step takes the text a selector points to from the published copy of a signed file;
+  # selections.rq says which.
+  BIND (EXISTS { ?step a <https://drift-king.org/ah/the-builder/CutStep> } AS ?cut)
   # A ready step runs after every check: it stops the build on a failed check,
   # and lets signed gaps through, naming each one.
   BIND (EXISTS { ?step a <https://drift-king.org/ah/the-builder/ReadyStep> } AS ?ready)

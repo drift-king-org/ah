@@ -95,6 +95,18 @@ const M_SKIPPED: &str = "https://drift-king.org/the-builder/message/skipped";
 const M_HELD: &str = "https://drift-king.org/the-builder/message/held";
 const M_UNTAKEN: &str = "https://drift-king.org/the-builder/message/untaken";
 const M_ROWS_USAGE: &str = "https://drift-king.org/the-builder/message/rows-usage";
+const M_CUT: &str = "https://drift-king.org/the-builder/message/cut";
+const M_CUT_OUT_OF_RANGE: &str = "https://drift-king.org/the-builder/message/cut-out-of-range";
+const M_CUT_NO_COPY: &str = "https://drift-king.org/the-builder/message/cut-no-copy";
+const M_CUT_USAGE: &str = "https://drift-king.org/the-builder/message/cut-usage";
+const M_TEXT_FRAGMENT: &str = "https://drift-king.org/the-builder/message/text-fragment";
+const Q_SELECTIONS: &str = "https://drift-king.org/the-builder/queries/selections.rq";
+const SELECTED_TEXT_CLASS: &str = "https://drift-king.org/ah/the-builder/SelectedText";
+const SELECTED_FROM: &str = "https://drift-king.org/ah/the-builder/selectedFrom";
+const SELECTION_START: &str = "https://drift-king.org/ah/the-builder/selectionStart";
+const SELECTION_END: &str = "https://drift-king.org/ah/the-builder/selectionEnd";
+const SELECTED_TEXT: &str = "https://drift-king.org/ah/the-builder/selectedText";
+const READ_AT: &str = "https://drift-king.org/ah/the-builder/readAt";
 const M_NOT_SHIPPED: &str = "https://drift-king.org/the-builder/message/not-shipped";
 const M_PROCEEDING: &str = "https://drift-king.org/the-builder/message/proceeding";
 const M_CHECKS_FAILED: &str = "https://drift-king.org/the-builder/message/checks-failed";
@@ -210,6 +222,7 @@ struct Step {
     command: Option<String>,
     copy: bool,
     render: bool,
+    cut: bool,
     ready: bool,
     ship: bool,
 }
@@ -503,6 +516,7 @@ fn plan_steps(store: &Store, catalog: &HashMap<String, String>, plan: &str) -> V
             command: term_string(&row, "command"),
             copy: row.get("copy") == Some(&Term::from(oxigraph::model::Literal::from(true))),
             render: row.get("render") == Some(&Term::from(oxigraph::model::Literal::from(true))),
+            cut: row.get("cut") == Some(&Term::from(oxigraph::model::Literal::from(true))),
             ready: row.get("ready") == Some(&Term::from(oxigraph::model::Literal::from(true))),
             ship: row.get("ship") == Some(&Term::from(oxigraph::model::Literal::from(true))),
         })
@@ -882,6 +896,106 @@ fn run_command(command: &str) -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
+/// A selection's characters, cut from the bytes the model pins. The copy is read, its sha256 is checked
+/// against the model's (a copy that does not match stops the build, exit 1), and the characters from start to
+/// end are taken -- Unicode code points, as the Web Annotation model counts them, not bytes. A selection that
+/// falls outside the file, or has no published copy, stops the build too: the numbers are never shown in
+/// place of the words.
+struct Cut {
+    source: String,
+    start: usize,
+    end: usize,
+    text: String,
+    address: Option<String>,
+}
+
+/// A sentence as a text directive carries it: runs of white space are one space, and everything but letters,
+/// digits and . _ ~ is percent-encoded, as the approval pages' own links are.
+fn directive_text(text: &str) -> String {
+    let single = text.split_whitespace().collect::<Vec<_>>().join(&' '.to_string());
+    let mut out = String::new();
+    for byte in single.bytes() {
+        if byte.is_ascii_alphanumeric() || matches!(byte, b'.' | b'_' | b'~') {
+            out.push(byte as char);
+        } else {
+            out.push('%');
+            out.push(std::char::from_digit((byte >> 4) as u32, 16).unwrap().to_ascii_uppercase());
+            out.push(std::char::from_digit((byte & 15) as u32, 16).unwrap().to_ascii_uppercase());
+        }
+    }
+    out
+}
+
+fn cut_selections(rows: &[HashMap<String, Term>], base: &str) -> Result<Vec<Cut>, Box<dyn std::error::Error>> {
+    let mut read: HashMap<String, Vec<char>> = HashMap::new();
+    let mut cuts = Vec::new();
+    for row in rows {
+        let source = term_string(row, "source").unwrap();
+        let start: usize = term_string(row, "start").unwrap().parse()?;
+        let end: usize = term_string(row, "end").unwrap().parse()?;
+        let (Some(copy), Some(expected)) = (term_string(row, "copy"), term_string(row, "sha256")) else {
+            die(M_CUT_NO_COPY, &[("source", &source), ("start", &start.to_string()), ("end", &end.to_string())]);
+        };
+        let target = copy.strip_prefix(base).unwrap_or(&copy).to_string();
+        if !read.contains_key(&target) {
+            let hashed = run_named_command(C_SHA256SUM, &[("target", &target)])?;
+            let actual = std::str::from_utf8(&hashed.stdout)?.split_whitespace().next().unwrap_or_default().to_string();
+            if actual != expected {
+                die(M_HASH_MISMATCH, &[("target", &target), ("expected", &expected), ("actual", &actual)]);
+            }
+            read.insert(target.clone(), std::fs::read_to_string(&target)?.chars().collect());
+        }
+        let characters = &read[&target];
+        if start > end || end > characters.len() {
+            die(M_CUT_OUT_OF_RANGE, &[
+                ("source", &source),
+                ("length", &characters.len().to_string()),
+                ("start", &start.to_string()),
+                ("end", &end.to_string()),
+            ]);
+        }
+        let text: String = characters[start..end].iter().collect();
+        let address = term_string(row, "address").map(|page| say(M_TEXT_FRAGMENT, &[("page", &page), ("text", &directive_text(&text))]));
+        cuts.push(Cut { source, start, end, text, address });
+    }
+    Ok(cuts)
+}
+
+/// Runs the cut step: selections.rq says what to cut and from which copy; each cut is noted on the build as a
+/// SelectedText, for the render step's query to read beside the ask or answer it belongs to.
+fn run_cut_step(store: &Store, catalog: &HashMap<String, String>) -> Result<(), Box<dyn std::error::Error>> {
+    let base = term_value(&our_base(store));
+    let rows = run_named_query(store, catalog, Q_SELECTIONS, &[]);
+    let integer = NamedNode::new_unchecked(oxigraph::model::vocab::xsd::INTEGER.as_str());
+    for cut in cut_selections(&rows, &base)? {
+        tell(&say(M_CUT, &[
+            ("start", &cut.start.to_string()),
+            ("end", &cut.end.to_string()),
+            ("source", &cut.source),
+            ("text", &cut.text),
+        ]));
+        let node = BlankNode::default();
+        let add = |predicate: &str, object: Term| -> Result<(), Box<dyn std::error::Error>> {
+            store.insert(oxigraph::model::QuadRef::new(
+                &node,
+                &NamedNode::new_unchecked(predicate),
+                &object,
+                oxigraph::model::GraphNameRef::DefaultGraph,
+            ))?;
+            Ok(())
+        };
+        add(RDF_TYPE, Term::NamedNode(NamedNode::new_unchecked(SELECTED_TEXT_CLASS)))?;
+        add(SELECTED_FROM, Term::NamedNode(NamedNode::new_unchecked(&cut.source)))?;
+        add(SELECTION_START, Term::Literal(oxigraph::model::Literal::new_typed_literal(cut.start.to_string(), integer.clone())))?;
+        add(SELECTION_END, Term::Literal(oxigraph::model::Literal::new_typed_literal(cut.end.to_string(), integer.clone())))?;
+        add(SELECTED_TEXT, Term::Literal(oxigraph::model::Literal::new_simple_literal(&cut.text)))?;
+        if let Some(address) = &cut.address {
+            add(READ_AT, Term::NamedNode(NamedNode::new_unchecked(address)))?;
+        }
+    }
+    Ok(())
+}
+
 /// Runs a copy step generically: publish-copies.rq says what to publish --
 /// no path or hash is ever written in main.rs. For each row, the file is
 /// taken from the commit (git show HEAD:<source>), never the working copy,
@@ -1147,6 +1261,48 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         tell(&serde_json::to_string(&out)?);
         return Ok(());
     }
+    // --cut <query> [--graph <file>]: the cut step on its own, printing what it cut as JSON. A copy whose
+    // hash does not match, a selection outside its file, or one with no copy, is exit 1.
+    if let Some(i) = args.iter().position(|a| a == "--cut") {
+        let query_path = args.get(i + 1).unwrap_or_else(|| die(M_CUT_USAGE, &[]));
+        // The model always supplies the messages and the sha256 command; --graph picks the file the query
+        // is run on instead of the model.
+        let catalog_path = args
+            .iter()
+            .position(|a| a == "--catalog")
+            .and_then(|j| args.get(j + 1))
+            .unwrap_or_else(|| die(M_CUT_USAGE, &[]));
+        let catalog = parse_catalog(catalog_path);
+        let model = Store::new()?;
+        load_transitively(&model, &catalog, vec![AH_TTL.to_string()], &HashSet::new())?;
+        load_messages(&model);
+        let store = match args.iter().position(|a| a == "--graph").and_then(|j| args.get(j + 1)) {
+            Some(graph_path) => {
+                let alone = Store::new()?;
+                load_file(&alone, graph_path)?;
+                alone
+            }
+            None => model,
+        };
+        let query_text = std::fs::read_to_string(query_path)?;
+        let prepared = SparqlEvaluator::new().parse_query(&query_text)?;
+        let rows = collect_rows(prepared.on_store(&store).execute()?, query_path);
+        let base = AH_TTL.rsplit_once('/').map(|(folder, _)| format!("{}/", folder)).unwrap_or_default();
+        let out: Vec<HashMap<String, String>> = cut_selections(&rows, &base)?
+            .into_iter()
+            .map(|cut| {
+                let mut row = HashMap::new();
+                row.insert("source".to_string(), cut.source);
+                row.insert("start".to_string(), cut.start.to_string());
+                row.insert("end".to_string(), cut.end.to_string());
+                row.insert("text".to_string(), cut.text);
+                row.insert("address".to_string(), cut.address.unwrap_or_default());
+                row
+            })
+            .collect();
+        tell(&serde_json::to_string(&out)?);
+        return Ok(());
+    }
     let catalog_path_arg = args
         .iter()
         .position(|a| a == "--catalog")
@@ -1164,7 +1320,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // A ready step waits for every check, so no check can be added without it.
     let ready_steps: HashSet<String> = steps.iter().filter(|s| s.ready).map(|s| s.iri.as_str().to_string()).collect();
     for r in &ready_steps {
-        for s in steps.iter().filter(|s| s.command.is_none() && !s.copy && !s.render && !s.ready) {
+        for s in steps.iter().filter(|s| s.command.is_none() && !s.copy && !s.render && !s.cut && !s.ready) {
             edges.push((r.clone(), s.iri.as_str().to_string()));
         }
     }
@@ -1184,7 +1340,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut open_gaps: HashSet<String> = HashSet::new();
     for iri in &order {
         let step = by_iri[iri];
-        let is_build_like = step.command.is_some() || step.copy || step.render;
+        let is_build_like = step.command.is_some() || step.copy || step.render || step.cut;
         if is_build_like {
             let step_ancestors = ancestors(iri, &edges);
             let blocking: Vec<&String> = step_ancestors.intersection(&failed_checks).collect();
@@ -1252,6 +1408,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 for gap in gaps {
                     tell(&say(M_PROCEEDING, &[("gap", gap)]));
                 }
+            }
+            None if step.cut => {
+                tell(&step.title.clone().unwrap_or_else(|| iri.clone()));
+                run_cut_step(&store, &catalog)?;
             }
             None if step.render => {
                 tell(&step.title.clone().unwrap_or_else(|| iri.clone()));

@@ -50,6 +50,9 @@ a:hover{color:var(--dk-gold-500)}
 @media(max-width:560px){.terms__row{grid-template-columns:1fr}}
 .terms__term{margin:0;font-weight:700;color:var(--text-secondary)}
 .terms__body{margin:0;overflow-wrap:anywhere}
+.prose{margin:0 0 6px;font-style:italic}
+.prose::before{content:open-quote}
+.prose::after{content:close-quote}
 .link{color:var(--dk-orange-300)}
 .external-link__icon{width:.8em;height:.8em;margin-left:.3em}
 .visually-hidden{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
