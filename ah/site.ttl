@@ -2092,13 +2092,13 @@
     dcterms:conformsTo <https://yaml.org/spec/1.2.2/> ;
     dcterms:identifier "sha256:82dee438a252e374867e2867cb1b9f0c80a24f526290ec6fcc4e953f1dd86b9d" ;
     prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
-    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/console-content> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/intents-content> ;
     rdfs:comment "Every word on the console's Intents page. The template holds none." .
 <https://drift-king.org/site/templates/console.mustache> a prov:Entity , p-plan:Entity ;
     dcterms:isPartOf <https://drift-king.org/ah/site> ;
     dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
     prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
-    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/console-template> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/intents-template> ;
     rdfs:comment "The Intents page: a plain head and a body of x-* tags only, named for places in console.yaml and in the rows of the Intents query." .
 <https://drift-king.org/site/console.css> a prov:Entity ;
     dcterms:isPartOf <https://drift-king.org/ah/site> ;
@@ -2110,19 +2110,19 @@
     dcterms:conformsTo <https://developers.cloudflare.com/workers/wrangler/configuration/> ;
     prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
     rdfs:comment "Serves site/local/public, the folder the local-only steps write, and nothing from site/public." .
-<https://drift-king.org/ah/site/var/console-content> a p-plan:Variable ; rdfs:label "the console page's words" .
-<https://drift-king.org/ah/site/var/console-template> a p-plan:Variable ; rdfs:label "the console page's template" .
-<https://drift-king.org/ah/site/var/console-markup> a p-plan:Variable ; rdfs:label "the console page as x-* markup" .
-<https://drift-king.org/ah/site/var/console-html> a p-plan:Variable ; rdfs:label "site/local/public/console/index.html" .
+<https://drift-king.org/ah/site/var/intents-content> a p-plan:Variable ; rdfs:label "the console page's words" .
+<https://drift-king.org/ah/site/var/intents-template> a p-plan:Variable ; rdfs:label "the console page's template" .
+<https://drift-king.org/ah/site/var/intents-markup> a p-plan:Variable ; rdfs:label "the console page as x-* markup" .
+<https://drift-king.org/ah/site/var/intents-html> a p-plan:Variable ; rdfs:label "site/local/public/console/index.html" .
 <https://drift-king.org/ah/site/var/local-copies> a p-plan:Variable ; rdfs:label "files copied into site/local/public" .
 <https://drift-king.org/site/expander/markup/console.html> a prov:Entity , p-plan:Entity ;
     dcterms:isPartOf <https://drift-king.org/ah/site> ;
     prov:wasDerivedFrom <https://drift-king.org/site/templates/console.mustache> ;
-    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/console-markup> .
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/intents-markup> .
 <https://drift-king.org/site/local/public/console/index.html> a prov:Entity , p-plan:Entity ;
     dcterms:isPartOf <https://drift-king.org/ah/site> ;
     prov:wasDerivedFrom <https://drift-king.org/site/templates/console.mustache> ;
-    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/console-html> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/intents-html> ;
     rdfs:comment "Local only: never under site/public, never deployed." .
 <https://drift-king.org/site/local/public/console.css> a prov:Entity , p-plan:Entity ;
     dcterms:isPartOf <https://drift-king.org/ah/site> ;
@@ -2155,21 +2155,21 @@
     prov:wasDerivedFrom <https://drift-king.org/site/fonts/jetbrains-mono.woff2> ;
     p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/local-copies> .
 
-<https://drift-king.org/ah/site/render-console>
+<https://drift-king.org/ah/site/render-intents>
     a <https://drift-king.org/ah/the-builder/RenderStep> , <https://drift-king.org/ah/LocalOnlyStep> , p-plan:Step ;
     p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
-    p-plan:hasInputVar <https://drift-king.org/ah/site/var/console-template> ,
-        <https://drift-king.org/ah/site/var/console-content> ,
+    p-plan:hasInputVar <https://drift-king.org/ah/site/var/intents-template> ,
+        <https://drift-king.org/ah/site/var/intents-content> ,
         <https://drift-king.org/ah/site/var/console-intents> ;
-    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/console-markup> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/intents-markup> ;
     dcterms:title "render the console's Intents page as x-* markup, from its template, its words and the Intents query (local only)" .
 <https://drift-king.org/ah/site/expand-console>
     a sd:SoftwareConfiguration , <https://drift-king.org/ah/LocalOnlyStep> , p-plan:Step ;
     p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
-    p-plan:isPrecededBy <https://drift-king.org/ah/site/render-console> ,
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/render-intents> ,
         <https://drift-king.org/ah/site/render-home-settings> ,
         <https://drift-king.org/ah/site/x-components/install-expander> ;
-    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/console-html> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/intents-html> ;
     dcterms:title "expand the console page to plain HTML, in site/local/public, never in site/public (local only)" ;
     sd:hasExecutionCommand "cd site/expander && node expand-home.mjs markup/console.html settings.json ../local/public/console/index.html" ;
     dcterms:requires <https://drift-king.org/not-ah/node> , <https://drift-king.org/not-ah/npm/cheerio/1.2.0> .
