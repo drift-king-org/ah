@@ -1,0 +1,85 @@
+# The console's first screen, Intents: every agreement, what it asks for, what fulfils it, and whether
+# it is open or done; and every open gap with the sentence of the letter it answers.
+#
+# An agreement is a signed document (ah:Agreement) with asks (ah:asks). An ask is a selector on the
+# document's own text, and what fulfils it (ah:fulfilledBy) is a node the model can test: a check
+# (satisfied when an earl:Assertion says it passed on the model and no failed assertion on it is still
+# open), a later signing (satisfied when it has ended), or a published file (satisfied when it is a copy
+# of a file, published). An ask is met when something fulfils it and everything that does is satisfied. An
+# agreement is done when it has asks and every one is met; with nothing that fulfils it, it is open by
+# construction. Nothing here is kept by hand.
+#
+# A gap is open when it is an earl:Assertion that is earl:failed, a signing used it, and no signing has
+# invalidated it. Its selector is the sentence of the letter it answers.
+#
+# Rows are ordered by booleans and values: agreements before gaps, open before done, the fewest asks met
+# first, then the time they were signed. No string function is used and no sort key is built from a name.
+PREFIX ah:      <https://drift-king.org/ah/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX earl:    <http://www.w3.org/ns/earl#>
+PREFIX oa:      <http://www.w3.org/ns/oa#>
+PREFIX p-plan:  <http://purl.org/net/p-plan#>
+PREFIX prov:    <http://www.w3.org/ns/prov#>
+
+SELECT ?isGap ?open ?done ?title ?agreement ?askSource ?askStart ?askEnd ?fulfilledBy ?signedAt ?envelope ?asksTotal ?asksMet ?gap ?test ?letter ?letterStart ?letterEnd WHERE {
+  {
+    BIND (false AS ?isGap)
+    ?agreement a ah:Agreement ;
+      dcterms:title ?title ;
+      ah:asks ?ask .
+    ?ask oa:hasTarget [ oa:hasSource ?askSource ; oa:hasSelector [ oa:start ?askStart ; oa:end ?askEnd ] ] .
+    OPTIONAL { ?ask ah:fulfilledBy ?fulfilledBy }
+    ?signing a prov:Activity ;
+      prov:endedAtTime ?signedAt ;
+      prov:used [ prov:specializationOf ?agreement ] .
+    OPTIONAL { ?signing dcterms:identifier ?envelope }
+    {
+      SELECT ?agreement (COUNT(?ask) AS ?asksTotal) (COUNT(?metAsk) AS ?asksMet) WHERE {
+        ?agreement ah:asks ?ask .
+        BIND (EXISTS { ?ask ah:fulfilledBy ?any } AS ?hasFulfilment)
+        BIND (EXISTS {
+          ?ask ah:fulfilledBy ?unmet .
+          FILTER NOT EXISTS {
+            {
+              ?pass a earl:Assertion ;
+                earl:test ?unmet ;
+                earl:subject <https://drift-king.org/ah.ttl> ;
+                earl:result [ earl:outcome earl:passed ] .
+              FILTER NOT EXISTS {
+                ?fail a earl:Assertion ;
+                  earl:test ?unmet ;
+                  earl:subject <https://drift-king.org/ah.ttl> ;
+                  earl:result [ earl:outcome earl:failed ] .
+                FILTER NOT EXISTS { ?fail prov:wasInvalidatedBy ?closer }
+              }
+            } UNION {
+              ?unmet a prov:Activity ;
+                prov:endedAtTime ?ended .
+            } UNION {
+              ?unmet prov:wasDerivedFrom ?source ;
+                p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> ;
+                dcterms:identifier ?sha .
+            }
+          }
+        } AS ?hasUnmet)
+        BIND (IF(?hasFulfilment && !?hasUnmet, ?ask, ?nothing) AS ?metAsk)
+      }
+      GROUP BY ?agreement
+    }
+    BIND (?asksTotal > 0 && ?asksMet = ?asksTotal AS ?done)
+    BIND (!?done AS ?open)
+  } UNION {
+    BIND (true AS ?isGap)
+    BIND (true AS ?open)
+    ?gap a earl:Assertion ;
+      earl:test ?test ;
+      earl:result [ earl:outcome earl:failed ] ;
+      oa:hasTarget [ oa:hasSource ?letter ; oa:hasSelector [ oa:start ?letterStart ; oa:end ?letterEnd ] ] .
+    OPTIONAL { ?gap dcterms:title ?title }
+    ?signing a prov:Activity ;
+      prov:used ?gap ;
+      prov:endedAtTime ?signedAt .
+    FILTER NOT EXISTS { ?gap prov:wasInvalidatedBy ?closer }
+  }
+}
+ORDER BY ?isGap ?done ?asksMet ?signedAt

@@ -938,3 +938,19 @@
     dcterms:title "every source file, with the address on GitHub it is sent to, and whether a copy is published" ;
     skos:notation "rows" ;
     p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/source-files> .
+
+<https://drift-king.org/the-builder/message/rows-usage>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/messages> ;
+    dcterms:conformsTo <https://mustache.github.io/mustache.5.html> ;
+    dcterms:description "the-builder: --rows needs a query file, and either --graph with a Turtle file or --catalog" .
+<https://drift-king.org/the-builder/name/rows-option>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "--rows" ;
+    rdfs:comment "The option that runs one query and prints its rows as JSON, on the whole model or on one file alone." .
+<https://drift-king.org/the-builder/name/graph-option>
+    a skos:Concept ;
+    skos:inScheme <https://drift-king.org/the-builder/names> ;
+    skos:prefLabel "--graph" ;
+    rdfs:comment "The option naming the one Turtle file --rows runs its query on." .

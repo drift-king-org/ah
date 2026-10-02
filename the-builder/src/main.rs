@@ -94,6 +94,7 @@ const M_DRY_RUN_STEP: &str = "https://drift-king.org/the-builder/message/dry-run
 const M_SKIPPED: &str = "https://drift-king.org/the-builder/message/skipped";
 const M_HELD: &str = "https://drift-king.org/the-builder/message/held";
 const M_UNTAKEN: &str = "https://drift-king.org/the-builder/message/untaken";
+const M_ROWS_USAGE: &str = "https://drift-king.org/the-builder/message/rows-usage";
 const M_NOT_SHIPPED: &str = "https://drift-king.org/the-builder/message/not-shipped";
 const M_PROCEEDING: &str = "https://drift-king.org/the-builder/message/proceeding";
 const M_CHECKS_FAILED: &str = "https://drift-king.org/the-builder/message/checks-failed";
@@ -1114,6 +1115,38 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let dry_run = args.iter().any(|a| a == "--dry-run");
     // A plain run verifies and ships nothing; only --ship runs a ship step.
     let ship = args.iter().any(|a| a == "--ship");
+    // --rows <query> [--graph <file>]: run one query and print its rows as JSON, on the whole
+    // model (with --catalog) or on one Turtle file alone. For a check that needs to see what a
+    // query returns on a graph of its own.
+    if let Some(i) = args.iter().position(|a| a == "--rows") {
+        let query_path = args.get(i + 1).unwrap_or_else(|| die(M_ROWS_USAGE, &[]));
+        let store = Store::new()?;
+        match args.iter().position(|a| a == "--graph").and_then(|j| args.get(j + 1)) {
+            Some(graph_path) => load_file(&store, graph_path)?,
+            None => {
+                let catalog_path = args
+                    .iter()
+                    .position(|a| a == "--catalog")
+                    .and_then(|j| args.get(j + 1))
+                    .unwrap_or_else(|| die(M_ROWS_USAGE, &[]));
+                let catalog = parse_catalog(catalog_path);
+                load_transitively(&store, &catalog, vec![AH_TTL.to_string()], &HashSet::new())?;
+            }
+        }
+        let query_text = std::fs::read_to_string(query_path)?;
+        let prepared = SparqlEvaluator::new().parse_query(&query_text)?;
+        let rows = collect_rows(prepared.on_store(&store).execute()?, query_path);
+        let out: Vec<serde_json::Map<String, serde_json::Value>> = rows
+            .iter()
+            .map(|row| {
+                row.keys()
+                    .map(|key| (key.clone(), serde_json::Value::String(term_string(row, key).unwrap_or_default())))
+                    .collect()
+            })
+            .collect();
+        tell(&serde_json::to_string(&out)?);
+        return Ok(());
+    }
     let catalog_path_arg = args
         .iter()
         .position(|a| a == "--catalog")

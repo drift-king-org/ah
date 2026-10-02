@@ -2027,3 +2027,29 @@
     <https://drift-king.org/ah/site/servedUnaided> true .
 <https://drift-king.org/site/public/design/drift-king-console-design.zip> dcterms:format <https://www.iana.org/assignments/media-types/application/zip> ;
     <https://drift-king.org/ah/site/servedUnaided> true .
+
+# ===========================================================================
+# The console's first screen, Intents, as a query over ah. intents.rq returns one row for each agreement
+# (the document, the selector of what it asks for, what fulfils it, open or done as a boolean) and for each
+# open gap (with the selector of the sentence of the letter it answers). The check builds its canaries when
+# it runs: each is a graph the query must read right, and each must catch a query that reads it wrong, first.
+# ===========================================================================
+<https://drift-king.org/not-ah/queries/intents.rq>
+    a dcat:Resource , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    dcterms:title "the console's Intents: every agreement, what it asks for and what fulfils it, open or done, and every open gap" ;
+    skos:notation "rows" ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/console-intents> .
+<https://drift-king.org/ah/site/var/console-intents> a p-plan:Variable ; rdfs:label "the console's Intents rows" .
+<https://drift-king.org/the-linter/checks/intents.mjs> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    rdfs:comment "Builds four small graphs when it runs and runs the console's query on them: an agreement with nothing that fulfils it, an agreement whose check failed, a gap a signing invalidated, and one whose check passes. With --canaries it runs a broken query on each first." .
+<https://drift-king.org/ah/site/check-intents>
+    a sd:SoftwareConfiguration , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    dcterms:title "the console's query works status out: an unfulfilled agreement is open, a failed check leaves it open, an invalidated gap is closed, and its open gaps are the gaps known-gap.rq returns, canary first" ;
+    sd:hasExecutionCommand "node the-linter/checks/intents.mjs --canaries the-builder/target/release/the-builder.exe catalog-v001.xml not-ah/queries/intents.rq the-builder/queries/known-gap.rq; test $? -eq 1 || exit 1; node the-linter/checks/intents.mjs the-builder/target/release/the-builder.exe catalog-v001.xml not-ah/queries/intents.rq the-builder/queries/known-gap.rq" ;
+    dcterms:requires <https://drift-king.org/not-ah/node> .
