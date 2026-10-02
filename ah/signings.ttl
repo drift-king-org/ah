@@ -1676,3 +1676,66 @@
     dcterms:identifier "docusign-dev:envelope:a1952437-8395-8eae-80e4-a9ca95aa01f1" ;
     # Opens only for users of the demo account; never linked from the site.
     rdfs:seeAlso <https://apps-d.docusign.com/send/documents/details/a1952437-8395-8eae-80e4-a9ca95aa01f1> .
+
+# ---------------------------------------------------------------------------
+# The design for the console (Compliance). Drift King's own work: the lead architect signs second.
+# Written and hosted, not signed: no signing is recorded and no gap node is added. Its page lists the
+# designer's zip with its sha256, and the console agreement the approval quotes.
+# ---------------------------------------------------------------------------
+<https://drift-king.org/approvals/drift-king-console-design.md>
+    a prov:Entity , p-plan:Entity , oa:Annotation ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    dcterms:conformsTo <https://spec.commonmark.org/> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    dcterms:subject <https://drift-king.org/design/drift-king-console-design.zip> ;
+    rdfs:label "The console design approval, exactly as above" ;
+    dcterms:references <https://drift-king.org/design/drift-king-console-design.zip> ,
+        <https://drift-king.org/approvals/console.md> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/console-design-text> ;
+    oa:hasTarget [ a oa:SpecificResource ;
+        oa:hasSource <https://drift-king.org/approvals/console.md> ;
+        oa:hasSelector [ a oa:TextPositionSelector ; oa:start 647 ; oa:end 757 ] ] .
+
+<https://drift-king.org/site/public/approvals/drift-king-console-design.md> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:f318ca39bd8a01cfab3ab5a70af823fcb7db8c9f0eed01775504577344b9fa2a" ;
+    prov:wasDerivedFrom <https://drift-king.org/approvals/drift-king-console-design.md> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+<https://drift-king.org/site/public/design/drift-king-console-design.zip> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:identifier "sha256:544bf7af26b84fdf0a49b49897796ea9c30bd01bb77e43b54a32e21b0bf107d1" ;
+    prov:wasDerivedFrom <https://drift-king.org/design/drift-king-console-design.zip> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
+
+<https://drift-king.org/ah/site/var/console-design-text> a p-plan:Variable ; rdfs:label "the console design approval, as text" .
+<https://drift-king.org/ah/site/var/console-design-html> a p-plan:Variable ; rdfs:label "site/public/approvals/drift-king-console-design.html" .
+<https://drift-king.org/ah/site/var/console-design-approval> a p-plan:Variable ; rdfs:label "site/public/approvals/drift-king-console-design-approval.html" .
+<https://drift-king.org/ah/site/render-console-design>
+    a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/var/document-template> ,
+        <https://drift-king.org/ah/site/var/console-design-text> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/console-design-html> ;
+    dcterms:title "render the console design page" .
+<https://drift-king.org/site/public/approvals/drift-king-console-design.html> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/document.mustache> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/console-design-html> .
+<https://drift-king.org/ah/site/render-console-design-approval>
+    a <https://drift-king.org/ah/the-builder/RenderStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/var/approval-template> ,
+        <https://drift-king.org/ah/site/var/approval-files> ,
+        <https://drift-king.org/ah/site/var/console-design-text> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/var/console-design-approval> ;
+    dcterms:title "render the console design's approval page" .
+<https://drift-king.org/site/public/approvals/drift-king-console-design-approval.html> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasDerivedFrom <https://drift-king.org/site/templates/approval.mustache> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/console-design-approval> .
+<https://drift-king.org/ah/site/deploy>
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/render-console-design> ,
+        <https://drift-king.org/ah/site/render-console-design-approval> .
+<https://drift-king.org/ah/site/check-clean>
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/render-console-design> ,
+        <https://drift-king.org/ah/site/render-console-design-approval> .

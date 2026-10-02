@@ -2007,3 +2007,23 @@
     dcterms:title "check drift-king.org itself: the HTML 404 for every missing address, each file served with its model type, each source address a 303 to GitHub at the built commit" ;
     sd:hasExecutionCommand "node site/checks/check-served.mjs https://drift-king.org site/served.tsv site/source.tsv" ;
     dcterms:requires <https://drift-king.org/not-ah/node> .
+
+# The designer's design for the console, as received: one zip (the Intents screen, Intents in every
+# state, and Watch a build), and the zip is the artifact. Copied, not moved, from the folder the lead
+# architect keeps the designer's files in. The time is the file's own timestamp as it landed on disk.
+<https://drift-king.org/design/drift-king-console-design.zip>
+    a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah> ;
+    dcterms:identifier "sha256:544bf7af26b84fdf0a49b49897796ea9c30bd01bb77e43b54a32e21b0bf107d1" ;
+    prov:wasAttributedTo <https://drift-king.org/not-ah/agent/designer> ;
+    prov:generatedAtTime "2026-10-02T00:40:02Z"^^xsd:dateTime ;
+    rdfs:label "The Drift King console design" .
+<https://drift-king.org/site/public/approvals/drift-king-console-design.md> dcterms:format <https://www.iana.org/assignments/media-types/text/markdown> ;
+    <https://drift-king.org/ah/site/servedUnaided> true ;
+    <https://drift-king.org/ah/site/cacheControl> "no-transform" .
+<https://drift-king.org/site/public/approvals/drift-king-console-design.html> dcterms:format <https://www.iana.org/assignments/media-types/text/html> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/approvals/drift-king-console-design-approval.html> dcterms:format <https://www.iana.org/assignments/media-types/text/html> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
+<https://drift-king.org/site/public/design/drift-king-console-design.zip> dcterms:format <https://www.iana.org/assignments/media-types/application/zip> ;
+    <https://drift-king.org/ah/site/servedUnaided> true .
