@@ -2245,3 +2245,39 @@ dcterms:requires a owl:ObjectProperty .
     prov:wasAttributedTo <https://drift-king.org/ah/agent/lead-architect> ;
     rdfs:label "Initial commit: cloudflare-pid-rs PID1 proof, the-builder scaffold, model" ;
     rdfs:comment "A commit of the history before the public repository. Private history: the-builder/proof/H0-first-commit.txt and H1-byte-exact.txt name it." .
+
+# No ship follows a step that is local only.
+<https://drift-king.org/the-linter/checks/local-only-not-shipped.rq>
+    a dcat:Resource , p-plan:Entity , earl:TestCriterion ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/> ;
+    dcterms:title "no step that ships comes after a step that is local only" ;
+    p-plan:correspondsToVariable <https://drift-king.org/not-ah/the-linter/local-only-not-shipped/var/rq> .
+<https://drift-king.org/the-linter/canaries/local-only-not-shipped.ttl>
+    a p-plan:Entity , earl:TestSubject ;
+    dcterms:isPartOf <https://drift-king.org/not-ah/the-linter> ;
+    dcterms:conformsTo <http://www.w3.org/TR/turtle/> ;
+    vann:preferredNamespaceUri "https://drift-king.org/not-ah/canary/local-only-not-shipped/" ;
+    p-plan:correspondsToVariable <https://drift-king.org/not-ah/the-linter/local-only-not-shipped/var/canary> .
+<https://drift-king.org/not-ah/the-linter/local-only-not-shipped/var/rq> a p-plan:Variable .
+<https://drift-king.org/not-ah/the-linter/local-only-not-shipped/var/canary> a p-plan:Variable .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/the-linter/canaries/local-only-not-shipped.ttl> ;
+  earl:test <https://drift-king.org/the-linter/checks/local-only-not-shipped.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:failed ] ] .
+[ a earl:Assertion ; earl:assertedBy <https://drift-king.org/not-ah/the-linter> ;
+  earl:subject <https://drift-king.org/ah.ttl> ;
+  earl:test <https://drift-king.org/the-linter/checks/local-only-not-shipped.rq> ;
+  earl:result [ a earl:TestResult ; earl:outcome earl:passed ] ] .
+<https://drift-king.org/not-ah/the-linter/local-only-not-shipped/canary-step>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/the-linter/ship-steps-marked/real-step> ;
+    p-plan:hasInputVar <https://drift-king.org/not-ah/the-linter/local-only-not-shipped/var/rq> , <https://drift-king.org/not-ah/the-linter/local-only-not-shipped/var/canary> ;
+    dcterms:title "no ship follows a local-only step: a ship plan that includes one must be caught" .
+<https://drift-king.org/not-ah/the-linter/local-only-not-shipped/real-step>
+    a p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/the-builder/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/not-ah/the-linter/local-only-not-shipped/canary-step> ;
+    p-plan:hasInputVar <https://drift-king.org/not-ah/the-linter/local-only-not-shipped/var/rq> , <https://drift-king.org/not-ah/the-linter/var/the-model> ;
+    dcterms:title "no ship follows a local-only step: the model must pass" .

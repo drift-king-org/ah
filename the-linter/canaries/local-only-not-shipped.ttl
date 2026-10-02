@@ -1,0 +1,10 @@
+@prefix p-plan: <http://purl.org/net/p-plan#> .
+@prefix ex: <https://drift-king.org/not-ah/canary/local-only-not-shipped/> .
+
+# Must be found: a ship that comes after a local-only step, with a step between them.
+ex:preview a <https://drift-king.org/ah/LocalOnlyStep> .
+ex:between p-plan:isPrecededBy ex:preview .
+ex:deploy a <https://drift-king.org/ah/the-builder/ShipStep> ; p-plan:isPrecededBy ex:between .
+# Must stay clean: a ship that comes after an ordinary step.
+ex:build p-plan:isPrecededBy ex:between .
+ex:ship a <https://drift-king.org/ah/the-builder/ShipStep> ; p-plan:isPrecededBy ex:build .

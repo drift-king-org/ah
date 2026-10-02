@@ -1,0 +1,11 @@
+# A step that is local only makes something that must never go live: a page being tried on this machine.
+# So no step that ships may come after one: the ship plan must not include it. A ship step, or any
+# step that comes before one, that is preceded by a local-only step is a finding.
+PREFIX p-plan: <http://purl.org/net/p-plan#>
+
+SELECT ?ship ?local WHERE {
+  ?ship a <https://drift-king.org/ah/the-builder/ShipStep> ;
+    p-plan:isPrecededBy+ ?local .
+  ?local a <https://drift-king.org/ah/LocalOnlyStep> .
+}
+ORDER BY ?ship ?local

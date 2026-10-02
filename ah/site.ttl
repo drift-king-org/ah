@@ -2053,3 +2053,9 @@
     dcterms:title "the console's query works status out: an unfulfilled agreement is open, a failed check leaves it open, an invalidated gap is closed, and its open gaps are the gaps known-gap.rq returns, canary first" ;
     sd:hasExecutionCommand "node the-linter/checks/intents.mjs --canaries the-builder/target/release/the-builder.exe catalog-v001.xml not-ah/queries/intents.rq the-builder/queries/known-gap.rq; test $? -eq 1 || exit 1; node the-linter/checks/intents.mjs the-builder/target/release/the-builder.exe catalog-v001.xml not-ah/queries/intents.rq the-builder/queries/known-gap.rq" ;
     dcterms:requires <https://drift-king.org/not-ah/node> .
+
+# A step that is local only builds something to try on this machine, and nothing that ships may come after
+# one. The ship plan must not include it: a check fails any ship that follows a local-only step.
+<https://drift-king.org/ah/LocalOnlyStep> a owl:Class ;
+    rdfs:label "local-only step" ;
+    rdfs:comment "A step that makes something to try on this machine. No step that ships comes after it." .

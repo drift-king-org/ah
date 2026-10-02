@@ -70,6 +70,8 @@
     <uri id="the-linter: held-until-taken-taken.ttl" name="https://drift-king.org/the-linter/canaries/held-until-taken-taken.ttl" uri="the-linter/canaries/held-until-taken-taken.ttl"/>
     <uri id="the-linter: named-by-nobody-intake-only.ttl" name="https://drift-king.org/the-linter/canaries/named-by-nobody-intake-only.ttl" uri="the-linter/canaries/named-by-nobody-intake-only.ttl"/>
     <uri id="the-linter: named-by-nobody-intake-and-elsewhere.ttl" name="https://drift-king.org/the-linter/canaries/named-by-nobody-intake-and-elsewhere.ttl" uri="the-linter/canaries/named-by-nobody-intake-and-elsewhere.ttl"/>
+    <uri id="the-linter: local-only-not-shipped.rq" name="https://drift-king.org/the-linter/checks/local-only-not-shipped.rq" uri="the-linter/checks/local-only-not-shipped.rq"/>
+    <uri id="the-linter: local-only-not-shipped.ttl" name="https://drift-king.org/the-linter/canaries/local-only-not-shipped.ttl" uri="the-linter/canaries/local-only-not-shipped.ttl"/>
     <uri id="the-linter: ship-steps-marked.rq" name="https://drift-king.org/the-linter/checks/ship-steps-marked.rq" uri="the-linter/checks/ship-steps-marked.rq"/>
     <uri id="the-linter: ship-steps-marked.ttl" name="https://drift-king.org/the-linter/canaries/ship-steps-marked.ttl" uri="the-linter/canaries/ship-steps-marked.ttl"/>
     <uri id="the-linter: domain-retypes.rq" name="https://drift-king.org/the-linter/checks/domain-retypes.rq" uri="the-linter/checks/domain-retypes.rq"/>
