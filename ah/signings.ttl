@@ -1776,3 +1776,61 @@
     rdfs:label "the ship that hosted the console design" ;
     rdfs:comment "Failed: its live check ran before the edge served the new version. A later run of the same check passed. The hosted bytes were then verified by hash." ;
     prov:wasAssociatedWith <https://drift-king.org/ah/agent/compliance> .
+
+# ===========================================================================
+# Agreements. A signed document is an agreement when it says what it asks for, as a selector on its own
+# sentence (never a retyped one), and what fulfils it: a check that passes, a later signing, or a published
+# file with its sha256. An agreement with nothing that fulfils it is open by construction, and nothing says
+# so by hand: the console's query works status out. Each ask is met when everything that fulfils it is
+# satisfied, and an agreement is done when every ask is met.
+# ===========================================================================
+<https://drift-king.org/ah/Agreement> a owl:Class ;
+    rdfs:label "agreement" ;
+    rdfs:comment "A signed document that says what it asks for and what fulfils it." .
+<https://drift-king.org/ah/Ask> a owl:Class ;
+    rdfs:label "ask" ;
+    rdfs:comment "One sentence of an agreement that asks for something: a selector on the document's own text." .
+<https://drift-king.org/ah/asks> a owl:ObjectProperty ;
+    rdfs:label "asks" ;
+    rdfs:comment "An agreement's ask." .
+<https://drift-king.org/ah/fulfilledBy> a owl:ObjectProperty ;
+    rdfs:label "fulfilled by" ;
+    rdfs:comment "What fulfils an ask: a check (satisfied when it passes on the model), a later signing (satisfied when it has ended), or a published file with its sha256 (satisfied when it is published and derived from a file). An ask with none is not met." .
+<https://drift-king.org/approvals/gap-code-strings-closed.md> a <https://drift-king.org/ah/Agreement> ;
+    dcterms:title "Drift King: gap closed" ;
+    <https://drift-king.org/ah/asks> <https://drift-king.org/ah/ask/closed-code-strings> .
+<https://drift-king.org/ah/ask/closed-code-strings> a <https://drift-king.org/ah/Ask> ;
+    oa:hasTarget [ a oa:SpecificResource ;
+        oa:hasSource <https://drift-king.org/approvals/gap-code-strings-closed.md> ;
+        oa:hasSelector [ a oa:TextPositionSelector ; oa:start 663 ; oa:end 752 ] ] ;
+    <https://drift-king.org/ah/fulfilledBy> <https://drift-king.org/the-linter/checks/code-strings-named.rq> .
+<https://drift-king.org/approvals/signing-plan-v2.md> a <https://drift-king.org/ah/Agreement> ;
+    dcterms:title "Drift King: signing plan, version 2" ;
+    <https://drift-king.org/ah/asks> <https://drift-king.org/ah/ask/signing-plan-v2> .
+<https://drift-king.org/ah/ask/signing-plan-v2> a <https://drift-king.org/ah/Ask> ;
+    oa:hasTarget [ a oa:SpecificResource ;
+        oa:hasSource <https://drift-king.org/approvals/signing-plan-v2.md> ;
+        oa:hasSelector [ a oa:TextPositionSelector ; oa:start 314 ; oa:end 355 ] ] ;
+    <https://drift-king.org/ah/fulfilledBy> <https://drift-king.org/site/public/plans/docusign-approval-v2.ttl> .
+<https://drift-king.org/approvals/x-components-0.1.0-release.md> a <https://drift-king.org/ah/Agreement> ;
+    dcterms:title "x-components: release 0.1.0" ;
+    <https://drift-king.org/ah/asks> <https://drift-king.org/ah/ask/x-components-0-1-0-release> .
+<https://drift-king.org/ah/ask/x-components-0-1-0-release> a <https://drift-king.org/ah/Ask> ;
+    oa:hasTarget [ a oa:SpecificResource ;
+        oa:hasSource <https://drift-king.org/approvals/x-components-0.1.0-release.md> ;
+        oa:hasSelector [ a oa:TextPositionSelector ; oa:start 469 ; oa:end 653 ] ] ;
+    <https://drift-king.org/ah/fulfilledBy> <https://drift-king.org/site/public/approvals/x-components-0.1.0-release-approval.html> .
+<https://drift-king.org/approvals/console.md> a <https://drift-king.org/ah/Agreement> ;
+    dcterms:title "Drift King: the console" ;
+    <https://drift-king.org/ah/asks> <https://drift-king.org/ah/ask/console> .
+<https://drift-king.org/ah/ask/console> a <https://drift-king.org/ah/Ask> ;
+    oa:hasTarget [ a oa:SpecificResource ;
+        oa:hasSource <https://drift-king.org/approvals/console.md> ;
+        oa:hasSelector [ a oa:TextPositionSelector ; oa:start 326 ; oa:end 430 ] ] .
+<https://drift-king.org/approvals/drift-king-console-design.md> a <https://drift-king.org/ah/Agreement> ;
+    dcterms:title "Drift King: console design" ;
+    <https://drift-king.org/ah/asks> <https://drift-king.org/ah/ask/console-design> .
+<https://drift-king.org/ah/ask/console-design> a <https://drift-king.org/ah/Ask> ;
+    oa:hasTarget [ a oa:SpecificResource ;
+        oa:hasSource <https://drift-king.org/approvals/drift-king-console-design.md> ;
+        oa:hasSelector [ a oa:TextPositionSelector ; oa:start 684 ; oa:end 736 ] ] .
