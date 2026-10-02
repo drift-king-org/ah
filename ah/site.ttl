@@ -2242,6 +2242,7 @@
 <https://drift-king.org/ah/site/local-console/var/port-free> a p-plan:Variable ; rdfs:label "the local server's port, free" .
 
 <https://drift-king.org/ah/site/endpoint/local-console>
+    a p-plan:Entity ;
     p-plan:correspondsToVariable <https://drift-king.org/ah/site/local-console/var/address> .
 <https://drift-king.org/ah/site/local-console/viewport/desktop> a prov:Entity , p-plan:Entity ;
     dcterms:isPartOf <https://drift-king.org/ah/site> ;
