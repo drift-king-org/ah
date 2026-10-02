@@ -984,7 +984,6 @@
 <https://drift-king.org/ah/the-builder/selectedFrom>
     a owl:ObjectProperty ;
     rdfs:domain <https://drift-king.org/ah/the-builder/SelectedText> ;
-    rdfs:range rdfs:Resource ;
     rdfs:label "selected from" ;
     rdfs:comment "The signed file the characters were cut from." .
 <https://drift-king.org/ah/the-builder/selectionStart>
@@ -1008,7 +1007,6 @@
 <https://drift-king.org/ah/the-builder/readAt>
     a owl:ObjectProperty ;
     rdfs:domain <https://drift-king.org/ah/the-builder/SelectedText> ;
-    rdfs:range rdfs:Resource ;
     rdfs:label "read at" ;
     rdfs:comment "The page the signed file is read on, with a text fragment that highlights the selected sentence." .
 
