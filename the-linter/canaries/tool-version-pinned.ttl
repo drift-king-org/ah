@@ -12,3 +12,23 @@
     sd:hasExecutionCommand "cd site && npx --yes wrangler@4.145.0 deploy" .
 <https://drift-king.org/not-ah/canary/tool-version-pinned/bare-step>
     sd:hasExecutionCommand "cd site && npx wrangler deploy" .
+
+# A tool pinned at two versions: a command pinned to either one is clean, and the same command with
+# no version, or with one the model does not pin, is found. The check must find these two and not the
+# two clean ones.
+<https://drift-king.org/not-ah/canary/tool-version-pinned/browser-old>
+    a sd:SoftwareVersion ;
+    sd:name "playwright" ;
+    sd:hasVersionId "1.1.0" .
+<https://drift-king.org/not-ah/canary/tool-version-pinned/browser-new>
+    a sd:SoftwareVersion ;
+    sd:name "playwright" ;
+    sd:hasVersionId "1.2.0" .
+<https://drift-king.org/not-ah/canary/tool-version-pinned/browser-pinned-old-step>
+    sd:hasExecutionCommand "npx --yes playwright@1.1.0 screenshot --viewport-size=390,844 http://127.0.0.1:8789/console/ out.png" .
+<https://drift-king.org/not-ah/canary/tool-version-pinned/browser-pinned-new-step>
+    sd:hasExecutionCommand "npx --yes playwright@1.2.0 install chromium" .
+<https://drift-king.org/not-ah/canary/tool-version-pinned/browser-bare-step>
+    sd:hasExecutionCommand "npx --yes playwright screenshot --viewport-size=390,844 http://127.0.0.1:8789/console/ out.png" .
+<https://drift-king.org/not-ah/canary/tool-version-pinned/browser-unpinned-version-step>
+    sd:hasExecutionCommand "npx --yes playwright@9.9.9 install chromium" .

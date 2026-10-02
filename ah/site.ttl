@@ -2217,3 +2217,113 @@
     dcterms:title "no tag is left unexpanded on the console page, canary first" ;
     sd:hasExecutionCommand "node site/checks/check-expanded.mjs site/checks/canaries/unexpanded.html; test $? -eq 1 || exit 1; node site/checks/check-expanded.mjs site/local/public/console/index.html" ;
     dcterms:requires <https://drift-king.org/not-ah/node> .
+
+# ===========================================================================
+# The console's screenshot, on this machine only. A step in a plan of its own, local only like the
+# console's render step, so no ship follows it: ready-to-deploy refuses a plan that includes it. The
+# plan is tried by hand, in order: start the local server, install the browser, take the pictures, stop
+# the server. Nothing here is made under site/public and nothing is written to the repository but the
+# pictures' own folder, local/, which git ignores. Playwright is run through npx at one exact version
+# (not-ah/npm/playwright/1.63.0); no package is installed into the repo or into node_modules.
+# ===========================================================================
+<https://drift-king.org/ah/site/local-console/plan>
+    a p-plan:Plan ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:title "try the console's Intents page on this machine and photograph it" ;
+    dcterms:description "Start the console's local server and write its PIDs, install Playwright 1.63.0's own chromium, take one picture of the page at each of two viewports, then stop the server by the PIDs written and confirm the port is free." .
+
+<https://drift-king.org/ah/site/local-console/var/address> a p-plan:Variable ; rdfs:label "the local server's address" .
+<https://drift-king.org/ah/site/local-console/var/viewport-desktop> a p-plan:Variable ; rdfs:label "the desktop viewport" .
+<https://drift-king.org/ah/site/local-console/var/viewport-phone> a p-plan:Variable ; rdfs:label "the phone viewport" .
+<https://drift-king.org/ah/site/local-console/var/pids> a p-plan:Variable ; rdfs:label "the PIDs the start step wrote" .
+<https://drift-king.org/ah/site/local-console/var/browser> a p-plan:Variable ; rdfs:label "the browser Playwright installed" .
+<https://drift-king.org/ah/site/local-console/var/screenshot-desktop> a p-plan:Variable ; rdfs:label "the desktop picture" .
+<https://drift-king.org/ah/site/local-console/var/screenshot-phone> a p-plan:Variable ; rdfs:label "the phone picture" .
+<https://drift-king.org/ah/site/local-console/var/port-free> a p-plan:Variable ; rdfs:label "the local server's port, free" .
+
+<https://drift-king.org/ah/site/endpoint/local-console>
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/local-console/var/address> .
+<https://drift-king.org/ah/site/local-console/viewport/desktop> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/local-console/var/viewport-desktop> ;
+    rdf:value "1280,900" ;
+    rdfs:comment "Width and height in pixels, for a desktop screen, 1280 by 900." .
+<https://drift-king.org/local/screenshots/console-intents-desktop.png> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:format "image/png" ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/local-console/var/screenshot-desktop> ;
+    rdfs:comment "Local only, in local/screenshots/ and ignored by git; never published. Its sha256 is written in the report of the screenshot step, not here." .
+<https://drift-king.org/ah/site/local-console/viewport/phone> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/local-console/var/viewport-phone> ;
+    rdf:value "390,844" ;
+    rdfs:comment "Width and height in pixels, for a phone screen, 390 by 844." .
+<https://drift-king.org/local/screenshots/console-intents-phone.png> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    dcterms:format "image/png" ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/local-console/var/screenshot-phone> ;
+    rdfs:comment "Local only, in local/screenshots/ and ignored by git; never published. Its sha256 is written in the report of the screenshot step, not here." .
+<https://drift-king.org/ah/site/local-console/pids> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/local-console/var/pids> ;
+    rdfs:comment "local/serve-console.pids: one PID to a line, written by the start step and read by the stop step. Local only, ignored by git." .
+<https://drift-king.org/ah/site/local-console/browser> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/local-console/var/browser> ;
+    dcterms:requires <https://drift-king.org/not-ah/npm/playwright/1.63.0> ;
+    rdfs:comment "Where it lands: Playwright 1.63.0's own install command puts chromium in its default browser folder, ms-playwright under the user's local application data folder (PLAYWRIGHT_BROWSERS_PATH is not set), and the install step prints the exact path it used. The npx cache holds the playwright package itself. Neither is in the repository and neither is in node_modules." .
+<https://drift-king.org/ah/site/local-console/port-free> a prov:Entity , p-plan:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    p-plan:correspondsToVariable <https://drift-king.org/ah/site/local-console/var/port-free> ;
+    rdfs:comment "Port 8789 with nothing listening: what the stop step's check reads." .
+
+<https://drift-king.org/ah/site/local-console/start>
+    a sd:SoftwareConfiguration , <https://drift-king.org/ah/LocalOnlyStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/site/local-console/plan> ;
+    dcterms:references <https://drift-king.org/ah/site/serve-local-console> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/local-console/var/address> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/local-console/var/pids> ;
+    dcterms:title "start the local console server and write its PIDs (local only)" ;
+    sd:hasExecutionCommand "node site/checks/serve-start.mjs local/serve-console.pids http://127.0.0.1:8789/console/ site/local \"npx --yes wrangler@4.145.0 dev --local --port 8789\"" ;
+    dcterms:requires <https://drift-king.org/not-ah/node> , <https://drift-king.org/not-ah/wrangler> ;
+    rdfs:comment "Runs the command it is given, as serve-local-console names it, detached, writes the PID it started and the PID listening on the port, one to a line, and waits until the address answers. Exit 0 when it answers, 2 when it could not start or did not answer." .
+<https://drift-king.org/ah/site/local-console/install-browser>
+    a sd:SoftwareConfiguration , <https://drift-king.org/ah/LocalOnlyStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/site/local-console/plan> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/local-console/var/browser> ;
+    dcterms:title "install the chromium Playwright 1.63.0 names, with its own install command (local only)" ;
+    sd:hasExecutionCommand "npx --yes playwright@1.63.0 install chromium && npx --yes playwright@1.63.0 install --dry-run chromium" ;
+    dcterms:requires <https://drift-king.org/not-ah/node> , <https://drift-king.org/not-ah/npm/playwright/1.63.0> .
+<https://drift-king.org/ah/site/local-console/screenshot>
+    a sd:SoftwareConfiguration , <https://drift-king.org/ah/LocalOnlyStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/site/local-console/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/local-console/start> , <https://drift-king.org/ah/site/local-console/install-browser> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/local-console/var/address> , <https://drift-king.org/ah/site/local-console/var/viewport-desktop> , <https://drift-king.org/ah/site/local-console/var/viewport-phone> , <https://drift-king.org/ah/site/local-console/var/browser> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/local-console/var/screenshot-desktop> , <https://drift-king.org/ah/site/local-console/var/screenshot-phone> ;
+    dcterms:title "screenshot the local console: one PNG at each viewport, in local/screenshots (local only)" ;
+    sd:hasExecutionCommand "mkdir -p local/screenshots && npx --yes playwright@1.63.0 screenshot --browser chromium --viewport-size=1280,900 --full-page http://127.0.0.1:8789/console/ local/screenshots/console-intents-desktop.png && npx --yes playwright@1.63.0 screenshot --browser chromium --viewport-size=390,844 --full-page http://127.0.0.1:8789/console/ local/screenshots/console-intents-phone.png && sha256sum local/screenshots/console-intents-desktop.png local/screenshots/console-intents-phone.png | tee local/screenshots/sha256.txt" ;
+    dcterms:requires <https://drift-king.org/not-ah/node> , <https://drift-king.org/not-ah/npm/playwright/1.63.0> ;
+    rdfs:comment "The report is what the command prints: the sha256 of each picture, also kept in local/screenshots/sha256.txt. The model holds no hash of a picture." .
+<https://drift-king.org/ah/site/local-console/stop>
+    a sd:SoftwareConfiguration , <https://drift-king.org/ah/LocalOnlyStep> , p-plan:Step ;
+    p-plan:isStepOfPlan <https://drift-king.org/ah/site/local-console/plan> ;
+    p-plan:isPrecededBy <https://drift-king.org/ah/site/local-console/screenshot> ;
+    p-plan:hasInputVar <https://drift-king.org/ah/site/local-console/var/pids> ;
+    p-plan:hasOutputVar <https://drift-king.org/ah/site/local-console/var/port-free> ;
+    dcterms:title "stop the local console server by the PIDs the start step wrote, and check the port is free (local only)" ;
+    sd:hasExecutionCommand "node site/checks/canaries/port-taken.mjs 8790; test $? -eq 1 || exit 1; node site/checks/serve-stop.mjs local/serve-console.pids 8789" ;
+    dcterms:requires <https://drift-king.org/not-ah/node> ;
+    rdfs:comment "Canary first: a port something else holds must make the stop step exit 1. It stops each PID in the file, with its children, and nothing by name. Exit 0 when the port is free, 1 when it is still taken, 2 when it could not run (no PID file)." .
+
+<https://drift-king.org/site/checks/serve-start.mjs> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    rdfs:comment "Starts the local console server detached and writes its PIDs." .
+<https://drift-king.org/site/checks/serve-stop.mjs> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    rdfs:comment "Stops the PIDs in a file, with their children, then reads the port: exit 1 if it is still taken, 2 if it could not run." .
+<https://drift-king.org/site/checks/canaries/port-taken.mjs> a prov:Entity ;
+    dcterms:isPartOf <https://drift-king.org/ah/site> ;
+    prov:wasAttributedTo <https://drift-king.org/ah/agent/compliance> ;
+    rdfs:comment "Holds a port, runs serve-stop on it with a PID file that names nothing alive, and exits 1 only if serve-stop said the port was still taken." .

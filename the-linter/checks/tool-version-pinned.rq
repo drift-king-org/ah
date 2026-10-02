@@ -7,6 +7,10 @@
 # Only a tool run through npx is read here, because only npx asks a registry for
 # a version at run time. A command that runs a tool from a file on disk runs the
 # one that was installed and confirmed, which is what its pin in not-ah records.
+#
+# A tool can be pinned at more than one version (the same package, run from a lockfile and run
+# through npx). A command through npx is clean when it names any of the versions the model pins for
+# that tool, and a finding when it names none, or none at all.
 PREFIX sd: <https://w3id.org/okn/o/sd#>
 
 SELECT DISTINCT ?command ?pinned WHERE {
@@ -16,7 +20,10 @@ SELECT DISTINCT ?command ?pinned WHERE {
   BIND (REPLACE(STR(?version), "[.]", "[.]") AS ?safeVersion)
   BIND (CONCAT("npx([ ]+-[-A-Za-z]+)*[ ]+", ?safeName) AS ?npx)
   FILTER (REGEX(STR(?command), CONCAT(?npx, "([@][^ ]*)?([ ]|$)")))
-  FILTER (!REGEX(STR(?command), CONCAT(?npx, "[@]", ?safeVersion, "([ ]|$)")))
+  FILTER NOT EXISTS {
+    ?other a sd:SoftwareVersion ; sd:name ?name ; sd:hasVersionId ?otherVersion .
+    FILTER (REGEX(STR(?command), CONCAT(?npx, "[@]", REPLACE(STR(?otherVersion), "[.]", "[.]"), "([ ]|$)")))
+  }
   BIND (CONCAT(STR(?name), "@", STR(?version)) AS ?pinned)
 }
 ORDER BY ?command

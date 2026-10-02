@@ -16,3 +16,4 @@ directives/
 site/source.tsv
 *.stackdump
 site/local/public/
+/local/
