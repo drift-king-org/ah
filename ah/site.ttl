@@ -252,7 +252,7 @@
     p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/copies> .
 <https://drift-king.org/site/public/_headers> a prov:Entity , p-plan:Entity ;
     dcterms:isPartOf <https://drift-king.org/ah/site> ;
-    dcterms:identifier "sha256:d515e90c910123b3459e1db8028b1f9ccc5731d6c70636944a2e6186cd3eb2b7" ;
+    dcterms:identifier "sha256:9e4041e73d15fd2cd7bd231961285bd34f241672eb25680b91b7d6ff3840c1d8" ;
     prov:wasDerivedFrom <https://drift-king.org/site/templates/headers.mustache> ;
     p-plan:correspondsToVariable <https://drift-king.org/ah/site/var/headers-file> ;
     rdfs:comment "Generated from the media type of each published file, and held to its sha256: a projection checked by byte comparison, like every other." .
@@ -2016,7 +2016,7 @@
     dcterms:isPartOf <https://drift-king.org/ah> ;
     dcterms:identifier "sha256:544bf7af26b84fdf0a49b49897796ea9c30bd01bb77e43b54a32e21b0bf107d1" ;
     prov:wasAttributedTo <https://drift-king.org/not-ah/agent/designer> ;
-    prov:generatedAtTime "2026-10-02T00:40:02Z"^^xsd:dateTime ;
+    prov:generatedAtTime "2026-10-02T00:25:52Z"^^xsd:dateTime ;
     rdfs:label "The Drift King console design" .
 <https://drift-king.org/site/public/approvals/drift-king-console-design.md> dcterms:format <https://www.iana.org/assignments/media-types/text/markdown> ;
     <https://drift-king.org/ah/site/servedUnaided> true ;
